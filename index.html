@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.10</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.11</span>
             </div>
         </div>
 
@@ -247,7 +247,7 @@
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (5 DÍGITOS)</label>
                             <div class="relative">
-                                <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 22253">
+                                <input type="text" id="f_cp" oninput="buscarPorCPExcel(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 22253">
                                 <span id="cpStatus" class="absolute right-3 top-2.5 text-xs font-semibold"></span>
                             </div>
                         </div>
@@ -260,8 +260,8 @@
                             <input type="text" id="f_municipio" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA (DESPLEGABLE / ESCRITURA)</label>
-                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ESCRIBA O SELECCIONE COLONIA">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA</label>
+                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ESCRIBA LA COLONIA">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA (CALLE Y NÚMERO)</label>
@@ -341,13 +341,16 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        const sepomexOficialDB = {
-            "01090": { estado: "CIUDAD DE MÉXICO", municipio: "ÁLVARO OBREGÓN", colonias: ["TIZAPÁN SAN ÁNGEL", "TIZAPÁN", "SAN ÁNGEL", "LORETO", "CHIMALISTAC"] },
-            "54080": { estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonias: ["LOS REYES IZTACALA", "BARRIO SAN LUCAS", "TLALNEPANTLA CENTRO", "JARDINES DE SAN LUCAS"] },
-            "45404": { estado: "JALISCO", municipio: "TONALÁ", colonias: ["URBI PASEOS DE SANTIAGO", "LOMA DORADA", "HACIENDA REAL"] },
-            "54700": { estado: "ESTADO DE MÉXICO", municipio: "CUAUTITLÁN", colonias: ["CENTRO DE CUAUTITLÁN", "SANTA MARÍA", "EL HUERTO"] },
-            "64000": { estado: "NUEVO LEÓN", municipio: "MONTERREY", colonias: ["CENTRO", "OBISPADO", "INDEPENDENCIA"] },
-            "44100": { estado: "JALISCO", municipio: "GUADALAJARA", colonias: ["ZONA CENTRO", "AMERICANA", "MODERNA"] }
+        // Base de datos oficial integrada con los C.P. de tu archivo de Excel
+        const cpOficialExcelDB = {
+            "20000": { estado: "AGUASCALIENTES", municipio: "AGUASCALIENTES" },
+            "22253": { estado: "BAJA CALIFORNIA", municipio: "TIJUANA" },
+            "54080": { estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ" },
+            "54700": { estado: "ESTADO DE MÉXICO", municipio: "CUAUTITLÁN" },
+            "01090": { estado: "CIUDAD DE MÉXICO", municipio: "ÁLVARO OBREGÓN" },
+            "64000": { estado: "NUEVO LEÓN", municipio: "MONTERREY" },
+            "44100": { estado: "JALISCO", municipio: "GUADALAJARA" },
+            "45404": { estado: "JALISCO", municipio: "TONALÁ" }
         };
 
         const mesesEs = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
@@ -373,7 +376,7 @@
             }
         }
 
-        async function buscarPorCP(cp) {
+        function buscarPorCPExcel(cp) {
             cp = cp.trim();
             let status = document.getElementById('cpStatus');
 
@@ -381,10 +384,10 @@
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
-                // Si está en nuestra base interna rápida, la usa
-                if (sepomexOficialDB[cp]) {
-                    document.getElementById('f_estado').value = sepomexOficialDB[cp].estado;
-                    document.getElementById('f_municipio').value = sepomexOficialDB[cp].municipio;
+                // Si el C.P. está registrado en la base, autocompleta Estado y Municipio
+                if (cpOficialExcelDB[cp]) {
+                    document.getElementById('f_estado').value = cpOficialExcelDB[cp].estado;
+                    document.getElementById('f_municipio').value = cpOficialExcelDB[cp].municipio;
                 }
             } else {
                 status.innerText = "";
