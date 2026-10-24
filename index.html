@@ -96,12 +96,28 @@
                 <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
                     <i data-lucide="filter" class="w-3.5 h-3.5 text-cyan-400"></i> Filtrar por:
                 </span>
-                <select id="filterEstado" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                
+                <!-- 1. Estado -->
+                <select id="filterEstado" onchange="alCambiarEstado()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
                     <option value="">TODOS LOS ESTADOS</option>
                 </select>
+
+                <!-- 2. Municipio / Alcaldía (Cascada) -->
+                <select id="filterMunicipio" onchange="alCambiarMunicipio()" disabled class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-slate-500 focus:outline-none focus:border-cyan-400 uppercase disabled:opacity-50">
+                    <option value="">TODOS LOS MUNICIPIOS</option>
+                </select>
+
+                <!-- 3. Colonia (Cascada) -->
+                <select id="filterColonia" onchange="filtrarDatos()" disabled class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-slate-500 focus:outline-none focus:border-cyan-400 uppercase disabled:opacity-50">
+                    <option value="">TODAS LAS COLONIAS</option>
+                </select>
+
+                <!-- 4. Responsable -->
                 <select id="filterResponsable" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
                     <option value="">TODOS LOS RESPONSABLES</option>
                 </select>
+
+                <!-- 5. Etapa Legal -->
                 <select id="filterEtapa" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
                     <option value="">TODAS LAS ETAPAS LEGALES</option>
                 </select>
@@ -140,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.7</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.8</span>
             </div>
         </div>
 
@@ -517,6 +533,8 @@
             tbody.innerHTML = '';
 
             let fEstado = document.getElementById('filterEstado').value;
+            let fMunicipio = document.getElementById('filterMunicipio').value;
+            let fColonia = document.getElementById('filterColonia').value;
             let fResp = document.getElementById('filterResponsable').value;
             let fEtapa = document.getElementById('filterEtapa').value;
 
@@ -529,10 +547,12 @@
                     item.id_enlace.toUpperCase().includes(filtroBusqueda.toUpperCase());
 
                 let matchEstado = fEstado === '' || item.estado === fEstado;
+                let matchMunicipio = fMunicipio === '' || item.municipio === fMunicipio;
+                let matchColonia = fColonia === '' || item.colonia === fColonia;
                 let matchResp = fResp === '' || item.responsable === fResp;
                 let matchEtapa = fEtapa === '' || item.etapa_legal === fEtapa;
 
-                return matchBusqueda && matchEstado && matchResp && matchEtapa;
+                return matchBusqueda && matchEstado && matchMunicipio && matchColonia && matchResp && matchEtapa;
             });
 
             if (filtrados.length === 0) {
@@ -595,9 +615,9 @@
         }
 
         function poblarFiltros() {
-            let estados = [...new Set(registros.map(r => r.estado))];
-            let responsables = [...new Set(registros.map(r => r.responsable))];
-            let etapas = [...new Set(registros.map(r => r.etapa_legal))];
+            let estados = [...new Set(registros.map(r => r.estado).filter(Boolean))].sort();
+            let responsables = [...new Set(registros.map(r => r.responsable).filter(Boolean))].sort();
+            let etapas = [...new Set(registros.map(r => r.etapa_legal).filter(Boolean))].sort();
 
             let selEstado = document.getElementById('filterEstado');
             let selResp = document.getElementById('filterResponsable');
@@ -607,9 +627,70 @@
             selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
             selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
 
-            estados.forEach(e => { if(e) selEstado.innerHTML += `<option value="${e}">${e}</option>`; });
-            responsables.forEach(r => { if(r) selResp.innerHTML += `<option value="${r}">${r}</option>`; });
-            etapas.forEach(et => { if(et) selEtapa.innerHTML += `<option value="${et}">${et}</option>`; });
+            estados.forEach(e => { selEstado.innerHTML += `<option value="${e}">${e}</option>`; });
+            responsables.forEach(r => { selResp.innerHTML += `<option value="${r}">${r}</option>`; });
+            etapas.forEach(et => { selEtapa.innerHTML += `<option value="${et}">${et}</option>`; });
+
+            alCambiarEstado();
+        }
+
+        function alCambiarEstado() {
+            let estadoSeleccionado = document.getElementById('filterEstado').value;
+            let selMunicipio = document.getElementById('filterMunicipio');
+            let selColonia = document.getElementById('filterColonia');
+
+            selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
+            selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
+
+            if (estadoSeleccionado === "") {
+                selMunicipio.disabled = true;
+                selMunicipio.classList.add('text-slate-500');
+                selColonia.disabled = true;
+                selColonia.classList.add('text-slate-500');
+            } else {
+                let municipios = [...new Set(registros
+                    .filter(r => r.estado === estadoSeleccionado)
+                    .map(r => r.municipio)
+                    .filter(Boolean))].sort();
+
+                municipios.forEach(m => {
+                    selMunicipio.innerHTML += `<option value="${m}">${m}</option>`;
+                });
+
+                selMunicipio.disabled = false;
+                selMunicipio.classList.remove('text-slate-500');
+                selColonia.disabled = true;
+                selColonia.classList.add('text-slate-500');
+            }
+
+            filtrarDatos();
+        }
+
+        function alCambiarMunicipio() {
+            let estadoSeleccionado = document.getElementById('filterEstado').value;
+            let municipioSeleccionado = document.getElementById('filterMunicipio').value;
+            let selColonia = document.getElementById('filterColonia');
+
+            selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
+
+            if (municipioSeleccionado === "") {
+                selColonia.disabled = true;
+                selColonia.classList.add('text-slate-500');
+            } else {
+                let colonias = [...new Set(registros
+                    .filter(r => r.estado === estadoSeleccionado && r.municipio === municipioSeleccionado)
+                    .map(r => r.colonia)
+                    .filter(Boolean))].sort();
+
+                colonias.forEach(c => {
+                    selColonia.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+
+                selColonia.disabled = false;
+                selColonia.classList.remove('text-slate-500');
+            }
+
+            filtrarDatos();
         }
 
         function filtrarDatos() {
