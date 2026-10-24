@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS (XLSX) Library para leer archivos de Excel directamente -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #07090e; color: #f3f4f6; }
         .glass-panel { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(0, 240, 255, 0.15); }
@@ -125,11 +127,11 @@
             
             <!-- Botones Exportar e Importar a la derecha -->
             <div class="flex items-center space-x-2 ml-auto">
-                <button onclick="exportarExcelXLS()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
-                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xls)
+                <button onclick="exportarExcelXLSX()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
+                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xlsx)
                 </button>
-                <button onclick="importarExcelXLS()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xls / .json)
+                <button onclick="importarExcelXLSX()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xlsx / .xls)
                 </button>
             </div>
         </div>
@@ -158,7 +160,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.23</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.24</span>
             </div>
         </div>
 
@@ -360,7 +362,6 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base de datos oficial integrada con los 31,867 códigos postales de México (Correos de México)
         const cpOficialExcelDB = {
             "72000": {"estado": "PUEBLA", "municipio": "PUEBLA", "colonias": ["PUEBLA CENTRO", "SAN FRANCISCO"]},
             "72010": {"estado": "PUEBLA", "municipio": "PUEBLA", "colonias": ["HUMBOLDT", "EL RIEGO NORTE", "MORELOS", "XALTONAC"]},
@@ -409,9 +410,7 @@
             let selColonia = document.getElementById('f_colonia_select');
             let inputColonia = document.getElementById('f_colonia');
 
-            if (cp.length === 4) {
-                cp = cp + "0";
-            }
+            if (cp.length === 4) { cp = cp + "0"; }
 
             if (cp.length === 5) {
                 status.innerText = "✓ VÁLIDO";
@@ -435,7 +434,6 @@
                     return;
                 }
 
-                // Cálculo automático por prefijo oficial si no está en la lista rápida
                 let prefix = parseInt(cp.substring(0, 2), 10);
                 let estadoGen = "MÉXICO";
                 let munGen = "MUNICIPIO";
@@ -902,113 +900,123 @@
             }
         }
 
-        function exportarExcelXLS() {
+        function exportarExcelXLSX() {
             if (registros.length === 0) {
                 mostrarAlerta("NO HAY REGISTROS PARA EXPORTAR.");
                 return;
             }
-            let htmlTabla = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body><table border="1"><thead><tr style="background-color: #00f0ff; color: #000; font-weight: bold;"><th>ID</th><th>ID ENLACE</th><th>CRÉDITO</th><th>CARTERA</th><th>RESPONSABLE</th><th>PRECIO PRE-AUTH</th><th>PRECIO VENTA</th><th>C.P.</th><th>ESTADO</th><th>MUNICIPIO</th><th>COLONIA</th><th>DIRECCIÓN</th><th>TIPO PROPIEDAD</th><th>SUPERFICIE</th><th>CONSTRUCCIÓN</th><th>ETAPA ACTUAL</th><th>ETAPA LEGAL</th><th>STATUS</th><th>AVANCES</th><th>OBSERVACIONES</th><th>FECHA RECEPCIÓN</th><th>FECHA ACTUALIZACIÓN</th></tr></thead><tbody>`;
-            registros.forEach(r => {
-                htmlTabla += `<tr><td>${r.id || ''}</td><td>${r.id_enlace || ''}</td><td>${r.credito || ''}</td><td>${r.cartera || ''}</td><td>${r.responsable || ''}</td><td>${r.precio_pre || 0}</td><td>${r.precio_venta || 0}</td><td>${r.cp || ''}</td><td>${r.estado || ''}</td><td>${r.municipio || ''}</td><td>${r.colonia || ''}</td><td>${r.direccion || ''}</td><td>${r.tipo_prop || ''}</td><td>${r.superficie || ''}</td><td>${r.construccion || ''}</td><td>${r.etapa_actual || ''}</td><td>${r.etapa_legal || ''}</td><td>${r.status || ''}</td><td>${r.avances || ''}</td><td>${r.observaciones || ''}</td><td>${r.recepcion || ''}</td><td>${r.actualizacion || ''}</td></tr>`;
-            });
-            htmlTabla += `</tbody></table></body></html>`;
+            let datosExportar = registros.map(r => ({
+                "ID": r.id || '',
+                "ID ENLACE": r.id_enlace || '',
+                "CRÉDITO": r.credito || '',
+                "CARTERA": r.cartera || '',
+                "RESPONSABLE": r.responsable || '',
+                "PRECIO PRE-AUTH": r.precio_pre || 0,
+                "PRECIO VENTA": r.precio_venta || 0,
+                "C.P.": r.cp || '',
+                "ESTADO": r.estado || '',
+                "MUNICIPIO": r.municipio || '',
+                "COLONIA": r.colonia || '',
+                "DIRECCIÓN": r.direccion || '',
+                "TIPO PROPIEDAD": r.tipo_prop || '',
+                "SUPERFICIE": r.superficie || '',
+                "CONSTRUCCIÓN": r.construccion || '',
+                "ETAPA ACTUAL": r.etapa_actual || '',
+                "ETAPA LEGAL": r.etapa_legal || '',
+                "STATUS": r.status || '',
+                "AVANCES": r.avances || '',
+                "OBSERVACIONES": r.observaciones || '',
+                "FECHA RECEPCIÓN": r.recepcion || '',
+                "FECHA ACTUALIZACIÓN": r.actualizacion || ''
+            }));
 
-            let blob = new Blob([htmlTabla], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-            let link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = "enlace_business_base_activa.xls";
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+            let worksheet = XLSX.utils.json_to_sheet(datosExportar);
+            let workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Base Activa");
+            XLSX.writeFile(workbook, "enlace_business_base_activa.xlsx");
         }
 
-        function importarExcelXLS() {
+        function importarExcelXLSX() {
             let input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.xls,.xlsx,.html,.htm,.json';
+            input.accept = '.xlsx,.xls,.csv,.json';
             input.onchange = e => {
                 let file = e.target.files[0];
                 let reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = readerEvent => {
-                    try {
-                        let content = readerEvent.target.result;
-                        if (content.includes("<table") || content.includes("<TABLE")) {
-                            let parser = new DOMParser();
-                            let doc = parser.parseFromString(content, 'text/html');
-                            let rows = doc.querySelectorAll('table tr');
-                            if (rows.length <= 1) {
-                                mostrarAlerta("EL ARCHIVO NO CONTIENE DATOS VÁLIDOS.");
+                
+                if (file.name.endsWith('.json')) {
+                    reader.readAsText(file, 'UTF-8');
+                    reader.onload = readerEvent => {
+                        try {
+                            let contenidoJson = JSON.parse(readerEvent.target.result);
+                            if (Array.isArray(contenidoJson)) {
+                                procesarRegistrosNuevos(contenidoJson);
+                            } else {
+                                mostrarAlerta("EL FORMATO DEL JSON NO ES VÁLIDO.");
+                            }
+                        } catch(err) {
+                            mostrarAlerta("ERROR AL LEER EL ARCHIVO JSON.");
+                        }
+                    };
+                } else {
+                    reader.readAsArrayBuffer(file);
+                    reader.onload = readerEvent => {
+                        try {
+                            let data = new Uint8Array(readerEvent.target.result);
+                            let workbook = XLSX.read(data, { type: 'array' });
+                            let firstSheetName = workbook.SheetNames[0];
+                            let worksheet = workbook.Sheets[firstSheetName];
+                            let jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+                            if (jsonRows.length === 0) {
+                                mostrarAlerta("EL ARCHIVO DE EXCEL NO CONTIENE DATOS.");
                                 return;
                             }
-                            let nuevosRegistros = [];
-                            for (let i = 1; i < rows.length; i++) {
-                                let cols = rows[i].querySelectorAll('td');
-                                if (cols.length >= 22) {
-                                    nuevosRegistros.push({
-                                        id: parseInt(cols[0].innerText) || 0,
-                                        id_enlace: aplicarCorreccionOrtografica(cols[1].innerText),
-                                        credito: aplicarCorreccionOrtografica(cols[2].innerText),
-                                        cartera: aplicarCorreccionOrtografica(cols[3].innerText),
-                                        responsable: aplicarCorreccionOrtografica(cols[4].innerText),
-                                        precio_pre: parseFloat(cols[5].innerText) || 0,
-                                        precio_venta: parseFloat(cols[6].innerText) || 0,
-                                        cp: cols[7].innerText.trim(),
-                                        estado: aplicarCorreccionOrtografica(cols[8].innerText),
-                                        municipio: aplicarCorreccionOrtografica(cols[9].innerText),
-                                        colonia: aplicarCorreccionOrtografica(cols[10].innerText),
-                                        direccion: aplicarCorreccionOrtografica(cols[11].innerText),
-                                        tipo_prop: aplicarCorreccionOrtografica(cols[12].innerText),
-                                        superficie: aplicarCorreccionOrtografica(cols[13].innerText),
-                                        construccion: aplicarCorreccionOrtografica(cols[14].innerText),
-                                        etapa_actual: aplicarCorreccionOrtografica(cols[15].innerText),
-                                        etapa_legal: aplicarCorreccionOrtografica(cols[16].innerText),
-                                        status: aplicarCorreccionOrtografica(cols[17].innerText),
-                                        avances: aplicarCorreccionOrtografica(cols[18].innerText),
-                                        observaciones: aplicarCorreccionOrtografica(cols[19].innerText),
-                                        recepcion: aplicarCorreccionOrtografica(cols[20].innerText),
-                                        actualizacion: aplicarCorreccionOrtografica(cols[21].innerText)
-                                    });
-                                }
-                            }
+
+                            let nuevosRegistros = jsonRows.map(row => ({
+                                id: parseInt(row["ID"] || row["id"] || row[0]) || 0,
+                                id_enlace: aplicarCorreccionOrtografica(row["ID ENLACE"] || row["id_enlace"] || row[1] || ''),
+                                credito: aplicarCorreccionOrtografica(row["CRÉDITO"] || row["CREDITO"] || row["credito"] || row[2] || ''),
+                                cartera: aplicarCorreccionOrtografica(row["CARTERA"] || row["cartera"] || row[3] || ''),
+                                responsable: aplicarCorreccionOrtografica(row["RESPONSABLE"] || row["responsable"] || row[4] || ''),
+                                precio_pre: parseFloat(row["PRECIO PRE-AUTH"] || row["precio_pre"] || row[5]) || 0,
+                                precio_venta: parseFloat(row["PRECIO VENTA"] || row["precio_venta"] || row[6]) || 0,
+                                cp: String(row["C.P."] || row["CP"] || row["cp"] || row[7] || '').trim(),
+                                estado: aplicarCorreccionOrtografica(row["ESTADO"] || row["estado"] || row[8] || ''),
+                                municipio: aplicarCorreccionOrtografica(row["MUNICIPIO"] || row["municipio"] || row[9] || ''),
+                                colonia: aplicarCorreccionOrtografica(row["COLONIA"] || row["colonia"] || row[10] || ''),
+                                direccion: aplicarCorreccionOrtografica(row["DIRECCIÓN"] || row["DIRECCION"] || row["direccion"] || row[11] || ''),
+                                tipo_prop: aplicarCorreccionOrtografica(row["TIPO PROPIEDAD"] || row["tipo_prop"] || row[12] || ''),
+                                superficie: aplicarCorreccionOrtografica(row["SUPERFICIE"] || row["superficie"] || row[13] || ''),
+                                construccion: aplicarCorreccionOrtografica(row["CONSTRUCCIÓN"] || row["CONSTRUCCION"] || row["construccion"] || row[14] || ''),
+                                etapa_actual: aplicarCorreccionOrtografica(row["ETAPA ACTUAL"] || row["etapa_actual"] || row[15] || ''),
+                                etapa_legal: aplicarCorreccionOrtografica(row["ETAPA LEGAL"] || row["etapa_legal"] || row[16] || ''),
+                                status: aplicarCorreccionOrtografica(row["STATUS"] || row["status"] || row[17] || ''),
+                                avances: aplicarCorreccionOrtografica(row["AVANCES"] || row["avances"] || row[18] || ''),
+                                observaciones: aplicarCorreccionOrtografica(row["OBSERVACIONES"] || row["observaciones"] || row[19] || ''),
+                                recepcion: aplicarCorreccionOrtografica(row["FECHA RECEPCIÓN"] || row["FECHA RECEPCION"] || row["recepcion"] || row[20] || ''),
+                                actualizacion: aplicarCorreccionOrtografica(row["FECHA ACTUALIZACIÓN"] || row["FECHA ACTUALIZACION"] || row["actualizacion"] || row[21] || '')
+                            })).filter(r => r.id > 0);
+
                             if (nuevosRegistros.length > 0) {
-                                registros = nuevosRegistros;
-                                guardarEnLocalStorage();
-                                initApp();
-                                mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE!`);
+                                procesarRegistrosNuevos(nuevosRegistros);
                             } else {
-                                mostrarAlerta("NO SE PUDIERON LEER LAS COLUMNAS DEL ARCHIVO.");
+                                mostrarAlerta("NO SE ENCONTRARON REGISTROS VÁLIDOS (VERIFIQUE QUE LA COLUMNA ID TENGA NÚMEROS).");
                             }
-                        } else {
-                            let contenidoJson = JSON.parse(content);
-                            if (Array.isArray(contenidoJson)) {
-                                registros = contenidoJson.map(r => ({
-                                    ...r,
-                                    cartera: aplicarCorreccionOrtografica(r.cartera),
-                                    responsable: aplicarCorreccionOrtografica(r.responsable),
-                                    estado: aplicarCorreccionOrtografica(r.estado),
-                                    municipio: aplicarCorreccionOrtografica(r.municipio),
-                                    colonia: aplicarCorreccionOrtografica(r.colonia),
-                                    direccion: aplicarCorreccionOrtografica(r.direccion),
-                                    etapa_actual: aplicarCorreccionOrtografica(r.etapa_actual),
-                                    etapa_legal: aplicarCorreccionOrtografica(r.etapa_legal),
-                                    status: aplicarCorreccionOrtografica(r.status),
-                                    avances: aplicarCorreccionOrtografica(r.avances),
-                                    observaciones: aplicarCorreccionOrtografica(r.observaciones)
-                                }));
-                                guardarEnLocalStorage();
-                                initApp();
-                                mostrarAlerta("¡BASE DE DATOS IMPORTADA Y CORREGIDA EXITOSAMENTE!");
-                            } else {
-                                mostrarAlerta("EL FORMATO DEL ARCHIVO NO ES VÁLIDO.");
-                            }
+                        } catch(err) {
+                            mostrarAlerta("ERROR AL LEER EL ARCHIVO EXCEL. VERIFIQUE EL FORMATO.");
                         }
-                    } catch(err) {
-                        mostrarAlerta("ERROR AL LEER EL ARCHIVO. VERIFIQUE QUE SEA UN RESPALDO VÁLIDO.");
-                    }
+                    };
                 }
-            }
+            };
             input.click();
+        }
+
+        function procesarRegistrosNuevos(nuevosRegistros) {
+            registros = nuevosRegistros;
+            guardarEnLocalStorage();
+            initApp();
+            mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE!`);
         }
 
         window.onload = initApp;
