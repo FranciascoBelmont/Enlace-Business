@@ -64,7 +64,7 @@
                 <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Registros</p>
                 <div class="flex items-baseline justify-between mt-1">
                     <h3 id="kpiTotal" class="text-2xl font-bold text-white">0</h3>
-                    <span class="text-xs text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/50">Base Activa</span>
+                    <span id="kpiLabelEstado" class="text-xs text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/50">Base Activa</span>
                 </div>
             </div>
             <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.8</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.9</span>
             </div>
         </div>
 
@@ -495,7 +495,6 @@
             lucide.createIcons();
             poblarFiltros();
             renderizarTabla();
-            calcularKPIs();
 
             document.getElementById('globalSearch').addEventListener('input', (e) => {
                 e.target.value = e.target.value.toUpperCase();
@@ -516,16 +515,6 @@
 
         function formatMoney(amount) {
             return '$' + Number(amount).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function calcularUtilidades() {
-            let pre = parseFloat(document.getElementById('f_precio_pre').value) || 0;
-            let venta = parseFloat(document.getElementById('f_precio_venta').value) || 0;
-            let utilPesos = venta - pre;
-            let utilPorc = pre > 0 ? (utilPesos / pre) * 100 : 0;
-
-            document.getElementById('f_utilidad_pesos').value = formatMoney(utilPesos);
-            document.getElementById('f_utilidad_porc').value = utilPorc.toFixed(2) + '%';
         }
 
         function renderizarTabla(filtroBusqueda = '') {
@@ -554,6 +543,9 @@
 
                 return matchBusqueda && matchEstado && matchMunicipio && matchColonia && matchResp && matchEtapa;
             });
+
+            // Actualizar KPIs dinámicamente con base en los filtrados
+            actualizarKPIsFiltrados(filtrados);
 
             if (filtrados.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-500">NO SE ENCONTRARON REGISTROS. HAGA CLIC EN "NUEVO REGISTRO" PARA AGREGAR UNO.</td></tr>`;
@@ -697,15 +689,23 @@
             renderizarTabla(document.getElementById('globalSearch').value);
         }
 
-        function calcularKPIs() {
-            let totalReg = registros.length;
-            let sumaUtilidad = registros.reduce((acc, r) => acc + (r.precio_venta - r.precio_pre), 0);
-            let sumaVenta = registros.reduce((acc, r) => acc + r.precio_venta, 0);
+        function actualizarKPIsFiltrados(filtrados) {
+            let totalReg = filtrados.length;
+            let sumaUtilidad = filtrados.reduce((acc, r) => acc + (r.precio_venta - r.precio_pre), 0);
+            let sumaVenta = filtrados.reduce((acc, r) => acc + r.precio_venta, 0);
             let promedioVenta = totalReg > 0 ? sumaVenta / totalReg : 0;
 
             document.getElementById('kpiTotal').innerText = totalReg;
             document.getElementById('kpiUtilidad').innerText = formatMoney(sumaUtilidad);
             document.getElementById('kpiPromedioVenta').innerText = formatMoney(promedioVenta);
+
+            let labelEstado = document.getElementById('kpiLabelEstado');
+            let fEstado = document.getElementById('filterEstado').value;
+            if (fEstado) {
+                labelEstado.innerText = "Filtrado";
+            } else {
+                labelEstado.innerText = "Base Activa";
+            }
         }
 
         function abrirModalNuevo() {
@@ -718,7 +718,7 @@
             document.getElementById('cpStatus').innerText = "";
             document.getElementById('btnEliminarModal').classList.add('hidden');
             document.getElementById('btnEliminarModal').classList.remove('flex');
-            calcularUtilidades();
+            calcularUtilidadesModal();
             document.getElementById('modalRegistro').classList.remove('hidden');
         }
 
@@ -758,7 +758,7 @@
             document.getElementById('f_recepcion').value = item.recepcion;
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
 
-            calcularUtilidades();
+            calcularUtilidadesModal();
 
             document.getElementById('btnEliminarModal').classList.remove('hidden');
             document.getElementById('btnEliminarModal').classList.add('flex');
@@ -767,6 +767,21 @@
 
         function cerrarModal() {
             document.getElementById('modalRegistro').classList.add('hidden');
+        }
+
+        function calcularUtilidades() {
+            // Función auxiliar interna para cálculo del modal
+            calcularUtilidadesModal();
+        }
+
+        function calcularUtilidadesModal() {
+            let pre = parseFloat(document.getElementById('f_precio_pre').value) || 0;
+            let venta = parseFloat(document.getElementById('f_precio_venta').value) || 0;
+            let utilPesos = venta - pre;
+            let utilPorc = pre > 0 ? (utilPesos / pre) * 100 : 0;
+
+            document.getElementById('f_utilidad_pesos').value = formatMoney(utilPesos);
+            document.getElementById('f_utilidad_porc').value = utilPorc.toFixed(2) + '%';
         }
 
         function guardarRegistro(event) {
@@ -828,7 +843,6 @@
             guardarEnLocalStorage();
             poblarFiltros();
             renderizarTabla();
-            calcularKPIs();
             cerrarModal();
         }
 
@@ -838,7 +852,6 @@
                 guardarEnLocalStorage();
                 poblarFiltros();
                 renderizarTabla();
-                calcularKPIs();
             }
         }
 
@@ -875,10 +888,9 @@
             input.type = 'file';
             input.accept = '.json';
             input.onchange = e => {
-                let file = e.target.files[0];
-                let reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = readerEvent => {
+                let functionReader = new FileReader();
+                functionReader.readAsText(e.target.files[0], 'UTF-8');
+                functionReader.onload = readerEvent => {
                     try {
                         let contenido = JSON.parse(readerEvent.target.result);
                         if (Array.isArray(contenido)) {
