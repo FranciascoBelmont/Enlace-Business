@@ -84,8 +84,8 @@
             <div class="glass-panel p-4 rounded-xl border-l-4 border-l-blue-400">
                 <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cartera Principal</p>
                 <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiCartera" class="text-lg font-bold text-blue-300 truncate">ADMON FOME SHF117</h3>
-                    <span class="text-xs text-blue-400 bg-blue-950/50 px-2 py-0.5 rounded border border-blue-800/50">Principal</span>
+                    <h3 id="kpiCartera" class="text-lg font-bold text-blue-300 truncate max-w-[200px]">N/A</h3>
+                    <span class="text-xs text-blue-400 bg-blue-950/50 px-2 py-0.5 rounded border border-blue-800/50">Mayoría</span>
                 </div>
             </div>
         </div>
@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.11</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.12</span>
             </div>
         </div>
 
@@ -341,7 +341,6 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base de datos oficial integrada con los C.P. de tu archivo de Excel
         const cpOficialExcelDB = {
             "20000": { estado: "AGUASCALIENTES", municipio: "AGUASCALIENTES" },
             "22253": { estado: "BAJA CALIFORNIA", municipio: "TIJUANA" },
@@ -384,7 +383,6 @@
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
-                // Si el C.P. está registrado en la base, autocompleta Estado y Municipio
                 if (cpOficialExcelDB[cp]) {
                     document.getElementById('f_estado').value = cpOficialExcelDB[cp].estado;
                     document.getElementById('f_municipio').value = cpOficialExcelDB[cp].municipio;
@@ -672,6 +670,25 @@
             document.getElementById('kpiUtilidad').innerText = formatMoney(sumaUtilidad);
             document.getElementById('kpiPromedioVenta').innerText = formatMoney(promedioVenta);
 
+            // Calcular dinámicamente la cartera con más registros en la vista actual
+            let carteraPrincipal = "N/A";
+            if (totalReg > 0) {
+                let conteoCarteras = {};
+                filtrados.forEach(r => {
+                    let cart = (r.cartera || "SIN CARTERA").trim();
+                    conteoCarteras[cart] = (conteoCarteras[cart] || 0) + 1;
+                });
+                
+                let maxCount = -1;
+                for (let cart in conteoCarteras) {
+                    if (conteoCarteras[cart] > maxCount) {
+                        maxCount = conteoCarteras[cart];
+                        carteraPrincipal = cart;
+                    }
+                }
+            }
+            document.getElementById('kpiCartera').innerText = carteraPrincipal;
+
             let labelEstado = document.getElementById('kpiLabelEstado');
             let fEstado = document.getElementById('filterEstado').value;
             if (fEstado) {
@@ -821,8 +838,9 @@
 
         function eliminarRegistroActual() {
             let index = parseInt(document.getElementById('editIndex').value);
-            if (index !== -1) {
-                eliminarRegistro(index);
+            let realIndex = index;
+            if (realIndex !== -1) {
+                eliminarRegistro(realIndex);
                 cerrarModal();
             }
         }
