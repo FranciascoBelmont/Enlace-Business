@@ -158,7 +158,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.20</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.21</span>
             </div>
         </div>
 
@@ -358,6 +358,7 @@
     <!-- JavaScript Application Logic -->
     <script>
         const cpOficialExcelDB = {
+            "72000": ["PUEBLA", "PUEBLA"], "72010": ["PUEBLA", "PUEBLA"],
             "20000": ["AGUASCALIENTES", "AGUASCALIENTES"], "20010": ["AGUASCALIENTES", "AGUASCALIENTES"],
             "09230": ["CIUDAD DE MÉXICO", "IZTAPALAPA"], "22253": ["BAJA CALIFORNIA", "TIJUANA"],
             "54080": ["ESTADO DE MÉXICO", "TLALNEPANTLA DE BAZ"], "54700": ["ESTADO DE MÉXICO", "CUAUTITLÁN"],
@@ -400,6 +401,11 @@
             cp = cp.trim();
             let status = document.getElementById('cpStatus');
 
+            // Autocorrección si ingresa 4 dígitos (ej: 7200 -> 72000)
+            if (cp.length === 4) {
+                cp = cp + "0";
+            }
+
             if (cp.length === 5) {
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
@@ -414,7 +420,8 @@
                 let estadoGen = "MÉXICO";
                 let munGen = "MUNICIPIO";
 
-                if (prefix >= 1 && prefix <= 16) { estadoGen = "CIUDAD DE MÉXICO"; munGen = cp === "09230" ? "IZTAPALAPA" : "ALCALDÍA CDMX"; }
+                if (prefix === 72) { estadoGen = "PUEBLA"; munGen = "PUEBLA"; }
+                else if (prefix >= 1 && prefix <= 16) { estadoGen = "CIUDAD DE MÉXICO"; munGen = cp === "09230" ? "IZTAPALAPA" : "ALCALDÍA CDMX"; }
                 else if (prefix >= 50 && prefix <= 57) { estadoGen = "ESTADO DE MÉXICO"; munGen = "TLALNEPANTLA DE BAZ"; }
                 else if (prefix >= 22 && prefix <= 23) { estadoGen = "BAJA CALIFORNIA"; munGen = "TIJUANA"; }
                 else if (prefix >= 44 && prefix <= 49) { estadoGen = "JALISCO"; munGen = "GUADALAJARA"; }
@@ -428,7 +435,6 @@
             }
         }
 
-        // Corrector ortográfico y de acentos automático
         function aplicarCorreccionOrtografica(texto) {
             if (!texto) return "";
             let val = texto.toString().toUpperCase().trim();
@@ -442,11 +448,11 @@
                 "DIRECCION": "DIRECCIÓN", "TELEFONO": "TELÉFONO", "NUMERO": "NÚMERO", "ESTANDAR": "ESTÁNDAR",
                 "JURIDICO": "JURÍDICO", "CREDITO": "CRÉDITO", "TRAMITE": "TRÁMITE", "PENSION": "PENSIÓN",
                 "ADMINISTRACION": "ADMINISTRACIÓN", "VALUACION": "VALUACIÓN", "AVALUO": "AVALÚO",
-                "PROPIETARIO": "PROPIETARIO", "LITIGIOSO": "LITIGIOSO", "LITIGABLE": "LITIGABLE"
+                "PROPIETARIO": "PROPIETARIO", "LITIGIOSO": "LITIGIOSO", "LITIGABLE": "LITIGABLE", "PUEBLA": "PUEBLA"
             };
 
             let palabras = val.split(' ').map(p => {
-                let limpia = p.replace(/[\,\.\;\:]/g, '');
+                let limpia = p.replace(/[\,\,\;\:]/g, '');
                 return diccionarioAcentos[limpia] || limpia;
             });
 
@@ -482,14 +488,12 @@
             return ahora.toLocaleDateString('es-MX', opciones).toUpperCase();
         }
 
-        // RECUPERACIÓN ROBUSTA DE DATOS DE CUALQUIER VERSIÓN ANTERIOR
         let registros = [];
         try {
             let datosGuardados = localStorage.getItem('enlace_business_db');
             if (datosGuardados) {
                 registros = JSON.parse(datosGuardados);
             } else {
-                // Rescatar por si estaban guardados con otra llave anterior
                 let keysToTry = Object.keys(localStorage);
                 for (let k of keysToTry) {
                     if (k.includes('enlace') || k.includes('db') || k.includes('business')) {
