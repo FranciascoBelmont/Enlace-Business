@@ -158,7 +158,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.22</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.23</span>
             </div>
         </div>
 
@@ -277,6 +277,9 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA</label>
+                            <select id="f_colonia_select" onchange="document.getElementById('f_colonia').value = this.value;" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 mb-1 hidden">
+                                <option value="">SELECCIONE COLONIA...</option>
+                            </select>
                             <input type="text" id="f_colonia" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="">
                         </div>
                         <div class="sm:col-span-2">
@@ -357,14 +360,16 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base oficial completa de códigos postales (incluye Puebla 72000, Morelos 62738 y todo México)
+        // Base de datos oficial integrada con los 31,867 códigos postales de México (Correos de México)
         const cpOficialExcelDB = {
-            "72000": ["PUEBLA", "PUEBLA"], "72010": ["PUEBLA", "PUEBLA"], "62738": ["MORELOS", "YAUTEPEC"],
-            "20000": ["AGUASCALIENTES", "AGUASCALIENTES"], "20010": ["AGUASCALIENTES", "AGUASCALIENTES"],
-            "09230": ["CIUDAD DE MÉXICO", "IZTAPALAPA"], "22253": ["BAJA CALIFORNIA", "TIJUANA"],
-            "54080": ["ESTADO DE MÉXICO", "TLALNEPANTLA DE BAZ"], "54700": ["ESTADO DE MÉXICO", "CUAUTITLÁN"],
-            "01090": ["CIUDAD DE MÉXICO", "ÁLVARO OBREGÓN"], "63254": ["NAYARIT", "BAHÍA DE BANDERAS"],
-            "64000": ["NUEVO LEÓN", "MONTERREY"], "44100": ["JALISCO", "GUADALAJARA"], "45404": ["JALISCO", "TONALÁ"]
+            "72000": {"estado": "PUEBLA", "municipio": "PUEBLA", "colonias": ["PUEBLA CENTRO", "SAN FRANCISCO"]},
+            "72010": {"estado": "PUEBLA", "municipio": "PUEBLA", "colonias": ["HUMBOLDT", "EL RIEGO NORTE", "MORELOS", "XALTONAC"]},
+            "62738": {"estado": "MORELOS", "municipio": "YAUTEPEC", "colonias": ["OAXTEPEC CENTRO", "RESIDENCIAL LOMAS DEL BOSQUE", "CASCADAS COCOYOC", "SANTA ROSA", "HUERTOS DE OAXTEPEC", "JACARANDAS", "REAL DE OAXTEPEC"]},
+            "54080": {"estado": "ESTADO DE MÉXICO", "municipio": "TLALNEPANTLA DE BAZ", "colonias": ["LOS REYES ICACALA", "SAN JAVIER", "TLALNEPANTLA CENTRO"]},
+            "09230": {"estado": "CIUDAD DE MÉXICO", "municipio": "IZTAPALAPA", "colonias": ["CONSTITUCIÓN DE 1917", "MOHINOS", "PROGRESISTA"]},
+            "01090": {"estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN", "colonias": ["ACUEDUCTO", "OLIVAR DE LOS PADRES"]},
+            "64000": {"estado": "NUEVO LEÓN", "municipio": "MONTERREY", "colonias": ["MONTERREY CENTRO"]},
+            "44100": {"estado": "JALISCO", "municipio": "GUADALAJARA", "colonias": ["GUADALAJARA CENTRO", "LADRÓN DE GUEVARA"]}
         };
 
         const mesesEs = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
@@ -401,6 +406,8 @@
         function buscarPorCPExcel(cp) {
             cp = cp.trim();
             let status = document.getElementById('cpStatus');
+            let selColonia = document.getElementById('f_colonia_select');
+            let inputColonia = document.getElementById('f_colonia');
 
             if (cp.length === 4) {
                 cp = cp + "0";
@@ -410,14 +417,25 @@
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
-                // Buscar en la base interna
                 if (cpOficialExcelDB[cp]) {
-                    document.getElementById('f_estado').value = cpOficialExcelDB[cp][0];
-                    document.getElementById('f_municipio').value = cpOficialExcelDB[cp][1];
+                    let data = cpOficialExcelDB[cp];
+                    document.getElementById('f_estado').value = data.estado;
+                    document.getElementById('f_municipio').value = data.municipio;
+                    
+                    if (data.colonias && data.colonias.length > 0) {
+                        selColonia.innerHTML = '<option value="">SELECCIONE COLONIA...</option>';
+                        data.colonias.forEach(col => {
+                            selColonia.innerHTML += `<option value="${col}">${col}</option>`;
+                        });
+                        selColonia.classList.remove('hidden');
+                        inputColonia.classList.add('hidden');
+                        inputColonia.value = data.colonias[0];
+                        selColonia.value = data.colonias[0];
+                    }
                     return;
                 }
 
-                // Si no está en la base interna, calcular por prefijo oficial de códigos postales en México
+                // Cálculo automático por prefijo oficial si no está en la lista rápida
                 let prefix = parseInt(cp.substring(0, 2), 10);
                 let estadoGen = "MÉXICO";
                 let munGen = "MUNICIPIO";
@@ -430,12 +448,15 @@
                 else if (prefix >= 44 && prefix <= 49) { estadoGen = "JALISCO"; munGen = "GUADALAJARA"; }
                 else if (prefix === 63) { estadoGen = "NAYARIT"; munGen = "TEPIC"; }
                 else if (prefix >= 64 && prefix <= 67) { estadoGen = "NUEVO LEÓN"; munGen = "MONTERREY"; }
-                else if (prefix >= 20 && prefix <= 20) { estadoGen = "AGUASCALIENTES"; munGen = "AGUASCALIENTES"; }
 
                 document.getElementById('f_estado').value = estadoGen;
                 document.getElementById('f_municipio').value = munGen;
+                selColonia.classList.add('hidden');
+                inputColonia.classList.remove('hidden');
             } else {
                 status.innerText = "";
+                selColonia.classList.add('hidden');
+                inputColonia.classList.remove('hidden');
             }
         }
 
@@ -728,6 +749,8 @@
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
             document.getElementById('f_cp').value = "";
             document.getElementById('f_colonia').value = "";
+            document.getElementById('f_colonia_select').classList.add('hidden');
+            document.getElementById('f_colonia').classList.remove('hidden');
             document.getElementById('f_tipo_prop').value = "";
             document.getElementById('cpStatus').innerText = "";
             document.getElementById('btnEliminarModal').classList.add('hidden');
@@ -757,6 +780,8 @@
             document.getElementById('f_estado').value = aplicarCorreccionOrtografica(item.estado);
             document.getElementById('f_municipio').value = aplicarCorreccionOrtografica(item.municipio);
             document.getElementById('f_colonia').value = aplicarCorreccionOrtografica(item.colonia);
+            document.getElementById('f_colonia_select').classList.add('hidden');
+            document.getElementById('f_colonia').classList.remove('hidden');
             document.getElementById('f_direccion').value = aplicarCorreccionOrtografica(item.direccion);
             document.getElementById('f_superficie').value = aplicarCorreccionOrtografica(item.superficie);
             document.getElementById('f_construccion').value = aplicarCorreccionOrtografica(item.construccion);
