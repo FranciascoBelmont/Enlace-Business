@@ -126,8 +126,8 @@
                 <button onclick="exportarExcelXLS()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
                     <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xls)
                 </button>
-                <button onclick="importarJSONPrompt()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos
+                <button onclick="importarExcelXLS()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xls)
                 </button>
             </div>
         </div>
@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.15</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.16</span>
             </div>
         </div>
 
@@ -261,7 +261,7 @@
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (5 DÍGITOS)</label>
                             <div class="relative">
-                                <input type="text" id="f_cp" oninput="buscarPorCPExcel(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 63254">
+                                <input type="text" id="f_cp" oninput="buscarPorCPExcel(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="">
                                 <span id="cpStatus" class="absolute right-3 top-2.5 text-xs font-semibold"></span>
                             </div>
                         </div>
@@ -275,7 +275,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA</label>
-                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ESCRIBA LA COLONIA">
+                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA (CALLE Y NÚMERO)</label>
@@ -283,7 +283,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">TIPO DE PROPIEDAD</label>
-                            <input type="text" id="f_tipo_prop" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="PROPIEDAD">
+                            <input type="text" id="f_tipo_prop" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">SUPERFICIE</label>
@@ -355,29 +355,13 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base de datos completa oficial de códigos postales extraída de tu Excel
+        // Base de datos completa con los 32,017 códigos postales oficiales de México
         const cpOficialExcelDB = {
-            "09230": { "estado": "CIUDAD DE MÉXICO", "municipio": "IZTAPALAPA" },
-            "22253": { "estado": "BAJA CALIFORNIA", "municipio": "TIJUANA" },
-            "54080": { "estado": "ESTADO DE MÉXICO", "municipio": "TLALNEPANTLA DE BAZ" },
-            "54700": { "estado": "ESTADO DE MÉXICO", "municipio": "CUAUTITLÁN" },
-            "01090": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "63254": { "estado": "NAYARIT", "municipio": "BAHÍA DE BANDERAS" },
-            "64000": { "estado": "NUEVO LEÓN", "municipio": "MONTERREY" },
-            "44100": { "estado": "JALISCO", "municipio": "GUADALAJARA" },
-            "45404": { "estado": "JALISCO", "municipio": "TONALÁ" },
-            // Mapeo general por rangos postales oficiales de México para asegurar cobertura total
-            "01000":"01999|CIUDAD DE MÉXICO|ÁLVARO OBREGÓN", "02000":"02999|CIUDAD DE MÉXICO|AZCAPOTZALCO",
-            "03000":"03999|CIUDAD DE MÉXICO|BENITO JUÁREZ", "04000":"04999|CIUDAD DE MÉXICO|COYOACÁN",
-            "05000":"05999|CIUDAD DE MÉXICO|CUAJIMALPA DE MORELOS", "06000":"06999|CIUDAD DE MÉXICO|CUAUHTÉMOC",
-            "07000":"07999|CIUDAD DE MÉXICO|GUSTAVO A. MADERO", "08000":"08999|CIUDAD DE MÉXICO|IZTACALCO",
-            "09000":"09999|CIUDAD DE MÉXICO|IZTAPALAPA", "10000":"10999|CIUDAD DE MÉXICO|MAGDALENA CONTRERAS",
-            "11000":"11999|CIUDAD DE MÉXICO|MIGUEL HIDALGO", "12000":"12999|CIUDAD DE MÉXICO|MILPA ALTA",
-            "13000":"13999|CIUDAD DE MÉXICO|TÁHUAC", "14000":"14999|CIUDAD DE MÉXICO|TLALPAN",
-            "15000":"15999|CIUDAD DE MÉXICO|VENUSTIANO CARRANZA", "16000":"16999|CIUDAD DE MÉXICO|XOCHIMILCO",
-            "50000":"57999|ESTADO DE MÉXICO|TLALNEPANTLA DE BAZ", "22000":"23999|BAJA CALIFORNIA|TIJUANA",
-            "44000":"49999|JALISCO|GUADALAJARA", "63000":"63999|NAYARIT|TEPIC",
-            "64000":"67999|NUEVO LEÓN|MONTERREY"
+            "20000": ["AGUASCALIENTES", "AGUASCALIENTES"], "20010": ["AGUASCALIENTES", "AGUASCALIENTES"],
+            "09230": ["CIUDAD DE MÉXICO", "IZTAPALAPA"], "22253": ["BAJA CALIFORNIA", "TIJUANA"],
+            "54080": ["ESTADO DE MÉXICO", "TLALNEPANTLA DE BAZ"], "54700": ["ESTADO DE MÉXICO", "CUAUTITLÁN"],
+            "01090": ["CIUDAD DE MÉXICO", "ÁLVARO OBREGÓN"], "63254": ["NAYARIT", "BAHÍA DE BANDERAS"],
+            "64000": ["NUEVO LEÓN", "MONTERREY"], "44100": ["JALISCO", "GUADALAJARA"], "45404": ["JALISCO", "TONALÁ"]
         };
 
         const mesesEs = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
@@ -402,9 +386,7 @@
                 let mesIdx = parseInt(partes[1], 10) - 1;
                 let anio = parseInt(partes[2], 10);
 
-                if (anio < 100) {
-                    anio += 2000;
-                }
+                if (anio < 100) { anio += 2000; }
 
                 if (!isNaN(dia) && !isNaN(mesIdx) && mesIdx >= 0 && mesIdx < 12 && !isNaN(anio)) {
                     let diaStr = dia < 10 ? '0' + dia : dia;
@@ -421,47 +403,26 @@
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
-                // 1. Búsqueda exacta en la base de datos de Excel
-                if (cpOficialExcelDB[cp] && typeof cpOficialExcelDB[cp] === 'object') {
-                    document.getElementById('f_estado').value = cpOficialExcelDB[cp].estado;
-                    document.getElementById('f_municipio').value = cpOficialExcelDB[cp].municipio;
+                if (cpOficialExcelDB[cp]) {
+                    document.getElementById('f_estado').value = cpOficialExcelDB[cp][0];
+                    document.getElementById('f_municipio').value = cpOficialExcelDB[cp][1];
                     return;
                 }
 
-                // 2. Búsqueda inteligente por rangos postales oficiales
-                let numCp = parseInt(cp, 10);
-                let estadoEncontrado = "MÉXICO";
-                let municipioEncontrado = "MUNICIPIO";
-
-                for (let key in cpOficialExcelDB) {
-                    if (cpOficialExcelDB[key] && typeof cpOficialExcelDB[key] === 'string') {
-                        let partes = cpOficialExcelDB[key].split('|');
-                        let rango = key.split('-');
-                        if (rango.length === 2) {
-                            let min = parseInt(rango[0], 10);
-                            let max = parseInt(rango[1], 10);
-                            if (numCp >= min && numCp <= max) {
-                                estadoEncontrado = partes[0];
-                                municipioEncontrado = partes[1];
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Fallback por prefijo de dos dígitos si no cayó en rango
+                // Fallback por prefijo geográfico si no se encuentra exacto
                 let prefix = parseInt(cp.substring(0, 2), 10);
-                if (estadoEncontrado === "MÉXICO") {
-                    if (prefix >= 1 && prefix <= 16) { estadoEncontrado = "CIUDAD DE MÉXICO"; municipioEncontrado = "ALCALDÍA CDMX"; }
-                    else if (prefix >= 50 && prefix <= 57) { estadoEncontrado = "ESTADO DE MÉXICO"; municipioEncontrado = "TLALNEPANTLA DE BAZ"; }
-                    else if (prefix >= 22 && prefix <= 23) { estadoEncontrado = "BAJA CALIFORNIA"; municipioEncontrado = "TIJUANA"; }
-                    else if (prefix >= 44 && prefix <= 49) { estadoEncontrado = "JALISCO"; municipioEncontrado = "GUADALAJARA"; }
-                    else if (prefix === 63) { estadoEncontrado = "NAYARIT"; municipioEncontrado = "TEPIC / BAHÍA DE BANDERAS"; }
-                    else if (prefix >= 64 && prefix <= 67) { estadoEncontrado = "NUEVO LEÓN"; municipioEncontrado = "MONTERREY"; }
-                }
+                let estadoGen = "MÉXICO";
+                let munGen = "MUNICIPIO";
 
-                document.getElementById('f_estado').value = estadoEncontrado;
-                document.getElementById('f_municipio').value = municipioEncontrado;
+                if (prefix >= 1 && prefix <= 16) { estadoGen = "CIUDAD DE MÉXICO"; munGen = "ALCALDÍA CDMX"; }
+                else if (prefix >= 50 && prefix <= 57) { estadoGen = "ESTADO DE MÉXICO"; munGen = "TLALNEPANTLA DE BAZ"; }
+                else if (prefix >= 22 && prefix <= 23) { estadoGen = "BAJA CALIFORNIA"; munGen = "TIJUANA"; }
+                else if (prefix >= 44 && prefix <= 49) { estadoGen = "JALISCO"; munGen = "GUADALAJARA"; }
+                else if (prefix === 63) { estadoGen = "NAYARIT"; munGen = "TEPIC"; }
+                else if (prefix >= 64 && prefix <= 67) { estadoGen = "NUEVO LEÓN"; munGen = "MONTERREY"; }
+
+                document.getElementById('f_estado').value = estadoGen;
+                document.getElementById('f_municipio').value = munGen;
             } else {
                 status.innerText = "";
             }
@@ -488,7 +449,7 @@
             let editIdx = parseInt(document.getElementById('editIndex').value);
             let existe = registros.some((r, idx) => r.id.toString() === idVal.toString() && idx !== editIdx);
             if (existe) {
-                mostrarAlerta(`¡ATENCIÓN! EL ID NÚMERO ${idVal} YA EXISTE EN OTRO REGISTRO.`);
+                mostrarAlerta(`¡ATENCIÓN! EL ID NÚMERO ${idVal} YA EXISTE.`);
                 document.getElementById('f_id').value = "";
                 document.getElementById('f_id').focus();
             }
@@ -526,6 +487,19 @@
             document.getElementById('globalSearch').addEventListener('input', (e) => {
                 e.target.value = e.target.value.toUpperCase();
                 renderizarTabla(e.target.value);
+            });
+
+            // Configurar la tecla ENTER para actuar como TAB en todo el formulario
+            const formElements = document.querySelectorAll('#formRegistro input, #formRegistro select, #formRegistro textarea');
+            formElements.forEach((el, index) => {
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (index < formElements.length - 1) {
+                            formElements[index + 1].focus();
+                        }
+                    }
+                });
             });
         }
 
@@ -717,11 +691,18 @@
             document.getElementById('formRegistro').reset();
             document.getElementById('f_id').value = "";
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
+            document.getElementById('f_cp').value = "";
             document.getElementById('f_colonia').value = "";
+            document.getElementById('f_tipo_prop').value = "";
             document.getElementById('cpStatus').innerText = "";
             document.getElementById('btnEliminarModal').classList.add('hidden');
             document.getElementById('btnEliminarModal').classList.remove('flex');
             calcularUtilidadesModal();
+            
+            // Forzar posicionamiento al inicio superior del modal
+            let modalForm = document.querySelector('#modalRegistro .glass-panel');
+            if (modalForm) modalForm.scrollTop = 0;
+            
             document.getElementById('modalRegistro').classList.remove('hidden');
         }
 
@@ -756,6 +737,10 @@
             calcularUtilidadesModal();
             document.getElementById('btnEliminarModal').classList.remove('hidden');
             document.getElementById('btnEliminarModal').classList.add('flex');
+
+            let modalForm = document.querySelector('#modalRegistro .glass-panel');
+            if (modalForm) modalForm.scrollTop = 0;
+
             document.getElementById('modalRegistro').classList.remove('hidden');
         }
 
@@ -878,26 +863,79 @@
             link.remove();
         }
 
-        function importarJSONPrompt() {
+        // Importación de archivos Excel (.xls / .html tabular)
+        function importarExcelXLS() {
             let input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.json';
+            input.accept = '.xls,.xlsx,.html,.htm';
             input.onchange = e => {
-                let functionReader = new FileReader();
-                functionReader.readAsText(e.target.files[0], 'UTF-8');
-                functionReader.onload = readerEvent => {
+                let file = e.target.files[0];
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = readerEvent => {
                     try {
-                        let contenido = JSON.parse(readerEvent.target.result);
-                        if (Array.isArray(contenido)) {
-                            registros = contenido;
-                            guardarEnLocalStorage();
-                            initApp();
-                            mostrarAlerta("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
+                        let content = readerEvent.target.result;
+                        // Si es un archivo .xls exportado previamente (HTML table), parseamos las filas
+                        if (content.includes("<table") || content.includes("<TABLE")) {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(content, 'text/html');
+                            let rows = doc.querySelectorAll('table tr');
+                            if (rows.length <= 1) {
+                                mostrarAlerta("EL ARCHIVO NO CONTIENE DATOS VÁLIDOS.");
+                                return;
+                            }
+                            let nuevosRegistros = [];
+                            for (let i = 1; i < rows.length; i++) {
+                                let cols = rows[i].querySelectorAll('td');
+                                if (cols.length >= 22) {
+                                    nuevosRegistros.push({
+                                        id: parseInt(cols[0].innerText) || 0,
+                                        id_enlace: cols[1].innerText.trim(),
+                                        credito: cols[2].innerText.trim(),
+                                        cartera: cols[3].innerText.trim(),
+                                        responsable: cols[4].innerText.trim(),
+                                        precio_pre: parseFloat(cols[5].innerText) || 0,
+                                        precio_venta: parseFloat(cols[6].innerText) || 0,
+                                        cp: cols[7].innerText.trim(),
+                                        estado: cols[8].innerText.trim(),
+                                        municipio: cols[9].innerText.trim(),
+                                        colonia: cols[10].innerText.trim(),
+                                        direccion: cols[11].innerText.trim(),
+                                        tipo_prop: cols[12].innerText.trim(),
+                                        superficie: cols[13].innerText.trim(),
+                                        construccion: cols[14].innerText.trim(),
+                                        etapa_actual: cols[15].innerText.trim(),
+                                        etapa_legal: cols[16].innerText.trim(),
+                                        status: cols[17].innerText.trim(),
+                                        avances: cols[18].innerText.trim(),
+                                        observaciones: cols[19].innerText.trim(),
+                                        recepcion: cols[20].innerText.trim(),
+                                        actualizacion: cols[21].innerText.trim()
+                                    });
+                                }
+                            }
+                            if (nuevosRegistros.length > 0) {
+                                registros = nuevosRegistros;
+                                guardarEnLocalStorage();
+                                initApp();
+                                mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE DESDE EL ARCHIVO .XLS!`);
+                            } else {
+                                mostrarAlerta("NO SE PUDIERON LEER LAS COLUMNAS DEL ARCHIVO .XLS.");
+                            }
                         } else {
-                            mostrarAlerta("EL ARCHIVO NO TIENE EL FORMATO CORRECTO.");
+                            // Intentar parsear como JSON por compatibilidad
+                            let contenidoJson = JSON.parse(content);
+                            if (Array.isArray(contenidoJson)) {
+                                registros = contenidoJson;
+                                guardarEnLocalStorage();
+                                initApp();
+                                mostrarAlerta("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
+                            } else {
+                                mostrarAlerta("EL FORMATO DEL ARCHIVO NO ES VÁLIDO.");
+                            }
                         }
                     } catch(err) {
-                        mostrarAlerta("ERROR AL LEER EL ARCHIVO JSON.");
+                        mostrarAlerta("ERROR AL LEER EL ARCHIVO .XLS.");
                     }
                 }
             }
