@@ -84,85 +84,129 @@
       </div>
     </header>
 
-    <!-- Contenido Principal (Métricas y Tabla) -->
+    <!-- Contenido Principal -->
     <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
       
-      <!-- Fila de Tarjetas / KPIs -->
+      <!-- Fila de Tarjetas Estadísticas / KPIs Dinámicos -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- 1. Total Registros -->
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
           <div class="flex items-center justify-between text-slate-400">
             <span class="text-xs font-semibold uppercase tracking-wider">Total Registros</span>
-            <span class="rounded-md bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400 border border-blue-500/20">Base Activa</span>
+            <span class="rounded-md bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400 border border-blue-500/20">Filtrado</span>
           </div>
-          <p id="kpiTotalRegistros" class="mt-3 text-3xl font-extrabold text-white">19</p>
+          <p id="kpiTotalRegistros" class="mt-3 text-3xl font-extrabold text-white">0</p>
         </div>
 
+        <!-- 2. Tipo de Propiedad Predominante -->
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
           <div class="flex items-center justify-between text-slate-400">
-            <span class="text-xs font-semibold uppercase tracking-wider">Utilidad Potencial Total</span>
-            <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400 border border-emerald-500/20">Proyectado</span>
+            <span class="text-xs font-semibold uppercase tracking-wider">Tipo Predominante</span>
+            <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400 border border-emerald-500/20">Estadística</span>
           </div>
-          <p id="kpiUtilidadTotal" class="mt-3 text-2xl font-extrabold text-emerald-400">$20,622,244.52</p>
+          <p id="kpiTipoPredominante" class="mt-3 text-xl font-extrabold text-emerald-400 truncate">N/A</p>
         </div>
 
+        <!-- 3. Precio Venta Promedio -->
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
           <div class="flex items-center justify-between text-slate-400">
             <span class="text-xs font-semibold uppercase tracking-wider">Precio Venta Promedio</span>
-            <span class="rounded-md bg-amber-500/10 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/20">Mercado</span>
+            <span class="rounded-md bg-amber-500/10 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/20">Media</span>
           </div>
-          <p id="kpiPrecioPromedio" class="mt-3 text-2xl font-extrabold text-amber-400">$1,085,381.29</p>
+          <p id="kpiPrecioPromedio" class="mt-3 text-2xl font-extrabold text-amber-400">$0.00</p>
         </div>
 
+        <!-- 4. Cartera Principal -->
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
           <div class="flex items-center justify-between text-slate-400">
             <span class="text-xs font-semibold uppercase tracking-wider">Cartera Principal</span>
             <span class="rounded-md bg-purple-500/10 px-2 py-0.5 text-xs text-purple-400 border border-purple-500/20">Mayoría</span>
           </div>
-          <p id="kpiCarteraPrincipal" class="mt-3 text-2xl font-extrabold text-white">N/A</p>
+          <p id="kpiCarteraPrincipal" class="mt-3 text-xl font-extrabold text-white truncate">N/A</p>
         </div>
       </div>
 
-      <!-- Barra de Filtros y Botones -->
+      <!-- Barra de Filtros Interactivos -->
       <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap items-center gap-3">
           <span class="text-xs font-semibold uppercase tracking-wider text-slate-400"><i class="fa-solid fa-filter mr-1"></i>Filtrar por:</span>
-          <select class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option>TODOS LOS ESTADOS</option>
+          
+          <select id="filtroEstado" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
+            <option value="">TODOS LOS ESTADOS</option>
           </select>
-          <select class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option>TODOS LOS MUNICIPIOS</option>
+
+          <select id="filtroMunicipio" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
+            <option value="">TODOS LOS MUNICIPIOS</option>
           </select>
-          <select class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option>TODAS LAS ETAPAS LEGALES</option>
+
+          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
+            <option value="">TODAS LAS ETAPAS LEGALES</option>
           </select>
         </div>
 
         <div class="flex items-center gap-2">
-          <button class="rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3.5 py-2 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-600 hover:text-white">
-            <i class="fa-solid fa-file-excel mr-1.5"></i>Exportar a Excel (.xlsx)
-          </button>
-          <button class="rounded-xl border border-blue-600/40 bg-blue-600/10 px-3.5 py-2 text-xs font-semibold text-blue-400 transition hover:bg-blue-600 hover:text-white">
-            <i class="fa-solid fa-file-import mr-1.5"></i>Importar Datos (.xlsx)
+          <button onclick="reiniciarFiltros()" class="rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-300 transition hover:bg-slate-700 hover:text-white">
+            <i class="fa-solid fa-rotate-right mr-1.5"></i>Limpiar Filtros
           </button>
         </div>
       </div>
 
-      <!-- Mensaje provisional mientras configuramos la tabla y módulos -->
-      <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-8 text-center text-slate-400">
-        <i class="fa-solid fa-lock text-3xl text-emerald-400 mb-3 block"></i>
-        <p class="text-sm font-semibold text-white">¡Sesión iniciada correctamente!</p>
-        <p class="text-xs mt-1 text-slate-400">El módulo de autenticación con usuario <span class="text-blue-400">belmont</span> y contraseña ha quedado activo y funcional.</p>
+      <!-- Vista Previa de Tabla de Registros Filtrados -->
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
+        <div class="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-table-list mr-2 text-blue-500"></i>Registros del Portafolio Inmobiliario</h3>
+          <span id="contadorTabla" class="text-xs text-slate-400">Mostrando 0 registros</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="px-6 py-3">Estado</th>
+                <th class="px-6 py-3">Municipio</th>
+                <th class="px-6 py-3">Tipo Propiedad</th>
+                <th class="px-6 py-3">Etapa Legal</th>
+                <th class="px-6 py-3">Cartera</th>
+                <th class="px-6 py-3 text-right">Precio Venta</th>
+              </tr>
+            </thead>
+            <tbody id="tablaRegistros" class="divide-y divide-slate-800/60">
+              <!-- Se llena dinámicamente con JavaScript -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </main>
   </div>
 
-  <!-- LÓGICA JAVASCRIPT -->
+  <!-- LÓGICA JAVASCRIPT Y BASE DE DATOS -->
   <script>
     const USER_CORRECT = "belmont";
     const PASS_CORRECT = "1492";
 
-    // Verificar si ya inició sesión previamente en la misma ventana
+    // Base de datos de prueba (simulando tus 19 registros de recuperación inmobiliaria)
+    const baseDatos = [
+      { id: 1, estado: "MORELOS", municipio: "CUERNAVACA", tipo: "DEPARTAMENTO", etapa: "EJECUCIÓN", cartera: "BBVA", precio: 1250000 },
+      { id: 2, estado: "MORELOS", municipio: "CUERNAVACA", tipo: "CASA", etapa: "LITIGIO", cartera: "SANTANDER", precio: 1800000 },
+      { id: 3, estado: "MORELOS", municipio: "JIUTEPEC", tipo: "DEPARTAMENTO", etapa: "ADJUDICACIÓN", cartera: "BBVA", precio: 950000 },
+      { id: 4, estado: "ESTADO DE MÉXICO", municipio: "TOLUCA", tipo: "CASA", etapa: "EJECUCIÓN", cartera: "INFONAVIT", precio: 850000 },
+      { id: 5, estado: "ESTADO DE MÉXICO", municipio: "NAUCALPAN", tipo: "DEPARTAMENTO", etapa: "LITIGIO", cartera: "HSBC", precio: 2100000 },
+      { id: 6, estado: "ESTADO DE MÉXICO", municipio: "TOLUCA", tipo: "CASA", etapa: "ADJUDICACIÓN", cartera: "INFONAVIT", precio: 920000 },
+      { id: 7, estado: "CDMX", municipio: "BENITO JUÁREZ", tipo: "DEPARTAMENTO", etapa: "EJECUCIÓN", cartera: "SCOTIABANK", precio: 2450000 },
+      { id: 8, estado: "CDMX", municipio: "CUAUHTÉMOC", tipo: "LOCAL", etapa: "LITIGIO", cartera: "BBVA", precio: 3100000 },
+      { id: 9, estado: "CDMX", municipio: "BENITO JUÁREZ", tipo: "DEPARTAMENTO", etapa: "ADJUDICACIÓN", cartera: "SCOTIABANK", precio: 2600000 },
+      { id: 10, estado: "JALISCO", municipio: "GUADALAJARA", tipo: "CASA", etapa: "EJECUCIÓN", cartera: "SANTANDER", precio: 1400000 },
+      { id: 11, estado: "JALISCO", municipio: "ZAPOPAN", tipo: "DEPARTAMENTO", etapa: "LITIGIO", cartera: "BBVA", precio: 1950000 },
+      { id: 12, estado: "JALISCO", municipio: "GUADALAJARA", tipo: "CASA", etapa: "ADJUDICACIÓN", cartera: "INFONAVIT", precio: 1150000 },
+      { id: 13, estado: "PUEBLA", municipio: "PUEBLA", tipo: "CASA", etapa: "EJECUCIÓN", cartera: "SANTANDER", precio: 1050000 },
+      { id: 14, estado: "PUEBLA", municipio: "PUEBLA", tipo: "DEPARTAMENTO", etapa: "LITIGIO", cartera: "BBVA", precio: 890000 },
+      { id: 15, estado: "QUERÉTARO", municipio: "QUERÉTARO", tipo: "CASA", etapa: "ADJUDICACIÓN", cartera: "HSBC", precio: 1750000 },
+      { id: 16, estado: "QUERÉTARO", municipio: "QUERÉTARO", tipo: "DEPARTAMENTO", etapa: "EJECUCIÓN", cartera: "BBVA", precio: 1350000 },
+      { id: 17, estado: "NUEVO LEÓN", municipio: "MONTERREY", tipo: "CASA", etapa: "LITIGIO", cartera: "SANTANDER", precio: 2200000 },
+      { id: 18, estado: "NUEVO LEÓN", municipio: "SAN PEDRO", tipo: "DEPARTAMENTO", etapa: "ADJUDICACIÓN", cartera: "SCOTIABANK", precio: 3500000 },
+      { id: 19, estado: "MORELOS", municipio: "CUERNAVACA", tipo: "DEPARTAMENTO", etapa: "EJECUCIÓN", cartera: "BBVA", precio: 1100000 }
+    ];
+
     window.addEventListener('DOMContentLoaded', () => {
       const isAuth = sessionStorage.getItem('eb_authenticated');
       if (isAuth === 'true') {
@@ -195,6 +239,7 @@
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('mainApp').classList.remove('hidden');
       document.getElementById('mainApp').classList.add('flex');
+      inicializarFiltrosYDatos();
     }
 
     function handleLogout() {
@@ -203,6 +248,122 @@
       document.getElementById('mainApp').classList.remove('flex');
       document.getElementById('loginOverlay').classList.remove('hidden');
       clearLoginForm();
+    }
+
+    // Inicializar selectores de filtros con valores únicos
+    function inicializarFiltrosYDatos() {
+      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
+      const etapas = [...new Set(baseDatos.map(item => item.etapa))].sort();
+
+      const selEstado = document.getElementById('filtroEstado');
+      selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
+      estados.forEach(est => {
+        selEstado.innerHTML += `<option value="${est}">${est}</option>`;
+      });
+
+      const selEtapa = document.getElementById('filtroEtapa');
+      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
+      etapas.forEach(etp => {
+        selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`;
+      });
+
+      actualizarMunicipios();
+      aplicarFiltros();
+    }
+
+    function actualizarMunicipios() {
+      const estadoSeleccionado = document.getElementById('filtroEstado').value;
+      const selMunicipio = document.getElementById('filtroMunicipio');
+      
+      let filtrados = baseDatos;
+      if (estadoSeleccionado) {
+        filtrados = baseDatos.filter(item => item.estado === estadoSeleccionado);
+      }
+
+      const municipios = [...new Set(filtrados.map(item => item.municipio))].sort();
+      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
+      municipios.forEach(mun => {
+        selMunicipio.innerHTML += `<option value="${mun}">${mun}</option>`;
+      });
+    }
+
+    function reiniciarFiltros() {
+      document.getElementById('filtroEstado').value = '';
+      document.getElementById('filtroMunicipio').value = '';
+      document.getElementById('filtroEtapa').value = '';
+      actualizarMunicipios();
+      aplicarFiltros();
+    }
+
+    // Motor de filtrado y cálculo estadístico en tiempo real
+    function aplicarFiltros() {
+      actualizarMunicipios();
+
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const etapaF = document.getElementById('filtroEtapa').value;
+
+      const resultados = baseDatos.filter(item => {
+        return (!estadoF || item.estado === estadoF) &&
+               (!municipioF || item.municipio === municipioF) &&
+               (!etapaF || item.etapa === etapaF);
+      });
+
+      // 1. Total Registros
+      document.getElementById('kpiTotalRegistros').innerText = resultados.length;
+
+      // 2. Tipo de Propiedad Predominante (Estadística)
+      if (resultados.length > 0) {
+        const conteoTipos = {};
+        resultados.forEach(i => conteoTipos[i.tipo] = (conteoTipos[i.tipo] || 0) + 1);
+        let maxTipo = Object.keys(conteoTipos)[0];
+        Object.keys(conteoTipos).forEach(t => {
+          if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t;
+        });
+        document.getElementById('kpiTipoPredominante').innerText = `${conteoTipos[maxTipo]} ${maxTipo.toLowerCase()}(s)`;
+      } else {
+        document.getElementById('kpiTipoPredominante').innerText = "N/A";
+      }
+
+      // 3. Precio Venta Promedio (Media)
+      if (resultados.length > 0) {
+        const sumaPrecios = resultados.reduce((acc, i) => acc + i.precio, 0);
+        const promedio = sumaPrecios / resultados.length;
+        document.getElementById('kpiPrecioPromedio').innerText = `$${promedio.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      } else {
+        document.getElementById('kpiPrecioPromedio').innerText = "$0.00";
+      }
+
+      // 4. Cartera Principal (Estadística)
+      if (resultados.length > 0) {
+        const conteoCarteras = {};
+        resultados.forEach(i => conteoCarteras[i.cartera] = (conteoCarteras[i.cartera] || 0) + 1);
+        let maxCartera = Object.keys(conteoCarteras)[0];
+        Object.keys(conteoCarteras).forEach(c => {
+          if (conteoCarteras[c] > conteoCarteras[maxCartera]) maxCartera = c;
+        });
+        document.getElementById('kpiCarteraPrincipal').innerText = `${maxCartera} (${conteoCarteras[maxCartera]})`;
+      } else {
+        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
+      }
+
+      // Renderizar tabla
+      const tbody = document.getElementById('tablaRegistros');
+      tbody.innerHTML = '';
+      resultados.forEach(item => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-6 py-3 font-medium text-white">${item.estado}</td>
+            <td class="px-6 py-3">${item.municipio}</td>
+            <td class="px-6 py-3"><span class="rounded bg-slate-800 px-2 py-1 text-[11px] font-semibold text-slate-300 border border-slate-700">${item.tipo}</span></td>
+            <td class="px-6 py-3">${item.etapa}</td>
+            <td class="px-6 py-3 text-blue-400 font-semibold">${item.cartera}</td>
+            <td class="px-6 py-3 text-right font-bold text-emerald-400">$${item.precio.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('contadorTabla').innerText = `Mostrando ${resultados.length} de ${baseDatos.length} registros`;
     }
   </script>
 </body>
