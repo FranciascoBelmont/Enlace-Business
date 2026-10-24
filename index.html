@@ -140,7 +140,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.0 (SEPOMEX API)</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.1</span>
             </div>
         </div>
 
@@ -225,13 +225,13 @@
                 <!-- Sección 3: Ubicación e Inmueble -->
                 <div>
                     <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE (VALIDACIÓN NACIONAL DE C.P.)
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE (AUTO-COMPLETADO C.P.)
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (5 DÍGITOS)</label>
                             <div class="relative">
-                                <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 54080">
+                                <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 01090">
                                 <span id="cpStatus" class="absolute right-3 top-2.5 text-xs font-semibold"></span>
                             </div>
                         </div>
@@ -327,7 +327,17 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Consulta API pública nacional de Códigos Postales de México (SEPOMEX)
+        // Base de datos local ultra rápida
+        const localCPDB = {
+            "01090": { estado: "CIUDAD DE MÉXICO", municipio: "ÁLVARO OBREGÓN", colonias: ["TIZAPÁN SAN ÁNGEL", "TIZAPÁN", "SAN ÁNGEL", "LORETO"] },
+            "54080": { estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonias: ["LOS REYES IZTACALA", "BARRIO SAN LUCAS", "TLALNEPANTLA CENTRO", "JARDINES DE SAN LUCAS"] },
+            "45404": { estado: "JALISCO", municipio: "TONALÁ", colonias: ["URBI PASEOS DE SANTIAGO", "LOMA DORADA", "HACIENDA REAL"] },
+            "54700": { estado: "ESTADO DE MÉXICO", municipio: "CUAUTITLÁN", colonias: ["CENTRO DE CUAUTITLÁN", "SANTA MARÍA", "EL HUERTO"] },
+            "64000": { estado: "NUEVO LEÓN", municipio: "MONTERREY", colonias: ["CENTRO", "OBISPADO", "INDEPENDENCIA"] },
+            "44100": { estado: "JALISCO", municipio: "GUADALAJARA", colonias: ["ZONA CENTRO", "AMERICANA", "MODERNA"] }
+        };
+
+        // Búsqueda limpia de C.P. en tiempo real
         async function buscarPorCP(cp) {
             cp = cp.trim();
             let selectColonia = document.getElementById('f_colonia');
@@ -337,22 +347,40 @@
                 status.innerText = "⏳...";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-amber-400";
                 
+                // 1. Verificar si está en la base local súper rápida
+                if (localCPDB[cp]) {
+                    document.getElementById('f_estado').value = localCPDB[cp].estado;
+                    document.getElementById('f_municipio').value = localCPDB[cp].municipio;
+                    selectColonia.innerHTML = '';
+                    localCPDB[cp].colonias.forEach(col => {
+                        let opt = document.createElement('option');
+                        opt.value = col;
+                        opt.innerText = col;
+                        selectColonia.appendChild(opt);
+                    });
+                    status.innerText = "✓ VÁLIDO";
+                    status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
+                    return;
+                }
+
+                // 2. Consulta a API pública de datos de México (limpia y no encriptada)
                 try {
-                    let response = await fetch(`https://api.copomex.com/query/info_cp/${cp}?token=pruebas`);
+                    let response = await fetch(`https://sepomex.rest/api/v1/cp/${cp}`);
                     if (response.ok) {
                         let data = await response.json();
-                        if (Array.isArray(data) && data.length > 0) {
-                            document.getElementById('f_estado').value = data[0].response.estado.toUpperCase();
-                            document.getElementById('f_municipio').value = data[0].response.municipio.toUpperCase();
+                        if (data && data.estado) {
+                            document.getElementById('f_estado').value = data.estado.toUpperCase();
+                            document.getElementById('f_municipio').value = data.municipio.toUpperCase();
                             
                             selectColonia.innerHTML = '';
-                            data.forEach(item => {
-                                let col = item.response.asentamiento.toUpperCase();
-                                let opt = document.createElement('option');
-                                opt.value = col;
-                                opt.innerText = col;
-                                selectColonia.appendChild(opt);
-                            });
+                            if (Array.isArray(data.colonias)) {
+                                data.colonias.forEach(col => {
+                                    let opt = document.createElement('option');
+                                    opt.value = col.toUpperCase();
+                                    opt.innerText = col.toUpperCase();
+                                    selectColonia.appendChild(opt);
+                                });
+                            }
                             
                             status.innerText = "✓ VÁLIDO";
                             status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
@@ -360,13 +388,13 @@
                         }
                     }
                 } catch(err) {
-                    console.log("Error al consultar API SEPOMEX:", err);
+                    console.log("Error consultando la API de SEPOMEX:", err);
                 }
-                
-                // Si la API falla o no encuentra el C.P., activa una alerta visual
+
+                // 3. Si no existe o da error
                 status.innerText = "❌ ERRÓNEO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-rose-400";
-                selectColonia.innerHTML = '<option value="">-- C.P. INEXISTENTE O ERRÓNEO --</option>';
+                selectColonia.innerHTML = '<option value="">-- C.P. NO ENCONTRADO EN SEPOMEX --</option>';
             } else {
                 status.innerText = "";
                 if (cp.length < 5) {
@@ -386,8 +414,7 @@
                 "JALISCO": "JALISCO",
                 "PAGINA": "PÁGINA",
                 "ULTIMO": "ÚLTIMO",
-                "DIRECCION": "DIRECCIÓN",
-                "TLALNEPANTLA": "TLALNEPANTLA"
+                "DIRECCION": "DIRECCIÓN"
             };
             
             Object.keys(correcciones).forEach(err => {
