@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlace Business Pro v3.30</title>
+    <title>Enlace Business Pro v3.31</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- SheetJS para Excel -->
@@ -156,7 +156,7 @@
             </div>
             <div class="bg-gray-950/60 border-t border-gray-800 p-3 text-xs text-gray-400 flex justify-between items-center">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.30</span>
+                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.31</span>
             </div>
         </div>
     </main>
@@ -365,7 +365,7 @@
             try {
                 localStorage.setItem('enlace_business_db', JSON.stringify(registros));
             } catch (e) {
-                alert("Atención: El peso acumulado de los archivos PDF sobrepasa el límite de memoria del navegador. Realiza una exportación a Excel para respaldar.");
+                alert("Atención: El peso acumulado de los registros con PDFs supera la memoria local. Realiza una exportación a Excel para respaldar.");
             }
         }
 
@@ -543,6 +543,10 @@
             if (index === '') {
                 registros.push(regObj);
             } else {
+                // Conservar PDFs existentes si se edita y no se modificaron en el modal
+                if (archivosPdfActuales.length === 0 && registros[index].pdfs) {
+                    regObj.pdfs = registros[index].pdfs;
+                }
                 registros[index] = regObj;
             }
 
@@ -716,6 +720,12 @@
                     const data = new Uint8Array(e.target.result);
                     const wb = XLSX.read(data, { type: 'array' });
                     const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                    
+                    if (json.length === 0) {
+                        alert("El archivo Excel está vacío.");
+                        return;
+                    }
+
                     registros = json.map(row => ({
                         idEnlace: row["ID / Enlace"] || row["ID ENLACE"] || '',
                         tipoCredito: row["Tipo Crédito"] || row["TIPO CREDITO"] || '',
@@ -735,14 +745,16 @@
                         responsable: row["Responsable"] || '',
                         fechaRecepcion: row["Fecha Recepción"] || row["FECHA RECEPCION"] || '',
                         fechaActualizacion: row["Fecha Actualización"] || new Date().toLocaleDateString('es-MX'),
-                        pdfs: []
+                        pdfs: [] // Se inicializan vacíos para que puedas subirlos individualmente en el registro que gustes
                     }));
+
                     guardarEnLocalStorage();
                     renderizarTabla();
                     actualizarFiltrosSelects();
                     alert(`¡Importación exitosa de ${registros.length} registros!`);
                 } catch (err) {
-                    alert("Error al leer el archivo Excel.");
+                    console.error(err);
+                    alert("Error al leer el archivo Excel. Verifica que el formato sea correcto.");
                 }
             };
             r.readAsArrayBuffer(f);
