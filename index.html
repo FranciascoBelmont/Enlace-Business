@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlace Business Pro v3.37 - Versión Máxima</title>
+    <title>Enlace Business Pro v3.38 - Sistema Maestro Definitivo</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- SheetJS para Excel -->
@@ -19,9 +19,9 @@
         ::-webkit-scrollbar-thumb:hover { background: #374151; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black bg-[#0b0f19] text-gray-100">
 
-    <!-- HEADER PRINCIPAL -->
+    <!-- HEADER PRINCIPAL AVANZADO -->
     <header class="bg-[#111827]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl">
         <div class="flex items-center gap-3">
             <div class="bg-gradient-to-tr from-cyan-600 to-blue-600 p-2.5 rounded-xl shadow-lg shadow-cyan-900/20">
@@ -156,7 +156,7 @@
             </div>
             <div class="bg-gray-950/60 border-t border-gray-800 p-3 text-xs text-gray-400 flex justify-between items-center">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.37</span>
+                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.38</span>
             </div>
         </div>
     </main>
@@ -335,7 +335,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT EXTENDIDO DEL SISTEMA (LÓGICA COMPLETA) -->
+    <!-- SCRIPT MAESTRO INTEGRAL -->
     <script>
         let registros = [];
         let archivosPdfActuales = [];
@@ -765,7 +765,7 @@
                     alert("Error al leer el archivo Excel. Verifica que el formato sea correcto.");
                 }
             };
-            r.readAsDataURL(f);
+            r.readAsArrayBuffer(f);
             evt.target.value = '';
         }
 
