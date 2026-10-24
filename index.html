@@ -3,253 +3,833 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlace Business - CRM & Base de Datos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Enlace Business Pro v3.29</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- SheetJS para Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #07090e; color: #f3f4f6; }
-        .glass-panel { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(0, 240, 255, 0.15); }
-        input[type="text"], select, textarea { text-transform: uppercase; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #07090e; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
 
-    <!-- Top Header -->
-    <header class="glass-panel border-b border-slate-800 sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center space-x-4">
-            <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-2.5 rounded-xl shadow-lg shadow-cyan-500/20">
-                <i data-lucide="shield-check" class="w-7 h-7 text-slate-950"></i>
+    <!-- HEADER -->
+    <header class="bg-[#111827]/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-tr from-cyan-600 to-blue-600 p-2.5 rounded-xl shadow-lg shadow-cyan-900/20">
+                <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
-                    ENLACE <span class="text-cyan-400 font-light">BUSINESS PRO</span>
+                <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    ENLACE <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">BUSINESS PRO</span>
                 </h1>
-                <p class="text-xs text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
+                <p class="text-xs text-gray-400 font-medium">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
             </div>
         </div>
 
-        <div class="flex items-center space-x-3 flex-wrap">
-            <div class="relative">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-                <input type="text" id="globalSearch" placeholder="BUSCAR..." spellcheck="true" lang="es"
-                    class="bg-slate-900/80 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 w-64 md:w-80 transition-all">
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <div class="relative flex-1 md:w-72">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="BUSCAR..." class="w-full pl-9 pr-4 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors uppercase">
             </div>
-            <button onclick="verificarDuplicados()" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all">
-                <i data-lucide="copy" class="w-4 h-4"></i> Verificar Duplicados
+            <button onclick="verificarDuplicados()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm">
+                <i data-lucide="copy-check" class="w-4 h-4"></i> Verif. Duplicados
             </button>
-            <button onclick="abrirModalNuevo()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i> Nuevo Registro
+            <button onclick="abrirModalNuevo()" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold rounded-lg text-xs transition-all flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+                <i data-lucide="plus" class="w-4 h-4 stroke-[3]"></i> Nuevo Registro
             </button>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 p-6 max-w-[1600px] w-full mx-auto space-y-6">
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-6 max-w-[1600px] w-full mx-auto flex flex-col gap-6">
 
-        <!-- KPI Metrics Bar -->
+        <!-- KPIS CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-panel p-4 rounded-xl border-l-4 border-l-cyan-400">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Registros</p>
-                <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiTotal" class="text-2xl font-bold text-white">0</h3>
-                    <span id="kpiLabelEstado" class="text-xs text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/50">Base Activa</span>
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 relative overflow-hidden shadow-xl backdrop-blur-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Registros</p>
+                        <h3 id="kpiTotalRegistros" class="text-3xl font-bold text-white mt-2">0</h3>
+                    </div>
+                    <span class="text-[10px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/50 px-2.5 py-1 rounded-md font-semibold">Base Activa</span>
                 </div>
             </div>
-            <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Utilidad Potencial Total</p>
-                <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiUtilidad" class="text-2xl font-bold text-emerald-400">$0.00</h3>
-                    <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800/50">Proyectado</span>
+
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 relative overflow-hidden shadow-xl backdrop-blur-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Utilidad Potencial Total</p>
+                        <h3 id="kpiUtilidadTotal" class="text-2xl font-bold text-emerald-400 mt-2">$0.00</h3>
+                    </div>
+                    <span class="text-[10px] bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 px-2.5 py-1 rounded-md font-semibold">Proyectado</span>
                 </div>
             </div>
-            <div class="glass-panel p-4 rounded-xl border-l-4 border-l-amber-400">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Precio Venta Promedio</p>
-                <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiPromedioVenta" class="text-2xl font-bold text-amber-400">$0.00</h3>
-                    <span class="text-xs text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/50">Mercado</span>
+
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 relative overflow-hidden shadow-xl backdrop-blur-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Precio Venta Promedio</p>
+                        <h3 id="kpiPrecioPromedio" class="text-2xl font-bold text-amber-400 mt-2">$0.00</h3>
+                    </div>
+                    <span class="text-[10px] bg-amber-950/80 text-amber-400 border border-amber-800/50 px-2.5 py-1 rounded-md font-semibold">Mercado</span>
                 </div>
             </div>
-            <div class="glass-panel p-4 rounded-xl border-l-4 border-l-blue-400">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cartera Principal</p>
-                <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiCartera" class="text-lg font-bold text-blue-300 truncate max-w-[200px]">N/A</h3>
-                    <span class="text-xs text-blue-400 bg-blue-950/50 px-2 py-0.5 rounded border border-blue-800/50">Mayoría</span>
+
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 relative overflow-hidden shadow-xl backdrop-blur-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Cartera Principal</p>
+                        <h3 id="kpiCarteraPrincipal" class="text-lg font-bold text-cyan-300 mt-2 truncate max-w-[180px]">N/A</h3>
+                    </div>
+                    <span class="text-[10px] bg-blue-950/80 text-blue-400 border border-blue-800/50 px-2.5 py-1 rounded-md font-semibold">Mayoría</span>
                 </div>
             </div>
         </div>
 
-        <!-- Filters and View Controls -->
-        <div class="glass-panel p-4 rounded-xl flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center space-x-3 flex-wrap gap-y-2">
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                    <i data-lucide="filter" class="w-3.5 h-3.5 text-cyan-400"></i> Filtrar por:
+        <!-- FILTERS & TOOLS BAR -->
+        <div class="bg-gray-900/40 border border-gray-800/60 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 backdrop-blur-sm">
+            <div class="flex flex-wrap items-center gap-3 flex-1">
+                <span class="text-xs font-bold text-cyan-400 flex items-center gap-1.5 uppercase tracking-wider">
+                    <i data-lucide="filter" class="w-3.5 h-3.5"></i> Filtrar por:
                 </span>
-                
-                <select id="filterEstado" onchange="alCambiarEstado()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                <select id="filtroEstado" class="bg-gray-900 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500">
                     <option value="">TODOS LOS ESTADOS</option>
                 </select>
-
-                <select id="filterMunicipio" onchange="alCambiarMunicipio()" disabled class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-slate-500 focus:outline-none focus:border-cyan-400 uppercase disabled:opacity-50">
+                <select id="filtroMunicipio" class="bg-gray-900 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500">
                     <option value="">TODOS LOS MUNICIPIOS</option>
                 </select>
-
-                <select id="filterColonia" onchange="filtrarDatos()" disabled class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-slate-500 focus:outline-none focus:border-cyan-400 uppercase disabled:opacity-50">
+                <select id="filtroColonia" class="bg-gray-900 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500">
                     <option value="">TODAS LAS COLONIAS</option>
                 </select>
-
-                <select id="filterResponsable" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                <select id="filtroResponsable" class="bg-gray-900 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500">
                     <option value="">TODOS LOS RESPONSABLES</option>
                 </select>
-
-                <select id="filterEtapa" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                <select id="filtroEtapa" class="bg-gray-900 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-500">
                     <option value="">TODAS LAS ETAPAS LEGALES</option>
                 </select>
             </div>
-            
-            <div class="flex items-center space-x-2 ml-auto">
-                <button onclick="exportarExcelXLSX()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
-                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xlsx)
+
+            <div class="flex items-center gap-2">
+                <button onclick="exportarExcel()" class="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar Excel
                 </button>
-                <button onclick="importarExcelXLSX()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xlsx / .xls)
-                </button>
+                <label class="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="upload" class="w-4 h-4"></i> Importar Datos
+                    <input type="file" id="inputImportar" accept=".xlsx, .xls" class="hidden" onchange="importarExcel(event)">
+                </label>
             </div>
         </div>
 
-        <!-- Data Table Container -->
-        <div class="glass-panel rounded-xl overflow-hidden shadow-2xl border border-slate-800">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
+        <!-- TABLE -->
+        <div class="bg-gray-900/50 border border-gray-800/80 rounded-xl shadow-2xl overflow-hidden flex flex-col flex-1">
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-900/90 text-cyan-400 border-b border-slate-800 uppercase tracking-wider font-semibold">
-                            <th class="p-3 pl-4">ID / ENLACE</th>
-                            <th class="p-3">CRÉDITO & CARTERA</th>
-                            <th class="p-3">UBICACIÓN (COLONIA / MUN / EDO)</th>
-                            <th class="p-3 text-right">PRECIO PRE-AUTH</th>
-                            <th class="p-3 text-right">PRECIO VENTA</th>
-                            <th class="p-3 text-right">UTILIDAD REAL ($ / %)</th>
-                            <th class="p-3">ETAPA LEGAL / ACTUAL</th>
-                            <th class="p-3">EXPEDIENTES PDF</th>
-                            <th class="p-3">RESPONSABLE</th>
-                            <th class="p-3 text-center pr-4">ACCIONES</th>
+                        <tr class="bg-gray-950/80 border-b border-gray-800 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                            <th class="py-3.5 px-4">ID / Enlace</th>
+                            <th class="py-3.5 px-4">Crédito & Cartera</th>
+                            <th class="py-3.5 px-4">Ubicación (Colonia / Mun / Edo)</th>
+                            <th class="py-3.5 px-4">Precio Pre-Auth</th>
+                            <th class="py-3.5 px-4">Precio Venta</th>
+                            <th class="py-3.5 px-4">Utilidad Real ($ / %)</th>
+                            <th class="py-3.5 px-4">Etapa Legal / Actual</th>
+                            <th class="py-3.5 px-4 text-center">Expedientes PDF</th>
+                            <th class="py-3.5 px-4">Responsable</th>
+                            <th class="py-3.5 px-4 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaRegistros" class="divide-y divide-slate-800/60 text-slate-300">
+                    <tbody id="tablaRegistros" class="divide-y divide-gray-800/50 text-xs">
+                        <!-- Inyectado dinámicamente -->
                     </tbody>
                 </table>
             </div>
-            <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <div class="bg-gray-950/60 border-t border-gray-800 p-3 text-xs text-gray-400 flex justify-between items-center">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.29</span>
+                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.29</span>
             </div>
         </div>
-
     </main>
 
-    <!-- Modal Alerta Personalizada -->
-    <div id="modalAlerta" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="glass-panel max-w-md w-full rounded-2xl border border-cyan-500/40 shadow-2xl p-6 text-center space-y-4">
-            <div class="mx-auto w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
-                <i data-lucide="info" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-wider">ENLACE BUSINESS PRO</h3>
-            <p id="alertaTextoMensaje" class="text-sm text-white font-medium"></p>
-            <button onclick="cerrarAlerta()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg text-sm shadow-lg shadow-cyan-500/20 transition-all">
-                Aceptar
-            </button>
-        </div>
-    </div>
-
-    <!-- Modal Formulario Detalle -->
-    <div id="modalRegistro" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="glass-panel max-w-4xl w-full rounded-2xl border border-cyan-500/30 shadow-2xl overflow-hidden my-8">
-            <div class="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
-                    <h3 id="modalTitulo" class="text-base font-bold text-white uppercase tracking-wider">NUEVO REGISTRO INMOBILIARIO</h3>
-                </div>
-                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-all">
+    <!-- MODAL NUEVO / EDITAR REGISTRO -->
+    <div id="modalRegistro" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center bg-gray-950/50">
+                <h3 id="modalTitulo" class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-5 h-5 text-cyan-400"></i> Nuevo Registro Inmobiliario
+                </h3>
+                <button onclick="cerrarModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <form id="formRegistro" onsubmit="guardarRegistro(event)" class="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
-                <input type="hidden" id="editIndex" value="-1">
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+                <form id="formRegistro" class="space-y-6">
+                    <input type="hidden" id="regIndex">
 
-                <!-- Sección 1: Identificación y Crédito -->
-                <div>
-                    <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="hash" class="w-4 h-4"></i> IDENTIFICACIÓN Y CARTERA
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">ID (NÚMERO)</label>
-                            <input type="number" id="f_id" onblur="validarIDDuplicado(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">ID ENLACE</label>
-                            <input type="text" id="f_id_enlace" spellcheck="true" lang="es" onblur="validarIdEnlaceDuplicado(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">NÚMERO DE CRÉDITO</label>
-                            <input type="text" id="f_credito" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">CARTERA</label>
-                            <input type="text" id="f_cartera" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-medium text-slate-400 mb-1">RESPONSABLE</label>
-                            <input type="text" id="f_responsable" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                    <!-- DATOS GENERALES & CRÉDITO -->
+                    <div>
+                        <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <i data-lucide="briefcase" class="w-4 h-4"></i> Datos Generales & Crédito
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">ID / Enlace</label>
+                                <input type="text" id="regIdEnlace" required class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Tipo de Crédito</label>
+                                <input type="text" id="regTipoCredito" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Cartera</label>
+                                <input type="text" id="regCartera" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <hr class="border-slate-800">
-
-                <!-- Sección 2: Matriz Financiera -->
-                <div>
-                    <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="dollar-sign" class="w-4 h-4"></i> MATRIZ FINANCIERA & UTILIDADES
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">PRECIO PRE AUTORIZADO ($)</label>
-                            <input type="text" id="f_precio_pre" onfocus="prepararEdicionMoneda(this)" onblur="formatearMonedaInput(this); calcularUtilidades()" oninput="calcularUtilidades()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">PRECIO VENTA ($)</label>
-                            <input type="text" id="f_precio_venta" onfocus="prepararEdicionMoneda(this)" onblur="formatearMonedaInput(this); calcularUtilidades()" oninput="calcularUtilidades()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-emerald-400 mb-1">UTILIDAD REAL ($)</label>
-                            <input type="text" id="f_utilidad_pesos" readonly class="w-full bg-emerald-950/30 border border-emerald-800/50 rounded-lg px-3 py-2 text-sm font-bold text-emerald-400 font-mono" value="$0.00">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-emerald-400 mb-1">UTILIDAD REAL (%)</label>
-                            <input type="text" id="f_utilidad_porc" readonly class="w-full bg-emerald-950/30 border border-emerald-800/50 rounded-lg px-3 py-2 text-sm font-bold text-emerald-400 font-mono" value="0.00%">
+                    <!-- UBICACIÓN (LIMPIA) -->
+                    <div>
+                        <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Ubicación del Inmueble
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Código Postal</label>
+                                <input type="text" id="regCp" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Estado</label>
+                                <input type="text" id="regEstado" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Municipio / Alcaldía</label>
+                                <input type="text" id="regMunicipio" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Colonia</label>
+                                <input type="text" id="regColonia" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <hr class="border-slate-800">
+                    <!-- PRECIOS Y FINANZAS -->
+                    <div>
+                        <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <i data-lucide="dollar-sign" class="w-4 h-4"></i> Precios & Finanzas (Formato Automático)
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Precio Pre-Auth</label>
+                                <input type="text" id="regPrecioPreAuth" oninput="formatearMonedaInput(this)" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Precio Venta</label>
+                                <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidades();" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Costo Adquisición</label>
+                                <input type="text" id="regCostoAdquisicion" oninput="formatearMonedaInput(this); calcularUtilidades();" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-gray-950/40 p-3 rounded-xl border border-gray-800">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-emerald-400 uppercase mb-1">Utilidad Real Calculada ($)</label>
+                                <input type="text" id="regUtilidadReal" readonly class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-emerald-400 text-xs font-mono font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-cyan-400 uppercase mb-1">Utilidad Porcentual (%)</label>
+                                <input type="text" id="regUtilidadPorcentaje" readonly class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-cyan-400 text-xs font-mono font-bold">
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Sección 3: Ubicación e Inmueble -->
-                <div>
-                    <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- PROCESO LEGAL & OBSERVACIONES -->
+                    <div>
+                        <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <i data-lucide="scale" class="w-4 h-4"></i> Proceso Legal & Expediente Digital
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Etapa Actual</label>
+                                <input type="text" id="regEtapaActual" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Etapa Legal</label>
+                                <input type="text" id="regEtapaLegal" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Status</label>
+                            <input type="text" id="regStatus" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Avances</label>
+                            <textarea id="regAvances" rows="2" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Observaciones</label>
+                            <textarea id="regObservaciones" rows="2" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN DE EXPEDIENTES PDF (UBICADA ABAJO DE OBSERVACIONES, HASTA 10 ARCHIVOS) -->
+                    <div class="bg-gray-950/60 p-4 rounded-xl border border-cyan-500/20">
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> Cargar Expedientes PDF (<span id="contadorPdfBadge">0 / 10</span>)
+                            </label>
+                            <label id="btnContenedorPdf" class="px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-1.5 transition-all">
+                                <i data-lucide="upload" class="w-3.5 h-3.5"></i> Seleccionar PDF(s)
+                                <input type="file" id="inputPdfMultiple" accept="application/pdf" multiple class="hidden" onchange="manejarSubidaPdfs(event)">
+                            </label>
+                        </div>
+                        <div id="listaPdfsContainer" class="space-y-2 max-h-48 overflow-y-auto">
+                            <p class="text-xs text-gray-500 italic text-center py-2">Ningún archivo PDF adjunto todavía.</p>
+                        </div>
+                    </div>
+
+                    <!-- RESPONSABLE Y FECHAS -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-gray-800">
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (5 DÍGITOS)</label>
-                            <input type="text" id="f_cp" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Responsable</label>
+                            <input type="text" id="regResponsable" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500 uppercase">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">ESTADO</label>
-                            <input type="text" id="f_estado" spellcheck="true" lang
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Fecha Recepción</label>
+                            <input type="text" id="regFechaRecepcion" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Fecha Actualización</label>
+                            <input type="text" id="regFechaActualizacion" readonly class="w-full bg-gray-900/50 border border-gray-800 rounded-lg p-2.5 text-cyan-400 text-xs font-mono">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="px-6 py-4 border-t border-gray-800 bg-gray-950/80 flex justify-end gap-3">
+                <button onclick="cerrarModal()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-lg text-xs transition-colors">Cancelar</button>
+                <button onclick="guardarRegistro()" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold rounded-lg text-xs transition-all shadow-lg shadow-cyan-500/20">Guardar Registro</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VISOR DE PDF -->
+    <div id="modalVisorPdf" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col p-4">
+        <div class="flex justify-between items-center mb-3">
+            <h3 id="visorPdfTitulo" class="text-sm font-bold text-cyan-400 truncate">Vista Previa Expediente PDF</h3>
+            <button onclick="cerrarVisorPdf()" class="px-3 py-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded-lg text-xs font-semibold">Cerrar Visor</button>
+        </div>
+        <div class="flex-1 bg-gray-900 rounded-xl overflow-hidden border border-gray-800 flex items-center justify-center">
+            <iframe id="iframePdfViewer" class="w-full h-full" src=""></iframe>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE CONTROL -->
+    <script>
+        let registros = [];
+        let archivosPdfActuales = []; // Almacena hasta 10 objetos {name, dataUrl}
+
+        // Inicialización y recuperación de base de datos segura
+        function inicializarSistema() {
+            try {
+                const llavesPosibles = ['enlace_business_db', 'enlace_business_pro_db', 'enlace_db', 'enlace_business_v3'];
+                let datosCargados = null;
+                for (let llave of llavesPosibles) {
+                    const data = localStorage.getItem(llave);
+                    if (data) {
+                        datosCargados = JSON.parse(data);
+                        if (Array.isArray(datosCargados) && datosCargados.length > 0) break;
+                    }
+                }
+                registros = datosCargados || [];
+            } catch (e) {
+                console.error("Error al cargar localStorage:", e);
+                registros = [];
+            }
+            renderizarTabla();
+            actualizarFiltrosSelects();
+            lucide.createIcons();
+        }
+
+        function guardarEnLocalStorage() {
+            try {
+                localStorage.setItem('enlace_business_db', JSON.stringify(registros));
+            } catch (e) {
+                alert("Atención: El almacenamiento local está lleno debido al peso de los archivos PDF adjuntos. Se recomienda exportar a Excel como respaldo.");
+            }
+        }
+
+        // Formato Moneda Pesos
+        function parsearMoneda(valorStr) {
+            if (!valorStr) return 0;
+            const limpio = valorStr.toString().replace(/[^0-9.]/g, '');
+            return parseFloat(limpio) || 0;
+        }
+
+        function formatearMoneda(num) {
+            if (isNaN(num)) return '$0.00';
+            return '$' + num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatearMonedaInput(input) {
+            let val = input.value.replace(/[^0-9.]/g, '');
+            let partes = val.split('.');
+            if (partes.length > 2) val = partes[0] + '.' + partes.slice(1).join('');
+            let num = parseFloat(val);
+            if (isNaN(num)) {
+                input.value = '';
+                return;
+            }
+            input.value = num.toLocaleString('es-MX', { minimumFractionDigits: partes.length > 1 ? partes[1].length : 0, maximumFractionDigits: 2 });
+        }
+
+        function calcularUtilidades() {
+            const venta = parsearMoneda(document.getElementById('regPrecioVenta').value);
+            const costo = parsearMoneda(document.getElementById('regCostoAdquisicion').value);
+            const utilidadReal = venta - costo;
+            const utilidadPct = costo > 0 ? (utilidadReal / costo) * 100 : 0;
+
+            document.getElementById('regUtilidadReal').value = formatearMoneda(utilidadReal);
+            document.getElementById('regUtilidadPorcentaje').value = utilidadPct.toFixed(2) + '%';
+        }
+
+        // Gestión de hasta 10 PDFs
+        function manejarSubidaPdfs(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            if (archivosPdfActuales.length + files.length > 10) {
+                alert("Solo se permite un máximo de 10 archivos PDF por registro.");
+                return;
+            }
+
+            let procesados = 0;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type !== 'application/pdf') {
+                    alert(`El archivo ${file.name} no es un PDF válido.`);
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    archivosPdfActuales.push({
+                        name: file.name,
+                        dataUrl: e.target.result
+                    });
+                    procesados++;
+                    if (procesados === files.length || (i === files.length - 1)) {
+                        actualizarListaPdfsUI();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            event.target.value = '';
+        }
+
+        function eliminarPdfActual(index) {
+            archivosPdfActuales.splice(index, 1);
+            actualizarListaPdfsUI();
+        }
+
+        function actualizarListaPdfsUI() {
+            const container = document.getElementById('listaPdfsContainer');
+            const badge = document.getElementById('contadorPdfBadge');
+            const btnContenedor = document.getElementById('btnContenedorPdf');
+
+            badge.innerText = `${archivosPdfActuales.length} / 10`;
+
+            if (archivosPdfActuales.length >= 10) {
+                btnContenedor.style.opacity = '0.5';
+                btnContenedor.style.pointerEvents = 'none';
+            } else {
+                btnContenedor.style.opacity = '1';
+                btnContenedor.style.pointerEvents = 'auto';
+            }
+
+            if (archivosPdfActuales.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-2">Ningún archivo PDF adjunto todavía.</p>`;
+                return;
+            }
+
+            let html = '';
+            archivosPdfActuales.forEach((pdf, idx) => {
+                html += `
+                    <div class="flex items-center justify-between bg-gray-900 border border-gray-800 p-2 rounded-lg text-xs">
+                        <span class="text-gray-300 truncate max-w-[280px] font-medium flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-cyan-400"></i> ${pdf.name}
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="verPdfTemporal('${pdf.dataUrl}', '${pdf.name}')" class="px-2.5 py-1 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 rounded text-[11px] font-semibold">Ver</button>
+                            <button type="button" onclick="eliminarPdfActual(${idx})" class="px-2.5 py-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded text-[11px] font-semibold">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function verPdfTemporal(dataUrl, nombre) {
+            document.getElementById('visorPdfTitulo').innerText = "Vista Previa: " + nombre;
+            document.getElementById('iframePdfViewer').src = dataUrl;
+            document.getElementById('modalVisorPdf').classList.remove('hidden');
+        }
+
+        function cerrarVisorPdf() {
+            document.getElementById('modalVisorPdf').classList.add('hidden');
+            document.getElementById('iframePdfViewer').src = '';
+        }
+
+        // Modales
+        function abrirModalNuevo() {
+            document.getElementById('modalTitulo').innerText = "Nuevo Registro Inmobiliario";
+            document.getElementById('formRegistro').reset();
+            document.getElementById('regIndex').value = '';
+            archivosPdfActuales = [];
+            const hoy = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById('regFechaActualizacion').value = hoy;
+            actualizarListaPdfsUI();
+            document.getElementById('modalRegistro').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalRegistro').classList.add('hidden');
+        }
+
+        function editarRegistro(index) {
+            const reg = registros[index];
+            document.getElementById('modalTitulo').innerText = "Editar Registro Inmobiliario";
+            document.getElementById('regIndex').value = index;
+            document.getElementById('regIdEnlace').value = reg.idEnlace || '';
+            document.getElementById('regTipoCredito').value = reg.tipoCredito || '';
+            document.getElementById('regCartera').value = reg.cartera || '';
+            document.getElementById('regCp').value = reg.cp || '';
+            document.getElementById('regEstado').value = reg.estado || '';
+            document.getElementById('regMunicipio').value = reg.municipio || '';
+            document.getElementById('regColonia').value = reg.colonia || '';
+            document.getElementById('regPrecioPreAuth').value = reg.precioPreAuth || '';
+            document.getElementById('regPrecioVenta').value = reg.precioVenta || '';
+            document.getElementById('regCostoAdquisicion').value = reg.costoAdquisicion || '';
+            document.getElementById('regEtapaActual').value = reg.etapaActual || '';
+            document.getElementById('regEtapaLegal').value = reg.etapaLegal || '';
+            document.getElementById('regStatus').value = reg.status || '';
+            document.getElementById('regAvances').value = reg.avances || '';
+            document.getElementById('regObservaciones').value = reg.observaciones || '';
+            document.getElementById('regResponsable').value = reg.responsable || '';
+            document.getElementById('regFechaRecepcion').value = reg.fechaRecepcion || '';
+            document.getElementById('regFechaActualizacion').value = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            archivosPdfActuales = Array.isArray(reg.pdfs) ? [...reg.pdfs] : [];
+            actualizarListaPdfsUI();
+            calcularUtilidades();
+            document.getElementById('modalRegistro').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function guardarRegistro() {
+            const index = document.getElementById('regIndex').value;
+            const regObj = {
+                idEnlace: document.getElementById('regIdEnlace').value.toUpperCase(),
+                tipoCredito: document.getElementById('regTipoCredito').value.toUpperCase(),
+                cartera: document.getElementById('regCartera').value.toUpperCase(),
+                cp: document.getElementById('regCp').value,
+                estado: document.getElementById('regEstado').value.toUpperCase(),
+                municipio: document.getElementById('regMunicipio').value.toUpperCase(),
+                colonia: document.getElementById('regColonia').value.toUpperCase(),
+                precioPreAuth: document.getElementById('regPrecioPreAuth').value,
+                precioVenta: document.getElementById('regPrecioVenta').value,
+                costoAdquisicion: document.getElementById('regCostoAdquisicion').value,
+                etapaActual: document.getElementById('regEtapaActual').value.toUpperCase(),
+                etapaLegal: document.getElementById('regEtapaLegal').value.toUpperCase(),
+                status: document.getElementById('regStatus').value.toUpperCase(),
+                avances: document.getElementById('regAvances').value.toUpperCase(),
+                observaciones: document.getElementById('regObservaciones').value.toUpperCase(),
+                responsable: document.getElementById('regResponsable').value.toUpperCase(),
+                fechaRecepcion: document.getElementById('regFechaRecepcion').value,
+                fechaActualizacion: document.getElementById('regFechaActualizacion').value,
+                pdfs: [...archivosPdfActuales]
+            };
+
+            if (index === '') {
+                registros.push(regObj);
+            } else {
+                registros[index] = regObj;
+            }
+
+            guardarEnLocalStorage();
+            renderizarTabla();
+            actualizarFiltrosSelects();
+            cerrarModal();
+        }
+
+        function eliminarRegistro(index) {
+            if (confirm("¿Estás seguro de eliminar este registro del sistema?")) {
+                registros.splice(index, 1);
+                guardarEnLocalStorage();
+                renderizarTabla();
+                actualizarFiltrosSelects();
+            }
+        }
+
+        // Renderizado de tabla y KPIs
+        function renderizarTabla() {
+            const tbody = document.getElementById('tablaRegistros');
+            const filtroEstadoVal = document.getElementById('filtroEstado').value.toUpperCase();
+            const filtroMunVal = document.getElementById('filtroMunicipio').value.toUpperCase();
+            const filtroColVal = document.getElementById('filtroColonia').value.toUpperCase();
+            const filtroRespVal = document.getElementById('filtroResponsable').value.toUpperCase();
+            const filtroEtapaVal = document.getElementById('filtroEtapa').value.toUpperCase();
+            const busquedaVal = document.getElementById('searchInput').value.toUpperCase();
+
+            let filtrados = registros.filter(r => {
+                const matchEstado = !filtroEstadoVal || (r.estado || '').includes(filtroEstadoVal);
+                const matchMun = !filtroMunVal || (r.municipio || '').includes(filtroMunVal);
+                const matchCol = !filtroColVal || (r.colonia || '').includes(filtroColVal);
+                const matchResp = !filtroRespVal || (r.responsable || '').includes(filtroRespVal);
+                const matchEtapa = !filtroEtapaVal || (r.etapaActual || '').includes(filtroEtapaVal);
+                
+                const textoCompleto = `${r.idEnlace} ${r.cartera} ${r.estado} ${r.municipio} ${r.colonia} ${r.responsable}`.toUpperCase();
+                const matchBusqueda = !busquedaVal || textoCompleto.includes(busquedaVal);
+
+                return matchEstado && matchMun && matchCol && matchResp && matchEtapa && matchBusqueda;
+            });
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-gray-500 italic">No se encontraron registros activos.</td></tr>`;
+                document.getElementById('contadorMostrados').innerText = "Mostrando 0 registros";
+                actualizarKpis(registros);
+                return;
+            }
+
+            let html = '';
+            filtrados.forEach((r, originalIdx) => {
+                const idxReal = registros.indexOf(r);
+                const ventaNum = parsearMoneda(r.precioVenta);
+                const costoNum = parsearMoneda(r.costoAdquisicion);
+                const utilReal = ventaNum - costoNum;
+                const utilPct = costoNum > 0 ? (utilReal / costoNum) * 100 : 0;
+
+                const pdfsList = Array.isArray(r.pdfs) ? r.pdfs : [];
+                let pdfHtml = '';
+                if (pdfsList.length > 0) {
+                    pdfHtml = `<div class="flex flex-wrap gap-1 justify-center max-w-[140px] mx-auto">`;
+                    pdfsList.forEach((p, pIdx) => {
+                        pdfHtml += `<button onclick="verPdfTemporal('${p.dataUrl}', '${p.name}')" class="px-2 py-0.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 border border-cyan-500/30 rounded text-[10px] font-semibold truncate max-w-[60px]" title="${p.name}">PDF ${pIdx+1}</button>`;
+                    });
+                    pdfHtml += `</div>`;
+                } else {
+                    pdfHtml = `<span class="text-gray-500 text-[11px]">Sin PDF</span>`;
+                }
+
+                html += `
+                    <tr class="hover:bg-gray-800/40 transition-colors">
+                        <td class="py-3 px-4 font-bold text-white">${r.idEnlace || 'N/A'}</td>
+                        <td class="py-3 px-4 text-gray-300 font-medium">${r.cartera || 'N/A'}<br><span class="text-[10px] text-gray-500">${r.tipoCredito || ''}</span></td>
+                        <td class="py-3 px-4 text-gray-300">${r.colonia || ''}, ${r.municipio || ''}<br><span class="text-[10px] text-gray-500">${r.estado || ''} (CP: ${r.cp || ''})</span></td>
+                        <td class="py-3 px-4 font-mono text-gray-300">${r.precioPreAuth || '$0.00'}</td>
+                        <td class="py-3 px-4 font-mono text-amber-400 font-semibold">${r.precioVenta || '$0.00'}</td>
+                        <td class="py-3 px-4 font-mono">
+                            <span class="text-emerald-400 font-semibold">${formatearMoneda(utilReal)}</span><br>
+                            <span class="text-[10px] text-cyan-400">${utilPct.toFixed(2)}%</span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-300">${r.etapaActual || 'N/A'}<br><span class="text-[10px] text-gray-500">${r.etapaLegal || ''}</span></td>
+                        <td class="py-3 px-4 text-center">${pdfHtml}</td>
+                        <td class="py-3 px-4 text-gray-300">${r.responsable || 'N/A'}</td>
+                        <td class="py-3 px-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="editarRegistro(${idxReal})" class="p-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg transition-colors" title="Editar">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="eliminarRegistro(${idxReal})" class="p-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors" title="Eliminar">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            document.getElementById('contadorMostrados').innerText = `Mostrando ${filtrados.length} de ${registros.length} registros`;
+            actualizarKpis(filtrados);
+            lucide.createIcons();
+        }
+
+        function actualizarKpis(lista) {
+            const totalRegs = lista.length;
+            document.getElementById('kpiTotalRegistros').innerText = totalRegs;
+
+            let sumaUtilidad = 0;
+            let sumaPrecioVenta = 0;
+            const carterasConteo = {};
+
+            lista.forEach(r => {
+                const venta = parsearMoneda(r.precioVenta);
+                const costo = parsearMoneda(r.costoAdquisicion);
+                sumaUtilidad += (venta - costo);
+                sumaPrecioVenta += venta;
+
+                if (r.cartera) {
+                    carterasConteo[r.cartera] = (carterasConteo[r.cartera] || 0) + 1;
+                }
+            });
+
+            document.getElementById('kpiUtilidadTotal').innerText = formatearMoneda(sumaUtilidad);
+            document.getElementById('kpiPrecioPromedio').innerText = totalRegs > 0 ? formatearMoneda(sumaPrecioVenta / totalRegs) : '$0.00';
+
+            let carteraPrincipal = "N/A";
+            let maxCount = 0;
+            for (let car in carterasConteo) {
+                if (carterasConteo[car] > maxCount) {
+                    maxCount = carterasConteo[car];
+                    carteraPrincipal = car;
+                }
+            }
+            document.getElementById('kpiCarteraPrincipal').innerText = carteraPrincipal;
+        }
+
+        function actualizarFiltrosSelects() {
+            const estados = [...new Set(registros.map(r => r.estado).filter(Boolean))].sort();
+            const municipios = [...new Set(registros.map(r => r.municipio).filter(Boolean))].sort();
+            const colonias = [...new Set(registros.map(r => r.colonia).filter(Boolean))].sort();
+            const responsables = [...new Set(registros.map(r => r.responsable).filter(Boolean))].sort();
+            const etapas = [...new Set(registros.map(r => r.etapaActual).filter(Boolean))].sort();
+
+            poblarSelect('filtroEstado', estados, "TODOS LOS ESTADOS");
+            poblarSelect('filtroMunicipio', municipios, "TODOS LOS MUNICIPIOS");
+            poblarSelect('filtroColonia', colonias, "TODAS LAS COLONIAS");
+            poblarSelect('filtroResponsable', responsables, "TODOS LOS RESPONSABLES");
+            poblarSelect('filtroEtapa', etapas, "TODAS LAS ETAPAS LEGALES");
+        }
+
+        function poblarSelect(id, opciones, textoDefault) {
+            const select = document.getElementById(id);
+            const actual = select.value;
+            let html = `<option value="">${textoDefault}</option>`;
+            opciones.forEach(op => {
+                html += `<option value="${op}" ${actual === op ? 'selected' : ''}>${op}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        // Exportar e Importar Excel con SheetJS
+        function exportarExcel() {
+            if (registros.length === 0) {
+                alert("No hay registros para exportar.");
+                return;
+            }
+            const datosExport = registros.map(r => ({
+                "ID / Enlace": r.idEnlace,
+                "Tipo Crédito": r.tipoCredito,
+                "Cartera": r.cartera,
+                "Código Postal": r.cp,
+                "Estado": r.estado,
+                "Municipio": r.municipio,
+                "Colonia": r.colonia,
+                "Precio Pre-Auth": r.precioPreAuth,
+                "Precio Venta": r.precioVenta,
+                "Costo Adquisición": r.costoAdquisicion,
+                "Etapa Actual": r.etapaActual,
+                "Etapa Legal": r.etapaLegal,
+                "Status": r.status,
+                "Avances": r.avances,
+                "Observaciones": r.observaciones,
+                "Responsable": r.responsable,
+                "Fecha Recepción": r.fechaRecepcion,
+                "Fecha Actualización": r.fechaActualizacion
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(datosExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario Enlace");
+            XLSX.writeFile(workbook, "Enlace_Business_Pro_Backup.xlsx");
+        }
+
+        function importarExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (json.length === 0) {
+                        alert("El archivo Excel está vacío.");
+                        return;
+                    }
+
+                    registros = json.map(row => ({
+                        idEnlace: row["ID / Enlace"] || row["ID ENLACE"] || '',
+                        tipoCredito: row["Tipo Crédito"] || row["TIPO CREDITO"] || '',
+                        cartera: row["Cartera"] || '',
+                        cp: row["Código Postal"] || row["CODIGO POSTAL"] || '',
+                        estado: row["Estado"] || '',
+                        municipio: row["Municipio"] || '',
+                        colonia: row["Colonia"] || '',
+                        precioPreAuth: row["Precio Pre-Auth"] || row["PRECIO PRE-AUTH"] || '',
+                        precioVenta: row["Precio Venta"] || row["PRECIO VENTA"] || '',
+                        costoAdquisicion: row["Costo Adquisición"] || row["COSTO ADQUISICION"] || '',
+                        etapaActual: row["Etapa Actual"] || row["ETAPA ACTUAL"] || '',
+                        etapaLegal: row["Etapa Legal"] || row["ETAPA LEGAL"] || '',
+                        status: row["Status"] || '',
+                        avances: row["Avances"] || '',
+                        observaciones: row["Observaciones"] || '',
+                        responsable: row["Responsable"] || '',
+                        fechaRecepcion: row["Fecha Recepción"] || row["FECHA RECEPCION"] || '',
+                        fechaActualizacion: row["Fecha Actualización"] || new Date().toLocaleDateString('es-MX'),
+                        pdfs: []
+                    }));
+
+                    guardarEnLocalStorage();
+                    renderizarTabla();
+                    actualizarFiltrosSelects();
+                    alert(`¡Se importaron ${registros.length} registros exitosamente!`);
+                } catch (error) {
+                    console.error("Error al importar Excel:", error);
+                    alert("Ocurrió un error al procesar el archivo Excel.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
+        }
+
+        function verificarDuplicados() {
+            const ids = registros.map(r => r.idEnlace).filter(Boolean);
+            const duplicados = ids.filter((id, index) => ids.indexOf(id) !== index);
+            if (duplicados.length > 0) {
+                alert(`Se encontraron IDs duplicados en la base: ${[...new Set(duplicados)].join(', ')}`);
+            } else {
+                alert("No se encontraron registros con IDs duplicados.");
+            }
+        }
+
+        // Listeners de filtros y búsqueda
+        document.getElementById('searchInput').addEventListener('input', renderizarTabla);
+        document.getElementById('filtroEstado').addEventListener('change', renderizarTabla);
+        document.getElementById('filtroMunicipio').addEventListener('change', renderizarTabla);
+        document.getElementById('filtroColonia').addEventListener('change', renderizarTabla);
+        document.getElementById('filtroResponsable').addEventListener('change', renderizarTabla);
+        document.getElementById('filtroEtapa').addEventListener('change', renderizarTabla);
+
+        // Iniciar al cargar la página
+        window.onload = inicializarSistema;
+    </script>
+</body>
+</html>
