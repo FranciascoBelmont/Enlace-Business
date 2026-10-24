@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.9</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.10</span>
             </div>
         </div>
 
@@ -247,7 +247,7 @@
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (5 DÍGITOS)</label>
                             <div class="relative">
-                                <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 01090">
+                                <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EJ: 22253">
                                 <span id="cpStatus" class="absolute right-3 top-2.5 text-xs font-semibold"></span>
                             </div>
                         </div>
@@ -260,10 +260,8 @@
                             <input type="text" id="f_municipio" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA (DESPLEGABLE)</label>
-                            <select id="f_colonia" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 uppercase">
-                                <option value="">-- INGRESE C.P. PRIMERO --</option>
-                            </select>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA (DESPLEGABLE / ESCRITURA)</label>
+                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ESCRIBA O SELECCIONE COLONIA">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA (CALLE Y NÚMERO)</label>
@@ -377,46 +375,19 @@
 
         async function buscarPorCP(cp) {
             cp = cp.trim();
-            let selectColonia = document.getElementById('f_colonia');
             let status = document.getElementById('cpStatus');
 
             if (cp.length === 5) {
-                status.innerText = "⏳...";
-                status.className = "absolute right-3 top-2.5 text-xs font-semibold text-amber-400";
+                status.innerText = "✓ VÁLIDO";
+                status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
+                // Si está en nuestra base interna rápida, la usa
                 if (sepomexOficialDB[cp]) {
                     document.getElementById('f_estado').value = sepomexOficialDB[cp].estado;
                     document.getElementById('f_municipio').value = sepomexOficialDB[cp].municipio;
-                    selectColonia.innerHTML = '';
-                    sepomexOficialDB[cp].colonias.forEach(col => {
-                        let opt = document.createElement('option');
-                        opt.value = col;
-                        opt.innerText = col;
-                        selectColonia.appendChild(opt);
-                    });
-                    status.innerText = "✓ VÁLIDO";
-                    status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
-                    return;
                 }
-
-                try {
-                    let res = await fetch(`https://api.postalpincode.in/pincode/${cp}`);
-                    let data = await res.json();
-                    if(data && data[0] && data[0].Status === 'Success') {
-                         status.innerText = "✓ VÁLIDO";
-                         status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
-                         return;
-                    }
-                } catch(e) {}
-
-                status.innerText = "❌ ERRÓNEO";
-                status.className = "absolute right-3 top-2.5 text-xs font-semibold text-rose-400";
-                selectColonia.innerHTML = '<option value="">-- C.P. NO RECONOCIDO --</option>';
             } else {
                 status.innerText = "";
-                if (cp.length < 5) {
-                    selectColonia.innerHTML = '<option value="">-- INGRESE C.P. PRIMERO --</option>';
-                }
             }
         }
 
@@ -544,7 +515,6 @@
                 return matchBusqueda && matchEstado && matchMunicipio && matchColonia && matchResp && matchEtapa;
             });
 
-            // Actualizar KPIs dinámicamente con base en los filtrados
             actualizarKPIsFiltrados(filtrados);
 
             if (filtrados.length === 0) {
@@ -714,7 +684,7 @@
             document.getElementById('formRegistro').reset();
             document.getElementById('f_id').value = "";
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
-            document.getElementById('f_colonia').innerHTML = '<option value="">-- INGRESE C.P. PRIMERO --</option>';
+            document.getElementById('f_colonia').value = "";
             document.getElementById('cpStatus').innerText = "";
             document.getElementById('btnEliminarModal').classList.add('hidden');
             document.getElementById('btnEliminarModal').classList.remove('flex');
@@ -738,15 +708,7 @@
             document.getElementById('f_cp').value = item.cp;
             document.getElementById('f_estado').value = toUpper(item.estado);
             document.getElementById('f_municipio').value = toUpper(item.municipio);
-            
-            let selectColonia = document.getElementById('f_colonia');
-            selectColonia.innerHTML = '';
-            let opt = document.createElement('option');
-            opt.value = toUpper(item.colonia);
-            opt.innerText = toUpper(item.colonia);
-            selectColonia.appendChild(opt);
-            selectColonia.value = toUpper(item.colonia);
-
+            document.getElementById('f_colonia').value = toUpper(item.colonia);
             document.getElementById('f_direccion').value = toUpper(item.direccion);
             document.getElementById('f_superficie').value = toUpper(item.superficie);
             document.getElementById('f_construccion').value = toUpper(item.construccion);
@@ -770,7 +732,6 @@
         }
 
         function calcularUtilidades() {
-            // Función auxiliar interna para cálculo del modal
             calcularUtilidadesModal();
         }
 
