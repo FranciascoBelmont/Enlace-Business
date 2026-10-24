@@ -122,10 +122,10 @@
 
             <div class="flex items-center gap-2">
                 <button onclick="exportarExcel()" class="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5">
-                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar Excel
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar a Excel (.xlsx)
                 </button>
                 <label class="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer">
-                    <i data-lucide="upload" class="w-4 h-4"></i> Importar Datos
+                    <i data-lucide="upload" class="w-4 h-4"></i> Importar Datos (.xlsx / .xls)
                     <input type="file" id="inputImportar" accept=".xlsx, .xls" class="hidden" onchange="importarExcel(event)">
                 </label>
             </div>
@@ -150,7 +150,7 @@
                         </tr>
                     </thead>
                     <tbody id="tablaRegistros" class="divide-y divide-gray-800/50 text-xs">
-                        <!-- Inyectado dinámicamente -->
+                        <!-- Carga dinámica -->
                     </tbody>
                 </table>
             </div>
@@ -161,7 +161,7 @@
         </div>
     </main>
 
-    <!-- MODAL NUEVO / EDITAR REGISTRO -->
+    <!-- MODAL REGISTRO -->
     <div id="modalRegistro" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-[#111827] border border-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center bg-gray-950/50">
@@ -174,10 +174,10 @@
             </div>
 
             <div class="p-6 overflow-y-auto flex-1 space-y-6">
-                <form id="formRegistro" class="space-y-6">
+                <form id="formRegistro" class="space-y-6" onsubmit="event.preventDefault();">
                     <input type="hidden" id="regIndex">
 
-                    <!-- DATOS GENERALES & CRÉDITO -->
+                    <!-- DATOS GENERALES -->
                     <div>
                         <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                             <i data-lucide="briefcase" class="w-4 h-4"></i> Datos Generales & Crédito
@@ -198,7 +198,7 @@
                         </div>
                     </div>
 
-                    <!-- UBICACIÓN (LIMPIA) -->
+                    <!-- UBICACIÓN (CAMPOS LIMPIOS) -->
                     <div>
                         <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                             <i data-lucide="map-pin" class="w-4 h-4"></i> Ubicación del Inmueble
@@ -223,10 +223,10 @@
                         </div>
                     </div>
 
-                    <!-- PRECIOS Y FINANZAS -->
+                    <!-- PRECIOS -->
                     <div>
                         <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                            <i data-lucide="dollar-sign" class="w-4 h-4"></i> Precios & Finanzas (Formato Automático)
+                            <i data-lucide="dollar-sign" class="w-4 h-4"></i> Precios & Finanzas
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -254,10 +254,10 @@
                         </div>
                     </div>
 
-                    <!-- PROCESO LEGAL & OBSERVACIONES -->
+                    <!-- PROCESO LEGAL -->
                     <div>
                         <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                            <i data-lucide="scale" class="w-4 h-4"></i> Proceso Legal & Expediente Digital
+                            <i data-lucide="scale" class="w-4 h-4"></i> Proceso Legal & Registro
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
@@ -283,7 +283,7 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN DE EXPEDIENTES PDF (UBICADA ABAJO DE OBSERVACIONES, HASTA 10 ARCHIVOS) -->
+                    <!-- CARGA DE EXPEDIENTES PDF (JUSTO DEBAJO DE OBSERVACIONES) -->
                     <div class="bg-gray-950/60 p-4 rounded-xl border border-cyan-500/20">
                         <div class="flex justify-between items-center mb-3">
                             <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -335,26 +335,25 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE CONTROL -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
         let registros = [];
-        let archivosPdfActuales = []; // Almacena hasta 10 objetos {name, dataUrl}
+        let archivosPdfActuales = [];
 
-        // Inicialización y recuperación de base de datos segura
         function inicializarSistema() {
             try {
-                const llavesPosibles = ['enlace_business_db', 'enlace_business_pro_db', 'enlace_db', 'enlace_business_v3'];
-                let datosCargados = null;
-                for (let llave of llavesPosibles) {
-                    const data = localStorage.getItem(llave);
-                    if (data) {
-                        datosCargados = JSON.parse(data);
-                        if (Array.isArray(datosCargados) && datosCargados.length > 0) break;
+                const llaves = ['enlace_business_db', 'enlace_business_pro_db', 'enlace_db'];
+                let guardado = null;
+                for (let k of llaves) {
+                    const res = localStorage.getItem(k);
+                    if (res) {
+                        guardado = JSON.parse(res);
+                        if (Array.isArray(guardado) && guardado.length > 0) break;
                     }
                 }
-                registros = datosCargados || [];
+                registros = guardado || [];
             } catch (e) {
-                console.error("Error al cargar localStorage:", e);
+                console.error(e);
                 registros = [];
             }
             renderizarTabla();
@@ -366,15 +365,13 @@
             try {
                 localStorage.setItem('enlace_business_db', JSON.stringify(registros));
             } catch (e) {
-                alert("Atención: El almacenamiento local está lleno debido al peso de los archivos PDF adjuntos. Se recomienda exportar a Excel como respaldo.");
+                alert("Atención: Se ha alcanzado el límite de almacenamiento del navegador para archivos PDF. Te recomendamos hacer una exportación de respaldo a Excel.");
             }
         }
 
-        // Formato Moneda Pesos
-        function parsearMoneda(valorStr) {
-            if (!valorStr) return 0;
-            const limpio = valorStr.toString().replace(/[^0-9.]/g, '');
-            return parseFloat(limpio) || 0;
+        function parsearMoneda(str) {
+            if (!str) return 0;
+            return parseFloat(str.toString().replace(/[^0-9.]/g, '')) || 0;
         }
 
         function formatearMoneda(num) {
@@ -397,65 +394,48 @@
         function calcularUtilidades() {
             const venta = parsearMoneda(document.getElementById('regPrecioVenta').value);
             const costo = parsearMoneda(document.getElementById('regCostoAdquisicion').value);
-            const utilidadReal = venta - costo;
-            const utilidadPct = costo > 0 ? (utilidadReal / costo) * 100 : 0;
+            const util = venta - costo;
+            const pct = costo > 0 ? (util / costo) * 100 : 0;
 
-            document.getElementById('regUtilidadReal').value = formatearMoneda(utilidadReal);
-            document.getElementById('regUtilidadPorcentaje').value = utilidadPct.toFixed(2) + '%';
+            document.getElementById('regUtilidadReal').value = formatearMoneda(util);
+            document.getElementById('regUtilidadPorcentaje').value = pct.toFixed(2) + '%';
         }
 
-        // Gestión de hasta 10 PDFs
-        function manejarSubidaPdfs(event) {
-            const files = event.target.files;
+        function manejarSubidaPdfs(e) {
+            const files = e.target.files;
             if (!files || files.length === 0) return;
 
             if (archivosPdfActuales.length + files.length > 10) {
-                alert("Solo se permite un máximo de 10 archivos PDF por registro.");
+                alert("Límite superado: Solo puedes adjuntar hasta 10 expedientes PDF por inmueble.");
                 return;
             }
 
-            let procesados = 0;
+            let cargados = 0;
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type !== 'application/pdf') {
-                    alert(`El archivo ${file.name} no es un PDF válido.`);
-                    continue;
-                }
+                const f = files[i];
+                if (f.type !== 'application/pdf') continue;
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    archivosPdfActuales.push({
-                        name: file.name,
-                        dataUrl: e.target.result
-                    });
-                    procesados++;
-                    if (procesados === files.length || (i === files.length - 1)) {
+                reader.onload = function(evt) {
+                    archivosPdfActuales.push({ name: f.name, dataUrl: evt.target.result });
+                    cargados++;
+                    if (cargados === files.length || i === files.length - 1) {
                         actualizarListaPdfsUI();
                     }
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(f);
             }
-            event.target.value = '';
+            e.target.value = '';
         }
 
-        function eliminarPdfActual(index) {
-            archivosPdfActuales.splice(index, 1);
+        function eliminarPdfActual(idx) {
+            archivosPdfActuales.splice(idx, 1);
             actualizarListaPdfsUI();
         }
 
         function actualizarListaPdfsUI() {
             const container = document.getElementById('listaPdfsContainer');
             const badge = document.getElementById('contadorPdfBadge');
-            const btnContenedor = document.getElementById('btnContenedorPdf');
-
             badge.innerText = `${archivosPdfActuales.length} / 10`;
-
-            if (archivosPdfActuales.length >= 10) {
-                btnContenedor.style.opacity = '0.5';
-                btnContenedor.style.pointerEvents = 'none';
-            } else {
-                btnContenedor.style.opacity = '1';
-                btnContenedor.style.pointerEvents = 'auto';
-            }
 
             if (archivosPdfActuales.length === 0) {
                 container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-2">Ningún archivo PDF adjunto todavía.</p>`;
@@ -491,14 +471,12 @@
             document.getElementById('iframePdfViewer').src = '';
         }
 
-        // Modales
         function abrirModalNuevo() {
             document.getElementById('modalTitulo').innerText = "Nuevo Registro Inmobiliario";
             document.getElementById('formRegistro').reset();
             document.getElementById('regIndex').value = '';
             archivosPdfActuales = [];
-            const hoy = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            document.getElementById('regFechaActualizacion').value = hoy;
+            document.getElementById('regFechaActualizacion').value = new Date().toLocaleDateString('es-MX');
             actualizarListaPdfsUI();
             document.getElementById('modalRegistro').classList.remove('hidden');
             lucide.createIcons();
@@ -529,7 +507,7 @@
             document.getElementById('regObservaciones').value = reg.observaciones || '';
             document.getElementById('regResponsable').value = reg.responsable || '';
             document.getElementById('regFechaRecepcion').value = reg.fechaRecepcion || '';
-            document.getElementById('regFechaActualizacion').value = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById('regFechaActualizacion').value = new Date().toLocaleDateString('es-MX');
 
             archivosPdfActuales = Array.isArray(reg.pdfs) ? [...reg.pdfs] : [];
             actualizarListaPdfsUI();
@@ -583,27 +561,24 @@
             }
         }
 
-        // Renderizado de tabla y KPIs
         function renderizarTabla() {
             const tbody = document.getElementById('tablaRegistros');
-            const filtroEstadoVal = document.getElementById('filtroEstado').value.toUpperCase();
-            const filtroMunVal = document.getElementById('filtroMunicipio').value.toUpperCase();
-            const filtroColVal = document.getElementById('filtroColonia').value.toUpperCase();
-            const filtroRespVal = document.getElementById('filtroResponsable').value.toUpperCase();
-            const filtroEtapaVal = document.getElementById('filtroEtapa').value.toUpperCase();
-            const busquedaVal = document.getElementById('searchInput').value.toUpperCase();
+            const fEdo = document.getElementById('filtroEstado').value.toUpperCase();
+            const fMun = document.getElementById('filtroMunicipio').value.toUpperCase();
+            const fCol = document.getElementById('filtroColonia').value.toUpperCase();
+            const fResp = document.getElementById('filtroResponsable').value.toUpperCase();
+            const fEtapa = document.getElementById('filtroEtapa').value.toUpperCase();
+            const q = document.getElementById('searchInput').value.toUpperCase();
 
             let filtrados = registros.filter(r => {
-                const matchEstado = !filtroEstadoVal || (r.estado || '').includes(filtroEstadoVal);
-                const matchMun = !filtroMunVal || (r.municipio || '').includes(filtroMunVal);
-                const matchCol = !filtroColVal || (r.colonia || '').includes(filtroColVal);
-                const matchResp = !filtroRespVal || (r.responsable || '').includes(filtroRespVal);
-                const matchEtapa = !filtroEtapaVal || (r.etapaActual || '').includes(filtroEtapaVal);
-                
-                const textoCompleto = `${r.idEnlace} ${r.cartera} ${r.estado} ${r.municipio} ${r.colonia} ${r.responsable}`.toUpperCase();
-                const matchBusqueda = !busquedaVal || textoCompleto.includes(busquedaVal);
-
-                return matchEstado && matchMun && matchCol && matchResp && matchEtapa && matchBusqueda;
+                const matchEdo = !fEdo || (r.estado || '').includes(fEdo);
+                const matchMun = !fMun || (r.municipio || '').includes(fMun);
+                const matchCol = !fCol || (r.colonia || '').includes(fCol);
+                const matchResp = !fResp || (r.responsable || '').includes(fResp);
+                const matchEtapa = !fEtapa || (r.etapaActual || '').includes(fEtapa);
+                const textComp = `${r.idEnlace} ${r.cartera} ${r.estado} ${r.municipio} ${r.colonia} ${r.responsable}`.toUpperCase();
+                const matchSearch = !q || textComp.includes(q);
+                return matchEdo && matchMun && matchCol && matchResp && matchEtapa && matchSearch;
             });
 
             if (filtrados.length === 0) {
@@ -614,7 +589,7 @@
             }
 
             let html = '';
-            filtrados.forEach((r, originalIdx) => {
+            filtrados.forEach((r) => {
                 const idxReal = registros.indexOf(r);
                 const ventaNum = parsearMoneda(r.precioVenta);
                 const costoNum = parsearMoneda(r.costoAdquisicion);
@@ -668,69 +643,45 @@
         }
 
         function actualizarKpis(lista) {
-            const totalRegs = lista.length;
-            document.getElementById('kpiTotalRegistros').innerText = totalRegs;
-
-            let sumaUtilidad = 0;
-            let sumaPrecioVenta = 0;
-            const carterasConteo = {};
-
+            document.getElementById('kpiTotalRegistros').innerText = lista.length;
+            let sumaUtil = 0, sumaVenta = 0, cMap = {};
             lista.forEach(r => {
-                const venta = parsearMoneda(r.precioVenta);
-                const costo = parsearMoneda(r.costoAdquisicion);
-                sumaUtilidad += (venta - costo);
-                sumaPrecioVenta += venta;
-
-                if (r.cartera) {
-                    carterasConteo[r.cartera] = (carterasConteo[r.cartera] || 0) + 1;
-                }
+                const v = parsearMoneda(r.precioVenta);
+                const c = parsearMoneda(r.costoAdquisicion);
+                sumaUtil += (v - c);
+                sumaVenta += v;
+                if (r.cartera) cMap[r.cartera] = (cMap[r.cartera] || 0) + 1;
             });
 
-            document.getElementById('kpiUtilidadTotal').innerText = formatearMoneda(sumaUtilidad);
-            document.getElementById('kpiPrecioPromedio').innerText = totalRegs > 0 ? formatearMoneda(sumaPrecioVenta / totalRegs) : '$0.00';
+            document.getElementById('kpiUtilidadTotal').innerText = formatearMoneda(sumaUtil);
+            document.getElementById('kpiPrecioPromedio').innerText = lista.length > 0 ? formatearMoneda(sumaVenta / lista.length) : '$0.00';
 
-            let carteraPrincipal = "N/A";
-            let maxCount = 0;
-            for (let car in carterasConteo) {
-                if (carterasConteo[car] > maxCount) {
-                    maxCount = carterasConteo[car];
-                    carteraPrincipal = car;
-                }
+            let carTop = "N/A", max = 0;
+            for (let k in cMap) {
+                if (cMap[k] > max) { max = cMap[k]; carTop = k; }
             }
-            document.getElementById('kpiCarteraPrincipal').innerText = carteraPrincipal;
+            document.getElementById('kpiCarteraPrincipal').innerText = carTop;
         }
 
         function actualizarFiltrosSelects() {
-            const estados = [...new Set(registros.map(r => r.estado).filter(Boolean))].sort();
-            const municipios = [...new Set(registros.map(r => r.municipio).filter(Boolean))].sort();
-            const colonias = [...new Set(registros.map(r => r.colonia).filter(Boolean))].sort();
-            const responsables = [...new Set(registros.map(r => r.responsable).filter(Boolean))].sort();
-            const etapas = [...new Set(registros.map(r => r.etapaActual).filter(Boolean))].sort();
-
-            poblarSelect('filtroEstado', estados, "TODOS LOS ESTADOS");
-            poblarSelect('filtroMunicipio', municipios, "TODOS LOS MUNICIPIOS");
-            poblarSelect('filtroColonia', colonias, "TODAS LAS COLONIAS");
-            poblarSelect('filtroResponsable', responsables, "TODOS LOS RESPONSABLES");
-            poblarSelect('filtroEtapa', etapas, "TODAS LAS ETAPAS LEGALES");
+            poblarSelect('filtroEstado', [...new Set(registros.map(r => r.estado).filter(Boolean))].sort(), "TODOS LOS ESTADOS");
+            poblarSelect('filtroMunicipio', [...new Set(registros.map(r => r.municipio).filter(Boolean))].sort(), "TODOS LOS MUNICIPIOS");
+            poblarSelect('filtroColonia', [...new Set(registros.map(r => r.colonia).filter(Boolean))].sort(), "TODAS LAS COLONIAS");
+            poblarSelect('filtroResponsable', [...new Set(registros.map(r => r.responsable).filter(Boolean))].sort(), "TODOS LOS RESPONSABLES");
+            poblarSelect('filtroEtapa', [...new Set(registros.map(r => r.etapaActual).filter(Boolean))].sort(), "TODAS LAS ETAPAS LEGALES");
         }
 
-        function poblarSelect(id, opciones, textoDefault) {
+        function poblarSelect(id, opciones, def) {
             const select = document.getElementById(id);
-            const actual = select.value;
-            let html = `<option value="">${textoDefault}</option>`;
-            opciones.forEach(op => {
-                html += `<option value="${op}" ${actual === op ? 'selected' : ''}>${op}</option>`;
-            });
+            const val = select.value;
+            let html = `<option value="">${def}</option>`;
+            opciones.forEach(op => html += `<option value="${op}" ${val === op ? 'selected' : ''}>${op}</option>`);
             select.innerHTML = html;
         }
 
-        // Exportar e Importar Excel con SheetJS
         function exportarExcel() {
-            if (registros.length === 0) {
-                alert("No hay registros para exportar.");
-                return;
-            }
-            const datosExport = registros.map(r => ({
+            if (registros.length === 0) return alert("No hay datos para exportar.");
+            const dataExport = registros.map(r => ({
                 "ID / Enlace": r.idEnlace,
                 "Tipo Crédito": r.tipoCredito,
                 "Cartera": r.cartera,
@@ -750,31 +701,21 @@
                 "Fecha Recepción": r.fechaRecepcion,
                 "Fecha Actualización": r.fechaActualizacion
             }));
-
-            const worksheet = XLSX.utils.json_to_sheet(datosExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario Enlace");
-            XLSX.writeFile(workbook, "Enlace_Business_Pro_Backup.xlsx");
+            const ws = XLSX.utils.json_to_sheet(dataExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inventario");
+            XLSX.writeFile(wb, "Enlace_Business_Backup.xlsx");
         }
 
-        function importarExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
+        function importarExcel(evt) {
+            const f = evt.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const json = XLSX.utils.sheet_to_json(worksheet);
-
-                    if (json.length === 0) {
-                        alert("El archivo Excel está vacío.");
-                        return;
-                    }
-
+                    const wb = XLSX.read(data, { type: 'array' });
+                    const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
                     registros = json.map(row => ({
                         idEnlace: row["ID / Enlace"] || row["ID ENLACE"] || '',
                         tipoCredito: row["Tipo Crédito"] || row["TIPO CREDITO"] || '',
@@ -796,31 +737,25 @@
                         fechaActualizacion: row["Fecha Actualización"] || new Date().toLocaleDateString('es-MX'),
                         pdfs: []
                     }));
-
                     guardarEnLocalStorage();
                     renderizarTabla();
                     actualizarFiltrosSelects();
-                    alert(`¡Se importaron ${registros.length} registros exitosamente!`);
-                } catch (error) {
-                    console.error("Error al importar Excel:", error);
-                    alert("Ocurrió un error al procesar el archivo Excel.");
+                    alert(`¡Importación exitosa de ${registros.length} registros!`);
+                } catch (err) {
+                    alert("Error al leer el archivo Excel.");
                 }
             };
-            reader.readAsArrayBuffer(file);
-            event.target.value = '';
+            r.readAsArrayBuffer(f);
+            evt.target.value = '';
         }
 
         function verificarDuplicados() {
             const ids = registros.map(r => r.idEnlace).filter(Boolean);
-            const duplicados = ids.filter((id, index) => ids.indexOf(id) !== index);
-            if (duplicados.length > 0) {
-                alert(`Se encontraron IDs duplicados en la base: ${[...new Set(duplicados)].join(', ')}`);
-            } else {
-                alert("No se encontraron registros con IDs duplicados.");
-            }
+            const dups = ids.filter((id, idx) => ids.indexOf(id) !== idx);
+            if (dups.length > 0) alert(`IDs duplicados encontrados: ${[...new Set(dups)].join(', ')}`);
+            else alert("No existen IDs duplicados.");
         }
 
-        // Listeners de filtros y búsqueda
         document.getElementById('searchInput').addEventListener('input', renderizarTabla);
         document.getElementById('filtroEstado').addEventListener('change', renderizarTabla);
         document.getElementById('filtroMunicipio').addEventListener('change', renderizarTabla);
@@ -828,7 +763,6 @@
         document.getElementById('filtroResponsable').addEventListener('change', renderizarTabla);
         document.getElementById('filtroEtapa').addEventListener('change', renderizarTabla);
 
-        // Iniciar al cargar la página
         window.onload = inicializarSistema;
     </script>
 </body>
