@@ -123,8 +123,8 @@
                 </select>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="exportarJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar Respaldo
+                <button onclick="exportarExcelXLS()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
+                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xls)
                 </button>
                 <button onclick="importarJSONPrompt()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos
@@ -156,11 +156,25 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.13</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.14</span>
             </div>
         </div>
 
     </main>
+
+    <!-- Modal Alerta Personalizada al Centro -->
+    <div id="modalAlerta" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl border border-cyan-500/40 shadow-2xl p-6 text-center space-y-4">
+            <div class="mx-auto w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
+                <i data-lucide="info" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-wider">ENLACE BUSINESS PRO</h3>
+            <p id="alertaTextoMensaje" class="text-sm text-white font-medium"></p>
+            <button onclick="cerrarAlerta()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg text-sm shadow-lg shadow-cyan-500/20 transition-all">
+                Aceptar
+            </button>
+        </div>
+    </div>
 
     <!-- Modal Formulario Detalle -->
     <div id="modalRegistro" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -341,34 +355,6 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base de datos completa cargada desde tu archivo Excel oficial de códigos postales
-        const cpOficialExcelDB = {
-            "01000": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01010": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01020": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01030": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01040": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01048": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01050": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01060": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01070": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01080": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "01090": { "estado": "CIUDAD DE MÉXICO", "municipio": "ÁLVARO OBREGÓN" },
-            "09230": { "estado": "CIUDAD DE MÉXICO", "municipio": "IZTAPALAPA" },
-            "22253": { "estado": "BAJA CALIFORNIA", "municipio": "TIJUANA" },
-            "54080": { "estado": "ESTADO DE MÉXICO", "municipio": "TLALNEPANTLA DE BAZ" },
-            "54700": { "estado": "ESTADO DE MÉXICO", "municipio": "CUAUTITLÁN" },
-            "64000": { "estado": "NUEVO LEÓN", "municipio": "MONTERREY" },
-            "44100": { "estado": "JALISCO", "municipio": "GUADALAJARA" },
-            "45404": { "estado": "JALISCO", "municipio": "TONALÁ" },
-            // Rango completo oficial integrado de los 32,000+ C.P. del archivo
-            "01000":"01999","02000":"02999","03000":"03999","04000":"04999","05000":"05999",
-            "06000":"06999","07000":"07999","08000":"08999","09000":"09999","10000":"10999",
-            "11000":"11999","12000":"12999","13000":"13999","14000":"14999","15000":"15999",
-            "16000":"16999","17000":"17999","54000":"54999","22000":"22999","64000":"64999"
-        };
-
-        // Diccionario exacto complementario de los C.P. de tu archivo
         const sepomexOficialDB = {
             "09230": { estado: "CIUDAD DE MÉXICO", municipio: "IZTAPALAPA" },
             "22253": { estado: "BAJA CALIFORNIA", municipio: "TIJUANA" },
@@ -381,6 +367,17 @@
         };
 
         const mesesEs = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+
+        // Función personalizada para mostrar alertas centrado en pantalla
+        function mostrarAlerta(mensaje) {
+            document.getElementById('alertaTextoMensaje').innerText = mensaje;
+            document.getElementById('modalAlerta').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function cerrarAlerta() {
+            document.getElementById('modalAlerta').classList.add('hidden');
+        }
 
         function formatearFechaRecepcion(input) {
             let val = input.value.trim();
@@ -411,17 +408,14 @@
                 status.innerText = "✓ VÁLIDO";
                 status.className = "absolute right-3 top-2.5 text-xs font-semibold text-emerald-400";
                 
-                // Búsqueda en la base de datos de Excel
                 if (sepomexOficialDB[cp]) {
                     document.getElementById('f_estado').value = sepomexOficialDB[cp].estado;
-                    document.getElementById('f_municipio').value = cpOficialExcelDB[cp].municipio;
+                    document.getElementById('f_municipio').value = sepomexOficialDB[cp].municipio;
                 } else {
-                    // Autocompletado general inteligente basado en rangos oficiales de tus datos de Excel si no está en la lista directa
                     let prefix = parseInt(cp.substring(0, 2), 10);
                     let estadoGenerico = "MÉXICO";
                     let municipioGenerico = "MUNICIPIO";
 
-                    // Asignación por prefijo geográfico postal oficial
                     if (cp.startsWith("01") || cp.startsWith("02") || cp.startsWith("03") || cp.startsWith("04") || cp.startsWith("05") || cp.startsWith("06") || cp.startsWith("07") || cp.startsWith("08") || cp.startsWith("09") || cp.startsWith("10") || cp.startsWith("11") || cp.startsWith("12") || cp.startsWith("13") || cp.startsWith("14") || cp.startsWith("15") || cp.startsWith("16")) {
                         estadoGenerico = "CIUDAD DE MÉXICO";
                         municipioGenerico = cp.startsWith("09") ? "IZTAPALAPA" : (cp.startsWith("01") ? "ÁLVARO OBREGÓN" : "ALCALDÍA CDMX");
@@ -487,7 +481,7 @@
             let existe = registros.some((r, idx) => r.id.toString() === idVal.toString() && idx !== editIdx);
             
             if (existe) {
-                alert(`¡ATENCIÓN! EL ID NÚMERO ${idVal} YA EXISTE EN OTRO REGISTRO DE LA BASE DE DATOS. POR FAVOR INGRESE UN ID DIFERENTE.`);
+                mostrarAlerta(`¡ATENCIÓN! EL ID NÚMERO ${idVal} YA EXISTE EN OTRO REGISTRO DE LA BASE DE DATOS. POR FAVOR INGRESE UN ID DIFERENTE.`);
                 document.getElementById('f_id').value = "";
                 document.getElementById('f_id').focus();
             }
@@ -500,7 +494,7 @@
             let existe = registros.some((r, idx) => r.id_enlace.toUpperCase() === val && idx !== editIdx);
 
             if (existe) {
-                alert(`¡ATENCIÓN! EL ID DE ENLACE "${val}" YA ESTÁ REGISTRADO EN OTRO INMUEBLE. INGRESE UNO DISTINTO.`);
+                mostrarAlerta(`¡ATENCIÓN! EL ID DE ENLACE "${val}" YA ESTÁ REGISTRADO EN OTRO INMUEBLE. INGRESE UNO DISTINTO.`);
                 input.value = "";
                 input.focus();
             }
@@ -826,19 +820,19 @@
             let idEnlaceIngresado = toUpper(document.getElementById('f_id_enlace').value);
 
             if (!idIngresado) {
-                alert("POR FAVOR INGRESE UN ID (NÚMERO) PARA GUARDAR EL REGISTRO.");
+                mostrarAlerta("POR FAVOR INGRESE UN ID (NÚMERO) PARA GUARDAR EL REGISTRO.");
                 return;
             }
 
             let duplicadoId = registros.some((r, idx) => r.id.toString() === idIngresado.toString() && idx !== index);
             if (duplicadoId) {
-                alert(`¡ERROR! EL ID ${idIngresado} YA EXISTE EN OTRO REGISTRO.`);
+                mostrarAlerta(`¡ERROR! EL ID ${idIngresado} YA EXISTE EN OTRO REGISTRO.`);
                 return;
             }
 
             let duplicadoEnlace = registros.some((r, idx) => r.id_enlace.toUpperCase() === idEnlaceIngresado && idx !== index);
             if (duplicadoEnlace && idEnlaceIngresado) {
-                alert(`¡ERROR! EL ID DE ENLACE "${idEnlaceIngresado}" YA ESTÁ REGISTRADO.`);
+                mostrarAlerta(`¡ERROR! EL ID DE ENLACE "${idEnlaceIngresado}" YA ESTÁ REGISTRADO.`);
                 return;
             }
 
@@ -886,7 +880,6 @@
                 registros.splice(index, 1);
                 guardarEnLocalStorage();
                 poblarFiltros();
-                renderizarStats();
                 renderizarTabla();
             }
         }
@@ -903,20 +896,91 @@
             let creditos = registros.map(r => r.credito);
             let duplicados = creditos.filter((item, index) => creditos.indexOf(item) !== index);
             if (duplicados.length > 0) {
-                alert("¡ATENCIÓN! SE ENCONTRARON NÚMEROS DE CRÉDITO DUPLICADOS: " + [...new Set(duplicados)].join(', '));
+                mostrarAlerta("¡ATENCIÓN! SE ENCONTRARON NÚMEROS DE CRÉDITO DUPLICADOS: " + [...new Set(duplicados)].join(', '));
             } else {
-                alert("VERIFICACIÓN COMPLETA: NO SE ENCONTRARON CRÉDITOS DUPLICADOS EN LA BASE DE DATOS ACTIVA.");
+                mostrarAlerta("VERIFICACIÓN COMPLETA: NO SE ENCONTRARON CRÉDITOS DUPLICADOS EN LA BASE DE DATOS ACTIVA.");
             }
         }
 
-        function exportarJSON() {
-            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registros, null, 2));
-            let downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "enlace_business_backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+        // Exportar directamente en formato nativo de Excel (.xls) compatible con celdas y filas
+        function exportarExcelXLS() {
+            if (registros.length === 0) {
+                mostrarAlerta("NO HAY REGISTROS PARA EXPORTAR.");
+                return;
+            }
+
+            let htmlTabla = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head><meta charset="utf-8"></head>
+                <body>
+                <table border="1">
+                    <thead>
+                        <tr style="background-color: #00f0ff; color: #000; font-weight: bold;">
+                            <th>ID</th>
+                            <th>ID ENLACE</th>
+                            <th>CRÉDITO</th>
+                            <th>CARTERA</th>
+                            <th>RESPONSABLE</th>
+                            <th>PRECIO PRE-AUTH</th>
+                            <th>PRECIO VENTA</th>
+                            <th>C.P.</th>
+                            <th>ESTADO</th>
+                            <th>MUNICIPIO</th>
+                            <th>COLONIA</th>
+                            <th>DIRECCIÓN</th>
+                            <th>TIPO PROPIEDAD</th>
+                            <th>SUPERFICIE</th>
+                            <th>CONSTRUCCIÓN</th>
+                            <th>ETAPA ACTUAL</th>
+                            <th>ETAPA LEGAL</th>
+                            <th>STATUS</th>
+                            <th>AVANCES</th>
+                            <th>OBSERVACIONES</th>
+                            <th>FECHA RECEPCIÓN</th>
+                            <th>FECHA ACTUALIZACIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            registros.forEach(r => {
+                htmlTabla += `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.id_enlace}</td>
+                        <td>${r.credito}</td>
+                        <td>${r.cartera}</td>
+                        <td>${r.responsable}</td>
+                        <td>${r.precio_pre}</td>
+                        <td>${r.precio_venta}</td>
+                        <td>${r.cp}</td>
+                        <td>${r.estado}</td>
+                        <td>${r.municipio}</td>
+                        <td>${r.colonia}</td>
+                        <td>${r.direccion}</td>
+                        <td>${r.tipo_prop}</td>
+                        <td>${r.superficie}</td>
+                        <td>${r.construccion}</td>
+                        <td>${r.etapa_actual}</td>
+                        <td>${r.etapa_legal}</td>
+                        <td>${r.status}</td>
+                        <td>${r.avances}</td>
+                        <td>${r.observaciones}</td>
+                        <td>${r.recepcion}</td>
+                        <td>${r.actualizacion}</td>
+                    </tr>
+                `;
+            });
+
+            htmlTabla += `</tbody></table></body></html>`;
+
+            let blob = new Blob([htmlTabla], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "enlace_business_base_activa.xls";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         }
 
         function importarJSONPrompt() {
@@ -933,12 +997,12 @@
                             registros = contenido;
                             guardarEnLocalStorage();
                             initApp();
-                            alert("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
+                            mostrarAlerta("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
                         } else {
-                            alert("EL ARCHIVO NO TIENE EL FORMATO CORRECTO.");
+                            mostrarAlerta("EL ARCHIVO NO TIENE EL FORMATO CORRECTO.");
                         }
                     } catch(err) {
-                        alert("ERROR AL LEER EL ARCHIVO JSON.");
+                        mostrarAlerta("ERROR AL LEER EL ARCHIVO JSON.");
                     }
                 }
             }
