@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlace Business Pro v3.33</title>
+    <title>Enlace Business Pro v3.34</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- SheetJS para Excel -->
@@ -156,7 +156,7 @@
             </div>
             <div class="bg-gray-950/60 border-t border-gray-800 p-3 text-xs text-gray-400 flex justify-between items-center">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.33</span>
+                <span class="text-[11px] text-cyan-500/80 font-mono">Enlace Business Database Engine v3.34</span>
             </div>
         </div>
     </main>
@@ -347,25 +347,28 @@
                 for (let k of llaves) {
                     const res = localStorage.getItem(k);
                     if (res) {
-                        guardado = JSON.parse(res);
-                        if (Array.isArray(guardado) && guardado.length > 0) break;
+                        const parsed = JSON.parse(res);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            guardado = parsed;
+                            break;
+                        }
                     }
                 }
                 registros = guardado || [];
             } catch (e) {
-                console.error(e);
+                console.error("Error al cargar localStorage, reiniciando base:", e);
                 registros = [];
             }
             renderizarTabla();
             actualizarFiltrosSelects();
-            lucide.createIcons();
+            try { lucide.createIcons(); } catch(err){}
         }
 
         function guardarEnLocalStorage() {
             try {
                 localStorage.setItem('enlace_business_db', JSON.stringify(registros));
             } catch (e) {
-                alert("Atención: El peso acumulado de los registros con PDFs supera la memoria local. Realiza una exportación a Excel para respaldar.");
+                alert("Atención: El peso acumulado de los registros supera la memoria local. Realiza una exportación a Excel para respaldar.");
             }
         }
 
@@ -435,7 +438,7 @@
         function actualizarListaPdfsUI() {
             const container = document.getElementById('listaPdfsContainer');
             const badge = document.getElementById('contadorPdfBadge');
-            badge.innerText = `${archivosPdfActuales.length} / 5`;
+            if (badge) badge.innerText = `${archivosPdfActuales.length} / 5`;
 
             if (archivosPdfActuales.length === 0) {
                 container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-2">Ningún archivo PDF adjunto todavía.</p>`;
@@ -457,7 +460,7 @@
                 `;
             });
             container.innerHTML = html;
-            lucide.createIcons();
+            try { lucide.createIcons(); } catch(err){}
         }
 
         function verPdfTemporal(dataUrl, nombre) {
@@ -479,7 +482,7 @@
             document.getElementById('regFechaActualizacion').value = new Date().toLocaleDateString('es-MX');
             actualizarListaPdfsUI();
             document.getElementById('modalRegistro').classList.remove('hidden');
-            lucide.createIcons();
+            try { lucide.createIcons(); } catch(err){}
         }
 
         function cerrarModal() {
@@ -513,7 +516,7 @@
             actualizarListaPdfsUI();
             calcularUtilidades();
             document.getElementById('modalRegistro').classList.remove('hidden');
-            lucide.createIcons();
+            try { lucide.createIcons(); } catch(err){}
         }
 
         function guardarRegistro() {
@@ -540,10 +543,10 @@
                 pdfs: [...archivosPdfActuales]
             };
 
-            if (index === '') {
+            if (index === '' || index < 0) {
                 registros.push(regObj);
             } else {
-                if (archivosPdfActuales.length === 0 && registros[index].pdfs) {
+                if (archivosPdfActuales.length === 0 && registros[index] && registros[index].pdfs) {
                     regObj.pdfs = registros[index].pdfs;
                 }
                 registros[index] = regObj;
@@ -566,6 +569,8 @@
 
         function renderizarTabla() {
             const tbody = document.getElementById('tablaRegistros');
+            if (!tbody) return;
+
             const fEdo = document.getElementById('filtroEstado').value.toUpperCase();
             const fMun = document.getElementById('filtroMunicipio').value.toUpperCase();
             const fCol = document.getElementById('filtroColonia').value.toUpperCase();
@@ -579,7 +584,7 @@
                 const matchCol = !fCol || (r.colonia || '').includes(fCol);
                 const matchResp = !fResp || (r.responsable || '').includes(fResp);
                 const matchEtapa = !fEtapa || (r.etapaActual || '').includes(fEtapa);
-                const textComp = `${r.idEnlace} ${r.cartera} ${r.estado} ${r.municipio} ${r.colonia} ${r.responsable}`.toUpperCase();
+                const textComp = `${r.idEnlace || ''} ${r.cartera || ''} ${r.estado || ''} ${r.municipio || ''} ${r.colonia || ''} ${r.responsable || ''}`.toUpperCase();
                 const matchSearch = !q || textComp.includes(q);
                 return matchEdo && matchMun && matchCol && matchResp && matchEtapa && matchSearch;
             });
@@ -642,7 +647,7 @@
             tbody.innerHTML = html;
             document.getElementById('contadorMostrados').innerText = `Mostrando ${filtrados.length} de ${registros.length} registros`;
             actualizarKpis(filtrados);
-            lucide.createIcons();
+            try { lucide.createIcons(); } catch(err){}
         }
 
         function actualizarKpis(lista) {
@@ -676,6 +681,7 @@
 
         function poblarSelect(id, opciones, def) {
             const select = document.getElementById(id);
+            if (!select) return;
             const val = select.value;
             let html = `<option value="">${def}</option>`;
             opciones.forEach(op => html += `<option value="${op}" ${val === op ? 'selected' : ''}>${op}</option>`);
