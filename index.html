@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enlace Business Pro - Sistema Local</title>
-    <!-- Tailwind CSS desde CDN estable -->
+    <title>Enlace Business Pro - Sistema Maestro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS para Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { background-color: #0b0f19; color: #f3f4f6; font-family: sans-serif; }
@@ -14,21 +12,19 @@
 </head>
 <body class="min-h-screen flex flex-col p-6">
 
-    <!-- HEADER -->
     <header class="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl">
         <div>
             <h1 class="text-xl font-bold text-white">ENLACE <span class="text-cyan-400">BUSINESS PRO</span></h1>
             <p class="text-xs text-gray-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
         </div>
-        <div class="flex items-center gap-3">
-            <input type="text" id="searchInput" placeholder="BUSCAR..." class="px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500 uppercase">
-            <button onclick="abrirModalNuevo()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-lg text-xs transition-all shadow-lg">
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <input type="text" id="searchInput" placeholder="BUSCAR EN BASE DE DATOS..." class="px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm text-white focus:outline-none focus:border-cyan-500 uppercase flex-1 md:w-72">
+            <button onclick="abrirModalNuevo()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-lg text-xs transition-all shadow-lg whitespace-nowrap">
                 + Nuevo Registro
             </button>
         </div>
     </header>
 
-    <!-- KPIS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
             <p class="text-xs text-gray-400 uppercase">Total Registros</p>
@@ -48,7 +44,24 @@
         </div>
     </div>
 
-    <!-- TABLA -->
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-3 flex-1">
+            <select id="filtroEstado" class="bg-gray-950 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2">
+                <option value="">TODOS LOS ESTADOS</option>
+            </select>
+            <select id="filtroCartera" class="bg-gray-950 border border-gray-800 text-gray-300 text-xs rounded-lg px-3 py-2">
+                <option value="">TODAS LAS CARTERAS</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="exportarExcel()" class="px-3.5 py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-semibold">Exportar Excel</button>
+            <label class="px-3.5 py-2 bg-gray-800 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold cursor-pointer">
+                Importar Excel
+                <input type="file" id="inputImportar" accept=".xlsx, .xls" class="hidden" onchange="importarExcel(event)">
+            </label>
+        </div>
+    </div>
+
     <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden flex-1 shadow-2xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -57,7 +70,6 @@
                         <th class="py-3 px-4">ID / Enlace</th>
                         <th class="py-3 px-4">Crédito & Cartera</th>
                         <th class="py-3 px-4">Ubicación</th>
-                        <th class="py-3 px-4">Precio Pre-Auth</th>
                         <th class="py-3 px-4">Precio Venta</th>
                         <th class="py-3 px-4">Utilidad Real</th>
                         <th class="py-3 px-4">Etapa Actual</th>
@@ -65,14 +77,11 @@
                         <th class="py-3 px-4 text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tablaRegistros" class="divide-y divide-gray-800 text-xs">
-                    <!-- Dinámico -->
-                </tbody>
+                <tbody id="tablaRegistros" class="divide-y divide-gray-800 text-xs"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- MODAL NUEVO / EDITAR -->
     <div id="modalRegistro" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full p-6 space-y-4">
             <h3 id="modalTitulo" class="text-base font-bold text-white">Nuevo Registro Inmobiliario</h3>
@@ -118,35 +127,52 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE CONTROL -->
     <script>
         let registros = [
             { idEnlace: "EN3012", cartera: "RECUPERACIÓN BANCARIA", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "LOS REYES I", precioVenta: "$450,421.00", costoAdquisicion: "$100,000.00", etapaActual: "OBTENCIÓN DE AVALÚOS", responsable: "FRANCISCO BELMONT" },
-            { idEnlace: "EN63211", cartera: "HIPOTECARIO", estado: "CDMX", municipio: "BENITO JUÁREZ", colonia: "DEL VALLE", precioVenta: "$890,000.00", costoAdquisicion: "$300,000.00", etapaActual: "ADJUDICACIÓN", responsable: "EQUIPO ENLACE" }
+            { idEnlace: "EN63211", cartera: "HIPOTECARIO", estado: "CIUDAD DE MÉXICO", municipio: "BENITO JUÁREZ", colonia: "DEL VALLE", precioVenta: "$890,000.00", costoAdquisicion: "$300,000.00", etapaActual: "ADJUDICACIÓN", responsable: "EQUIPO ENLACE" }
         ];
 
         function iniciar() {
-            const guardado = localStorage.getItem('enlace_db');
+            const guardado = localStorage.getItem('enlace_business_db');
             if (guardado) {
                 try { registros = JSON.parse(guardado); } catch(e){}
             }
+            poblarFiltros();
             render();
         }
 
         function guardarLocal() {
-            localStorage.setItem('enlace_db', JSON.stringify(registros));
+            localStorage.setItem('enlace_business_db', JSON.stringify(registros));
+            poblarFiltros();
+        }
+
+        function parsearMoneda(str) {
+            if (!str) return 0;
+            if (typeof str === 'number') return str;
+            return parseFloat(str.toString().replace(/[^0-9.]/g, '')) || 0;
         }
 
         function render() {
             const tbody = document.getElementById('tablaRegistros');
-            let html = '';
-            let totalVenta = 0;
-            let totalUtilidad = 0;
-            let carteras = {};
+            const fEdo = document.getElementById('filtroEstado').value.toUpperCase();
+            const fCar = document.getElementById('filtroCartera').value.toUpperCase();
+            const q = document.getElementById('searchInput').value.toUpperCase();
 
-            registros.forEach((r, idx) => {
-                let vNum = parseFloat(String(r.precioVenta).replace(/[^0-9.]/g, '')) || 0;
-                let cNum = parseFloat(String(r.costoAdquisicion).replace(/[^0-9.]/g, '')) || 0;
+            let filtrados = registros.filter(r => {
+                let matchEdo = !fEdo || (r.estado || '').toUpperCase() === fEdo;
+                let matchCar = !fCar || (r.cartera || '').toUpperCase() === fCar;
+                let txt = `${r.idEnlace} ${r.cartera} ${r.estado} ${r.municipio} ${r.colonia} ${r.responsable}`.toUpperCase();
+                let matchQ = !q || txt.includes(q);
+                return matchEdo && matchCar && matchQ;
+            });
+
+            let html = '';
+            let totalVenta = 0, totalUtilidad = 0, carteras = {};
+
+            filtrados.forEach((r, idxReal) => {
+                let vNum = parsearMoneda(r.precioVenta);
+                let cNum = parsearMoneda(r.costoAdquisicion);
                 let util = vNum - cNum;
 
                 totalVenta += vNum;
@@ -154,31 +180,41 @@
                 if(r.cartera) carteras[r.cartera] = (carteras[r.cartera] || 0) + 1;
 
                 html += `
-                    <tr class="hover:bg-gray-800/40 cursor-pointer" onclick="editar(${idx})">
+                    <tr class="hover:bg-gray-800/40 cursor-pointer" onclick="editar(${registros.indexOf(r)})">
                         <td class="py-3 px-4 font-bold text-white">${r.idEnlace || ''}</td>
                         <td class="py-3 px-4 text-gray-300">${r.cartera || ''}</td>
                         <td class="py-3 px-4 text-gray-300">${r.colonia || ''}, ${r.municipio || ''} (${r.estado || ''})</td>
-                        <td class="py-3 px-4 text-gray-300">-</td>
                         <td class="py-3 px-4 text-amber-400 font-semibold">${r.precioVenta || '$0.00'}</td>
                         <td class="py-3 px-4 text-emerald-400 font-semibold">$${util.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
                         <td class="py-3 px-4 text-gray-300">${r.etapaActual || ''}</td>
                         <td class="py-3 px-4 text-gray-300">${r.responsable || ''}</td>
                         <td class="py-3 px-4 text-center" onclick="event.stopPropagation();">
-                            <button onclick="eliminar(${idx})" class="text-red-400 hover:text-red-300 text-xs bg-red-950/40 px-2 py-1 rounded border border-red-900/50">Eliminar</button>
+                            <button onclick="eliminar(${registros.indexOf(r)})" class="text-red-400 hover:text-red-300 text-xs bg-red-950/40 px-2 py-1 rounded border border-red-900/50">Eliminar</button>
                         </td>
                     </tr>
                 `;
             });
 
-            tbody.innerHTML = html || `<tr><td colspan="9" class="text-center py-6 text-gray-500">Sin registros.</td></tr>`;
+            tbody.innerHTML = html || `<tr><td colspan="8" class="text-center py-6 text-gray-500">No se encontraron registros.</td></tr>`;
             
-            document.getElementById('kpiTotal').innerText = registros.length;
+            document.getElementById('kpiTotal').innerText = filtrados.length;
             document.getElementById('kpiUtilidad').innerText = '$' + totalUtilidad.toLocaleString('es-MX', {minimumFractionDigits:2});
-            document.getElementById('kpiPromedio').innerText = registros.length ? '$' + (totalVenta / registros.length).toLocaleString('es-MX', {minimumFractionDigits:2}) : '$0.00';
+            document.getElementById('kpiPromedio').innerText = filtrados.length ? '$' + (totalVenta / filtrados.length).toLocaleString('es-MX', {minimumFractionDigits:2}) : '$0.00';
             
             let carTop = "N/A", max = 0;
             for(let k in carteras) { if(carteras[k] > max) { max = carteras[k]; carTop = k; } }
             document.getElementById('kpiCartera').innerText = carTop;
+        }
+
+        function poblarFiltros() {
+            let estados = [...new Set(registros.map(r => r.estado).filter(Boolean))].sort();
+            let carteras = [...new Set(registros.map(r => r.cartera).filter(Boolean))].sort();
+            
+            let selEdo = document.getElementById('filtroEstado');
+            let selCar = document.getElementById('filtroCartera');
+            
+            selEdo.innerHTML = '<option value="">TODOS LOS ESTADOS</option>' + estados.map(e => `<option value="${e}">${e}</option>`).join('');
+            selCar.innerHTML = '<option value="">TODAS LAS CARTERAS</option>' + carteras.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
         function abrirModalNuevo() {
@@ -233,12 +269,58 @@
         }
 
         function eliminar(idx) {
-            if(confirm("¿Eliminar este registro?")) {
+            if(confirm("¿Estás seguro de eliminar este registro?")) {
                 registros.splice(idx, 1);
                 guardarLocal();
                 render();
             }
         }
+
+        function exportarExcel() {
+            if (registros.length === 0) return alert("No hay datos para exportar.");
+            const ws = XLSX.utils.json_to_sheet(registros);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inventario");
+            XLSX.writeFile(wb, "Enlace_Business_Backup.xlsx");
+        }
+
+        function importarExcel(evt) {
+            const f = evt.target.files[0];
+            if (!f) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const wb = XLSX.read(data, { type: 'array' });
+                    const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                    if (json.length === 0) return alert("El archivo está vacío.");
+                    
+                    registros = json.map(r => ({
+                        idEnlace: String(r["ID / Enlace"] || r["ID"] || '').trim(),
+                        cartera: String(r["Cartera"] || '').trim().toUpperCase(),
+                        estado: String(r["Estado"] || '').trim().toUpperCase(),
+                        municipio: String(r["Municipio"] || '').trim().toUpperCase(),
+                        colonia: String(r["Colonia"] || '').trim().toUpperCase(),
+                        precioVenta: String(r["Precio Venta"] || '').trim(),
+                        costoAdquisicion: String(r["Costo Adquisición"] || '').trim(),
+                        etapaActual: String(r["Etapa Actual"] || 'EN PROCESO').trim().toUpperCase(),
+                        responsable: String(r["Responsable"] || '').trim().toUpperCase()
+                    }));
+
+                    guardarLocal();
+                    render();
+                    alert(`¡Se importaron ${registros.length} registros exitosamente!`);
+                } catch(err) {
+                    alert("Error al procesar el archivo Excel.");
+                }
+            };
+            reader.readAsArrayBuffer(f);
+            evt.target.value = '';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', render);
+        document.getElementById('filtroEstado').addEventListener('change', render);
+        document.getElementById('filtroCartera').addEventListener('change', render);
 
         window.onload = iniciar;
     </script>
