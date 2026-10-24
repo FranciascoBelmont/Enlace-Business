@@ -43,7 +43,7 @@
         <div class="flex items-center space-x-3 flex-wrap">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-                <input type="text" id="globalSearch" placeholder="BUSCAR POR ID, CRÉDITO, DIRECCIÓN..." spellcheck="true"
+                <input type="text" id="globalSearch" placeholder="BUSCAR POR ID, CRÉDITO, DIRECCIÓN..." spellcheck="true" lang="es"
                     class="bg-slate-900/80 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 w-64 md:w-80 transition-all">
             </div>
             <button onclick="verificarDuplicados()" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all">
@@ -141,13 +141,13 @@
             <!-- Pagination / Counter Footer -->
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v2.6</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v2.7</span>
             </div>
         </div>
 
     </main>
 
-    <!-- Modal Formulario Detalle (Estilo Réplica Excel Oscuro) -->
+    <!-- Modal Formulario Detalle -->
     <div id="modalRegistro" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="glass-panel max-w-4xl w-full rounded-2xl border border-cyan-500/30 shadow-2xl overflow-hidden my-8">
             <!-- Modal Header -->
@@ -177,19 +177,19 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ID ENLACE</label>
-                            <input type="text" id="f_id_enlace" required spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EN26277">
+                            <input type="text" id="f_id_enlace" required spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EN26277">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">NÚMERO DE CRÉDITO</label>
-                            <input type="text" id="f_credito" required spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="217000796">
+                            <input type="text" id="f_credito" required spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="217000796">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CARTERA</label>
-                            <input type="text" id="f_cartera" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="ADMON FOME SHF117">
+                            <input type="text" id="f_cartera" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ADMON FOME SHF117">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">RESPONSABLE</label>
-                            <input type="text" id="f_responsable" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="REBECA VELASCO">
+                            <input type="text" id="f_responsable" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="REBECA VELASCO">
                         </div>
                     </div>
                 </div>
@@ -226,40 +226,40 @@
                 <!-- Sección 3: Ubicación e Inmueble -->
                 <div>
                     <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE (AUTOCORREGIBLE POR CÓDIGO POSTAL)
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">TIPO DE PROPIEDAD</label>
-                            <input type="text" id="f_tipo_prop" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="PROPIEDAD">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL</label>
-                            <input type="text" id="f_cp" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="45404">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL (EJ: 01090)</label>
+                            <input type="text" id="f_cp" oninput="buscarPorCP(this.value)" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="01090">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ESTADO</label>
-                            <input type="text" id="f_estado" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="JALISCO">
+                            <input type="text" id="f_estado" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="CIUDAD DE MÉXICO">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">MUNICIPIO</label>
-                            <input type="text" id="f_municipio" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="TONALÁ">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">MUNICIPIO / ALCALDÍA</label>
+                            <input type="text" id="f_municipio" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="ÁLVARO OBREGÓN">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA</label>
-                            <input type="text" id="f_colonia" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="URBI PASEOS DE SANTIAGO">
+                            <input type="text" id="f_colonia" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="TIZAPÁN SAN ÁNGEL">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA</label>
+                            <input type="text" id="f_direccion" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="AV. REVOLUCIÓN 123">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA</label>
-                            <input type="text" id="f_direccion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="PRIVADA GRANON 12">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">TIPO DE PROPIEDAD</label>
+                            <input type="text" id="f_tipo_prop" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="CASA / DEPARTAMENTO">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">SUPERFICIE</label>
-                            <input type="text" id="f_superficie" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_superficie" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="120 M2">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CONSTRUCCIÓN</label>
-                            <input type="text" id="f_construccion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_construccion" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="90 M2">
                         </div>
                     </div>
                 </div>
@@ -274,31 +274,31 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ETAPA ACTUAL</label>
-                            <input type="text" id="f_etapa_actual" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="OBTENCIÓN DE AVALÚOS Y CLG">
+                            <input type="text" id="f_etapa_actual" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ETAPA LEGAL</label>
-                            <input type="text" id="f_etapa_legal" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="LITIGABLE HASTA REMATE RPS">
+                            <input type="text" id="f_etapa_legal" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">STATUS</label>
-                            <input type="text" id="f_status" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="EXPEDIENTE 1434/2015 10 TRIBUNAL MERCANTIL">
+                            <input type="text" id="f_status" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">AVANCES</label>
-                            <textarea id="f_avances" rows="2" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025</textarea>
+                            <textarea id="f_avances" rows="2" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">OBSERVACIONES</label>
-                            <textarea id="f_observaciones" rows="2" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
+                            <textarea id="f_observaciones" rows="2" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">FECHA RECEPCIÓN</label>
-                            <input type="text" id="f_recepcion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="27 FEBRERO 2025">
+                            <input type="text" id="f_recepcion" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="27 FEBRERO 2025">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">FECHA ACTUALIZACIÓN</label>
-                            <input type="text" id="f_actualizacion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="01 JUNIO 2025">
+                            <input type="text" id="f_actualizacion" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="01 JUNIO 2025">
                         </div>
                     </div>
                 </div>
@@ -323,12 +323,54 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Automatic uppercase helper function
+        // Base de datos de Códigos Postales de ejemplo (puedes agregar más rápida y fácilmente)
+        const cpDatabase = {
+            "01090": { estado: "CIUDAD DE MÉXICO", municipio: "ÁLVARO OBREGÓN", colonia: "TIZAPÁN SAN ÁNGEL" },
+            "45404": { estado: "JALISCO", municipio: "TONALÁ", colonia: "URBI PASEOS DE SANTIAGO" },
+            "54700": { estado: "ESTADO DE MÉXICO", municipio: "CUAUTITLÁN", colonia: "CENTRO" },
+            "64000": { estado: "NUEVO LEÓN", municipio: "MONTERREY", colonia: "CENTRO" },
+            "44100": { estado: "JALISCO", municipio: "GUADALAJARA", colonia: "ZONA CENTRO" }
+        };
+
+        function buscarPorCP(cp) {
+            cp = cp.trim();
+            if (cpDatabase[cp]) {
+                document.getElementById('f_estado').value = cpDatabase[cp].estado;
+                document.getElementById('f_municipio').value = cpDatabase[cp].municipio;
+                if(cpDatabase[cp].colonia) {
+                    document.getElementById('f_colonia').value = cpDatabase[cp].colonia;
+                }
+            }
+        }
+
+        // Corrector automático de tildes y errores comunes comunes en mayúsculas
+        function corregirOrtografiaCampo(element) {
+            let val = element.value;
+            // Reemplazos inteligentes de acentos y faltas comunes en mayúsculas
+            const correcciones = {
+                "ALVARO": "ÁLVARO",
+                "MEXICO": "MÉXICO",
+                "TIZAPAN": "TIZAPÁN",
+                "SAN ANGEL": "SAN ÁNGEL",
+                "AVALUOS": "AVALÚOS",
+                "JALISCO": "JALISCO",
+                "PAGINA": "PÁGINA",
+                "ULTIMO": "ÚLTIMO",
+                "DIRECCION": "DIRECCIÓN"
+            };
+            
+            Object.keys(correcciones).forEach(err => {
+                let regex = new RegExp("\\b" + err + "\\b", "g");
+                val = val.replace(regex, correcciones[err]);
+            });
+            
+            element.value = val;
+        }
+
         function toUpper(val) {
             return typeof val === 'string' ? val.toUpperCase() : val;
         }
 
-        // Initial Mock Database based on user's exact format
         let registros = JSON.parse(localStorage.getItem('enlace_business_db')) || [
             {
                 id: 20331,
@@ -353,30 +395,6 @@
                 observaciones: "EXCELENTE UBICACIÓN",
                 recepcion: "15 FEBRERO 2025",
                 actualizacion: "01 JUNIO 2025"
-            },
-            {
-                id: 20332,
-                id_enlace: "EN26278",
-                credito: "220900789",
-                cartera: "ADMON FOME SHF117",
-                responsable: "REBECA VELASCO",
-                precio_pre: 300000,
-                precio_venta: 400000,
-                tipo_prop: "PROPIEDAD",
-                cp: "54700",
-                estado: "ESTADO DE MÉXICO",
-                municipio: "CUAUTITLÁN",
-                colonia: "VADA CURRUCA",
-                direccion: "VADA CURRUCA 28",
-                superficie: "140 M2",
-                construccion: "110 M2",
-                etapa_actual: "EJECUCIÓN DE SENTENCIA",
-                etapa_legal: "EJECUTIVO MERCANTIL",
-                status: "EN PROCESO",
-                avances: "NOTIFICACIÓN REALIZADA",
-                observaciones: "SIN ADEUDOS MUNICIPALES",
-                recepcion: "10 FEBRERO 2025",
-                actualizacion: "15 MAYO 2025"
             }
         ];
 
@@ -386,13 +404,11 @@
             renderizarTabla();
             calcularKPIs();
 
-            // Event listener for search
             document.getElementById('globalSearch').addEventListener('input', (e) => {
                 e.target.value = e.target.value.toUpperCase();
                 renderizarTabla(e.target.value);
             });
 
-            // Auto-uppercase listener on form text inputs and textareas
             const formInputs = document.querySelectorAll('#formRegistro input[type="text"], #formRegistro textarea');
             formInputs.forEach(input => {
                 input.addEventListener('input', (e) => {
@@ -538,6 +554,7 @@
             document.getElementById('editIndex').value = "-1";
             document.getElementById('modalTitulo').innerText = "NUEVO REGISTRO INMOBILIARIO";
             document.getElementById('formRegistro').reset();
+            // ID totalmente nuevo en blanco o generado limpio
             document.getElementById('f_id').value = Math.floor(10000 + Math.random() * 90000);
             document.getElementById('btnEliminarModal').classList.add('hidden');
             document.getElementById('btnEliminarModal').classList.remove('flex');
@@ -672,18 +689,11 @@
                 let file = e.target.files[0];
                 let reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
-                reader.reader = reader;
                 reader.onload = readerEvent => {
                     try {
                         let contenido = JSON.parse(readerEvent.target.result);
                         if (Array.isArray(contenido)) {
-                            registros = contenido.map(item => {
-                                let itemUpper = {};
-                                Object.keys(item).forEach(k => {
-                                    itemUpper[k] = (typeof item[k] === 'string' && k !== 'precio_pre' && k !== 'precio_venta' && k !== 'id') ? item[k].toUpperCase() : item[k];
-                                });
-                                return itemUpper;
-                            });
+                            registros = contenido;
                             guardarEnLocalStorage();
                             initApp();
                             alert("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
