@@ -12,6 +12,10 @@
         .glass-panel { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(0, 240, 255, 0.15); }
         .neon-border { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
         .neon-glow:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+        
+        /* Fuerza la visualización en mayúsculas en los inputs */
+        input[type="text"], textarea { text-transform: uppercase; }
+        
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #07090e; }
@@ -39,7 +43,7 @@
         <div class="flex items-center space-x-3 flex-wrap">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-                <input type="text" id="globalSearch" placeholder="Buscar por ID, crédito, dirección..." 
+                <input type="text" id="globalSearch" placeholder="BUSCAR POR ID, CRÉDITO, DIRECCIÓN..." spellcheck="true"
                     class="bg-slate-900/80 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 w-64 md:w-80 transition-all">
             </div>
             <button onclick="verificarDuplicados()" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all">
@@ -66,7 +70,7 @@
             <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-400">
                 <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Utilidad Potencial Total</p>
                 <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiUtilidad" class="text-2xl font-bold text-emerald-450 text-emerald-400">$0.00</h3>
+                    <h3 id="kpiUtilidad" class="text-2xl font-bold text-emerald-400">$0.00</h3>
                     <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-800/50">Proyectado</span>
                 </div>
             </div>
@@ -80,7 +84,7 @@
             <div class="glass-panel p-4 rounded-xl border-l-4 border-l-blue-400">
                 <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cartera Principal</p>
                 <div class="flex items-baseline justify-between mt-1">
-                    <h3 id="kpiCartera" class="text-lg font-bold text-blue-300 truncate">FOMESHF117</h3>
+                    <h3 id="kpiCartera" class="text-lg font-bold text-blue-300 truncate">ADMON FOME SHF117</h3>
                     <span class="text-xs text-blue-400 bg-blue-950/50 px-2 py-0.5 rounded border border-blue-800/50">Principal</span>
                 </div>
             </div>
@@ -92,14 +96,14 @@
                 <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
                     <i data-lucide="filter" class="w-3.5 h-3.5 text-cyan-400"></i> Filtrar por:
                 </span>
-                <select id="filterEstado" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
-                    <option value="">Todos los Estados</option>
+                <select id="filterEstado" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                    <option value="">TODOS LOS ESTADOS</option>
                 </select>
-                <select id="filterResponsable" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
-                    <option value="">Todos los Responsables</option>
+                <select id="filterResponsable" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                    <option value="">TODOS LOS RESPONSABLES</option>
                 </select>
-                <select id="filterEtapa" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
-                    <option value="">Todas las Etapas Legales</option>
+                <select id="filterEtapa" onchange="filtrarDatos()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 uppercase">
+                    <option value="">TODAS LAS ETAPAS LEGALES</option>
                 </select>
             </div>
             <div class="flex items-center space-x-2">
@@ -118,15 +122,15 @@
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="bg-slate-900/90 text-cyan-400 border-b border-slate-800 uppercase tracking-wider font-semibold">
-                            <th class="p-3 pl-4">ID / Enlace</th>
-                            <th class="p-3">Crédito & Cartera</th>
-                            <th class="p-3">Ubicación (Colonia / Mun / Edo)</th>
-                            <th class="p-3 text-right">Precio Pre-Auth</th>
-                            <th class="p-3 text-right">Precio Venta</th>
-                            <th class="p-3 text-right">Utilidad Real ($ / %)</th>
-                            <th class="p-3">Etapa Legal / Actual</th>
-                            <th class="p-3">Responsable</th>
-                            <th class="p-3 text-center pr-4">Acciones</th>
+                            <th class="p-3 pl-4">ID / ENLACE</th>
+                            <th class="p-3">CRÉDITO & CARTERA</th>
+                            <th class="p-3">UBICACIÓN (COLONIA / MUN / EDO)</th>
+                            <th class="p-3 text-right">PRECIO PRE-AUTH</th>
+                            <th class="p-3 text-right">PRECIO VENTA</th>
+                            <th class="p-3 text-right">UTILIDAD REAL ($ / %)</th>
+                            <th class="p-3">ETAPA LEGAL / ACTUAL</th>
+                            <th class="p-3">RESPONSABLE</th>
+                            <th class="p-3 text-center pr-4">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody id="tablaRegistros" class="divide-y divide-slate-800/60 text-slate-300">
@@ -150,7 +154,7 @@
             <div class="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
-                    <h3 id="modalTitulo" class="text-base font-bold text-white uppercase tracking-wider">Nuevo Registro Inmobiliario</h3>
+                    <h3 id="modalTitulo" class="text-base font-bold text-white uppercase tracking-wider">NUEVO REGISTRO INMOBILIARIO</h3>
                 </div>
                 <button onclick="cerrarModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-all">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -164,28 +168,28 @@
                 <!-- Sección 1: Identificación y Crédito -->
                 <div>
                     <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="hash" class="w-4 h-4"></i> Identificación y Cartera
+                        <i data-lucide="hash" class="w-4 h-4"></i> IDENTIFICACIÓN Y CARTERA
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">ID (Número)</label>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">ID (NÚMERO)</label>
                             <input type="number" id="f_id" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ID ENLACE</label>
-                            <input type="text" id="f_id_enlace" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EN26277">
+                            <input type="text" id="f_id_enlace" required spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="EN26277">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">NÚMERO DE CRÉDITO</label>
-                            <input type="text" id="f_credito" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="217000796">
+                            <input type="text" id="f_credito" required spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="217000796">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CARTERA</label>
-                            <input type="text" id="f_cartera" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="ADMON FOME SHF117">
+                            <input type="text" id="f_cartera" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="ADMON FOME SHF117">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">RESPONSABLE</label>
-                            <input type="text" id="f_responsable" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="REBECA VELASCO">
+                            <input type="text" id="f_responsable" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="REBECA VELASCO">
                         </div>
                     </div>
                 </div>
@@ -195,7 +199,7 @@
                 <!-- Sección 2: Matriz Financiera -->
                 <div>
                     <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="dollar-sign" class="w-4 h-4"></i> Matriz Financiera & Utilidades
+                        <i data-lucide="dollar-sign" class="w-4 h-4"></i> MATRIZ FINANCIERA & UTILIDADES
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
                         <div>
@@ -222,12 +226,12 @@
                 <!-- Sección 3: Ubicación e Inmueble -->
                 <div>
                     <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i> Ubicación del Inmueble
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> UBICACIÓN DEL INMUEBLE
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">TIPO DE PROPIEDAD</label>
-                            <input type="text" id="f_tipo_prop" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="PROPIEDAD">
+                            <input type="text" id="f_tipo_prop" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="PROPIEDAD">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CÓDIGO POSTAL</label>
@@ -235,27 +239,27 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ESTADO</label>
-                            <input type="text" id="f_estado" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="JALISCO">
+                            <input type="text" id="f_estado" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="JALISCO">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">MUNICIPIO</label>
-                            <input type="text" id="f_municipio" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="TONALÁ">
+                            <input type="text" id="f_municipio" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="TONALÁ">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">COLONIA</label>
-                            <input type="text" id="f_colonia" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="URBI PASEOS DE SANTIAGO">
+                            <input type="text" id="f_colonia" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="URBI PASEOS DE SANTIAGO">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">DIRECCIÓN COMPLETA</label>
-                            <input type="text" id="f_direccion" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="PRIVADA GRANON 12">
+                            <input type="text" id="f_direccion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" placeholder="PRIVADA GRANON 12">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">SUPERFICIE</label>
-                            <input type="text" id="f_superficie" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_superficie" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CONSTRUCCIÓN</label>
-                            <input type="text" id="f_construccion" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_construccion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                     </div>
                 </div>
@@ -265,36 +269,36 @@
                 <!-- Sección 4: Proceso Legal & Status -->
                 <div>
                     <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <i data-lucide="scale" class="w-4 h-4"></i> Proceso Legal & Seguimiento
+                        <i data-lucide="scale" class="w-4 h-4"></i> PROCESO LEGAL & SEGUIMIENTO
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ETAPA ACTUAL</label>
-                            <input type="text" id="f_etapa_actual" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="OBTENCIÓN DE AVALÚOS Y CLG">
+                            <input type="text" id="f_etapa_actual" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="OBTENCIÓN DE AVALÚOS Y CLG">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ETAPA LEGAL</label>
-                            <input type="text" id="f_etapa_legal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="LITIGABLE HASTA REMATE RPS">
+                            <input type="text" id="f_etapa_legal" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="LITIGABLE HASTA REMATE RPS">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">STATUS</label>
-                            <input type="text" id="f_status" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="EXPEDIENTE 1434/2015 10 TRIBUNAL MERCANTIL">
+                            <input type="text" id="f_status" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="EXPEDIENTE 1434/2015 10 TRIBUNAL MERCANTIL">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">AVANCES</label>
-                            <textarea id="f_avances" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025</textarea>
+                            <textarea id="f_avances" rows="2" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025</textarea>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">OBSERVACIONES</label>
-                            <textarea id="f_observaciones" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
+                            <textarea id="f_observaciones" rows="2" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">FECHA RECEPCIÓN</label>
-                            <input type="text" id="f_recepcion" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="27 febrero 2025">
+                            <input type="text" id="f_recepcion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="27 FEBRERO 2025">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">FECHA ACTUALIZACIÓN</label>
-                            <input type="text" id="f_actualizacion" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="01 junio 2025">
+                            <input type="text" id="f_actualizacion" spellcheck="true" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="01 JUNIO 2025">
                         </div>
                     </div>
                 </div>
@@ -319,6 +323,11 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        // Automatic uppercase helper function
+        function toUpper(val) {
+            return typeof val === 'string' ? val.toUpperCase() : val;
+        }
+
         // Initial Mock Database based on user's exact format
         let registros = JSON.parse(localStorage.getItem('enlace_business_db')) || [
             {
@@ -335,15 +344,15 @@
                 municipio: "TONALÁ",
                 colonia: "VADA COCOTEROS",
                 direccion: "VADA COCOTEROS, CASA 8",
-                superficie: "120 m2",
-                construccion: "90 m2",
+                superficie: "120 M2",
+                construccion: "90 M2",
                 etapa_actual: "OBTENCIÓN DE AVALÚOS Y CLG",
                 etapa_legal: "LITIGABLE HASTA REMATE RPS",
                 status: "EXPEDIENTE ACTIVO",
                 avances: "CARGADO EN LA PAGINA ENLACE",
-                observaciones: "Excelente ubicación",
-                recepcion: "15 enero 2025",
-                actualizacion: "01 junio 2025"
+                observaciones: "EXCELENTE UBICACIÓN",
+                recepcion: "15 FEBRERO 2025",
+                actualizacion: "01 JUNIO 2025"
             },
             {
                 id: 20332,
@@ -359,15 +368,15 @@
                 municipio: "CUAUTITLÁN",
                 colonia: "VADA CURRUCA",
                 direccion: "VADA CURRUCA 28",
-                superficie: "140 m2",
-                construccion: "110 m2",
+                superficie: "140 M2",
+                construccion: "110 M2",
                 etapa_actual: "EJECUCIÓN DE SENTENCIA",
                 etapa_legal: "EJECUTIVO MERCANTIL",
                 status: "EN PROCESO",
                 avances: "NOTIFICACIÓN REALIZADA",
-                observaciones: "Sin adeudos municipales",
-                recepcion: "10 febrero 2025",
-                actualizacion: "15 mayo 2025"
+                observaciones: "SIN ADEUDOS MUNICIPALES",
+                recepcion: "10 FEBRERO 2025",
+                actualizacion: "15 MAYO 2025"
             }
         ];
 
@@ -379,7 +388,16 @@
 
             // Event listener for search
             document.getElementById('globalSearch').addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase();
                 renderizarTabla(e.target.value);
+            });
+
+            // Auto-uppercase listener on form text inputs and textareas
+            const formInputs = document.querySelectorAll('#formRegistro input[type="text"], #formRegistro textarea');
+            formInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
             });
         }
 
@@ -412,10 +430,10 @@
             let filtrados = registros.filter(item => {
                 let matchBusqueda = 
                     item.id.toString().includes(filtroBusqueda) ||
-                    item.credito.toLowerCase().includes(filtroBusqueda.toLowerCase()) ||
-                    item.direccion.toLowerCase().includes(filtroBusqueda.toLowerCase()) ||
-                    item.colonia.toLowerCase().includes(filtroBusqueda.toLowerCase()) ||
-                    item.id_enlace.toLowerCase().includes(filtroBusqueda.toLowerCase());
+                    item.credito.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
+                    item.direccion.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
+                    item.colonia.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
+                    item.id_enlace.toUpperCase().includes(filtroBusqueda.toUpperCase());
 
                 let matchEstado = fEstado === '' || item.estado === fEstado;
                 let matchResp = fResp === '' || item.responsable === fResp;
@@ -425,7 +443,7 @@
             });
 
             if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-500">No se encontraron registros con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-500">NO SE ENCONTRARON REGISTROS CON LOS FILTROS ACTUALES.</td></tr>`;
                 document.getElementById('contadorMostrados').innerText = `Mostrando 0 de ${registros.length} registros`;
                 return;
             }
@@ -492,6 +510,10 @@
             let selResp = document.getElementById('filterResponsable');
             let selEtapa = document.getElementById('filterEtapa');
 
+            selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
+            selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
+            selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
+
             estados.forEach(e => { if(e) selEstado.innerHTML += `<option value="${e}">${e}</option>`; });
             responsables.forEach(r => { if(r) selResp.innerHTML += `<option value="${r}">${r}</option>`; });
             etapas.forEach(et => { if(et) selEtapa.innerHTML += `<option value="${et}">${et}</option>`; });
@@ -514,7 +536,7 @@
 
         function abrirModalNuevo() {
             document.getElementById('editIndex').value = "-1";
-            document.getElementById('modalTitulo').innerText = "Nuevo Registro Inmobiliario";
+            document.getElementById('modalTitulo').innerText = "NUEVO REGISTRO INMOBILIARIO";
             document.getElementById('formRegistro').reset();
             document.getElementById('f_id').value = Math.floor(10000 + Math.random() * 90000);
             document.getElementById('btnEliminarModal').classList.add('hidden');
@@ -526,30 +548,30 @@
         function abrirModalEditar(index) {
             let item = registros[index];
             document.getElementById('editIndex').value = index;
-            document.getElementById('modalTitulo').innerText = `Editando Registro ID: ${item.id}`;
+            document.getElementById('modalTitulo').innerText = `EDITANDO REGISTRO ID: ${item.id}`;
 
             document.getElementById('f_id').value = item.id;
-            document.getElementById('f_id_enlace').value = item.id_enlace;
-            document.getElementById('f_credito').value = item.credito;
-            document.getElementById('f_cartera').value = item.cartera;
-            document.getElementById('f_responsable').value = item.responsable;
+            document.getElementById('f_id_enlace').value = toUpper(item.id_enlace);
+            document.getElementById('f_credito').value = toUpper(item.credito);
+            document.getElementById('f_cartera').value = toUpper(item.cartera);
+            document.getElementById('f_responsable').value = toUpper(item.responsable);
             document.getElementById('f_precio_pre').value = item.precio_pre;
             document.getElementById('f_precio_venta').value = item.precio_venta;
-            document.getElementById('f_tipo_prop').value = item.tipo_prop;
+            document.getElementById('f_tipo_prop').value = toUpper(item.tipo_prop);
             document.getElementById('f_cp').value = item.cp;
-            document.getElementById('f_estado').value = item.estado;
-            document.getElementById('f_municipio').value = item.municipio;
-            document.getElementById('f_colonia').value = item.colonia;
-            document.getElementById('f_direccion').value = item.direccion;
-            document.getElementById('f_superficie').value = item.superficie;
-            document.getElementById('f_construccion').value = item.construccion;
-            document.getElementById('f_etapa_actual').value = item.etapa_actual;
-            document.getElementById('f_etapa_legal').value = item.etapa_legal;
-            document.getElementById('f_status').value = item.status;
-            document.getElementById('f_avances').value = item.avances;
-            document.getElementById('f_observaciones').value = item.observaciones;
-            document.getElementById('f_recepcion').value = item.recepcion;
-            document.getElementById('f_actualizacion').value = item.actualizacion;
+            document.getElementById('f_estado').value = toUpper(item.estado);
+            document.getElementById('f_municipio').value = toUpper(item.municipio);
+            document.getElementById('f_colonia').value = toUpper(item.colonia);
+            document.getElementById('f_direccion').value = toUpper(item.direccion);
+            document.getElementById('f_superficie').value = toUpper(item.superficie);
+            document.getElementById('f_construccion').value = toUpper(item.construccion);
+            document.getElementById('f_etapa_actual').value = toUpper(item.etapa_actual);
+            document.getElementById('f_etapa_legal').value = toUpper(item.etapa_legal);
+            document.getElementById('f_status').value = toUpper(item.status);
+            document.getElementById('f_avances').value = toUpper(item.avances);
+            document.getElementById('f_observaciones').value = toUpper(item.observaciones);
+            document.getElementById('f_recepcion').value = toUpper(item.recepcion);
+            document.getElementById('f_actualizacion').value = toUpper(item.actualizacion);
 
             calcularUtilidades();
 
@@ -568,27 +590,27 @@
 
             let nuevoItem = {
                 id: parseInt(document.getElementById('f_id').value),
-                id_enlace: document.getElementById('f_id_enlace').value,
-                credito: document.getElementById('f_credito').value,
-                cartera: document.getElementById('f_cartera').value,
-                responsable: document.getElementById('f_responsable').value,
+                id_enlace: toUpper(document.getElementById('f_id_enlace').value),
+                credito: toUpper(document.getElementById('f_credito').value),
+                cartera: toUpper(document.getElementById('f_cartera').value),
+                responsable: toUpper(document.getElementById('f_responsable').value),
                 precio_pre: parseFloat(document.getElementById('f_precio_pre').value) || 0,
                 precio_venta: parseFloat(document.getElementById('f_precio_venta').value) || 0,
-                tipo_prop: document.getElementById('f_tipo_prop').value,
+                tipo_prop: toUpper(document.getElementById('f_tipo_prop').value),
                 cp: document.getElementById('f_cp').value,
-                estado: document.getElementById('f_estado').value,
-                municipio: document.getElementById('f_municipio').value,
-                colonia: document.getElementById('f_colonia').value,
-                direccion: document.getElementById('f_direccion').value,
-                superficie: document.getElementById('f_superficie').value,
-                construccion: document.getElementById('f_construccion').value,
-                etapa_actual: document.getElementById('f_etapa_actual').value,
-                etapa_legal: document.getElementById('f_etapa_legal').value,
-                status: document.getElementById('f_status').value,
-                avances: document.getElementById('f_avances').value,
-                observaciones: document.getElementById('f_observaciones').value,
-                recepcion: document.getElementById('f_recepcion').value,
-                actualizacion: document.getElementById('f_actualizacion').value
+                estado: toUpper(document.getElementById('f_estado').value),
+                municipio: toUpper(document.getElementById('f_municipio').value),
+                colonia: toUpper(document.getElementById('f_colonia').value),
+                direccion: toUpper(document.getElementById('f_direccion').value),
+                superficie: toUpper(document.getElementById('f_superficie').value),
+                construccion: toUpper(document.getElementById('f_construccion').value),
+                etapa_actual: toUpper(document.getElementById('f_etapa_actual').value),
+                etapa_legal: toUpper(document.getElementById('f_etapa_legal').value),
+                status: toUpper(document.getElementById('f_status').value),
+                avances: toUpper(document.getElementById('f_avances').value),
+                observaciones: toUpper(document.getElementById('f_observaciones').value),
+                recepcion: toUpper(document.getElementById('f_recepcion').value),
+                actualizacion: toUpper(document.getElementById('f_actualizacion').value)
             };
 
             if (index === -1) {
@@ -598,15 +620,17 @@
             }
 
             guardarEnLocalStorage();
+            poblarFiltros();
             renderizarTabla();
             calcularKPIs();
             cerrarModal();
         }
 
         function eliminarRegistro(index) {
-            if (confirm("¿Estás seguro de eliminar este registro de la base de datos?")) {
+            if (confirm("¿ESTÁS SEGURO DE ELIMINAR ESTE REGISTRO DE LA BASE DE DATOS?")) {
                 registros.splice(index, 1);
                 guardarEnLocalStorage();
+                poblarFiltros();
                 renderizarTabla();
                 calcularKPIs();
             }
@@ -624,9 +648,9 @@
             let creditos = registros.map(r => r.credito);
             let duplicados = creditos.filter((item, index) => creditos.indexOf(item) !== index);
             if (duplicados.length > 0) {
-                alert("¡Atención! Se encontraron números de crédito duplicados: " + [...new Set(duplicados)].join(', '));
+                alert("¡ATENCIÓN! SE ENCONTRARON NÚMEROS DE CRÉDITO DUPLICADOS: " + [...new Set(duplicados)].join(', '));
             } else {
-                alert("Verificación completa: No se encontraron créditos duplicados en la base de datos activa.");
+                alert("VERIFICACIÓN COMPLETA: NO SE ENCONTRARON CRÉDITOS DUPLICADOS EN LA BASE DE DATOS ACTIVA.");
             }
         }
 
@@ -653,15 +677,21 @@
                     try {
                         let contenido = JSON.parse(readerEvent.target.result);
                         if (Array.isArray(contenido)) {
-                            registros = contenido;
+                            registros = contenido.map(item => {
+                                let itemUpper = {};
+                                Object.keys(item).forEach(k => {
+                                    itemUpper[k] = (typeof item[k] === 'string' && k !== 'precio_pre' && k !== 'precio_venta' && k !== 'id') ? item[k].toUpperCase() : item[k];
+                                });
+                                return itemUpper;
+                            });
                             guardarEnLocalStorage();
                             initApp();
-                            alert("¡Base de datos importada exitosamente!");
+                            alert("¡BASE DE DATOS IMPORTADA EXITOSAMENTE!");
                         } else {
-                            alert("El archivo no tiene el formato correcto.");
+                            alert("EL ARCHIVO NO TIENE EL FORMATO CORRECTO.");
                         }
                     } catch(err) {
-                        alert("Error al leer el archivo JSON.");
+                        alert("ERROR AL LEER EL ARCHIVO JSON.");
                     }
                 }
             }
