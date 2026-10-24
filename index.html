@@ -140,7 +140,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.3</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.4</span>
             </div>
         </div>
 
@@ -176,7 +176,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ID ENLACE</label>
-                            <input type="text" id="f_id_enlace" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_id_enlace" spellcheck="true" lang="es" onblur="validarIdEnlaceDuplicado(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">NÚMERO DE CRÉDITO</label>
@@ -301,8 +301,8 @@
                             <input type="text" id="f_recepcion" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">FECHA ACTUALIZACIÓN</label>
-                            <input type="text" id="f_actualizacion" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">FECHA ACTUALIZACIÓN (AUTOMÁTICA)</label>
+                            <input type="text" id="f_actualizacion" readonly class="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-cyan-400 font-medium" placeholder="SE ACTUALIZA SOLA">
                         </div>
                     </div>
                 </div>
@@ -425,6 +425,25 @@
                 document.getElementById('f_id').value = "";
                 document.getElementById('f_id').focus();
             }
+        }
+
+        function validarIdEnlaceDuplicado(input) {
+            let val = input.value.trim().toUpperCase();
+            if (!val) return;
+            let editIdx = parseInt(document.getElementById('editIndex').value);
+            let existe = registros.some((r, idx) => r.id_enlace.toUpperCase() === val && idx !== editIdx);
+
+            if (existe) {
+                alert(`¡ATENCIÓN! EL ID DE ENLACE "${val}`} YA ESTÁ REGISTRADO EN OTRO INMUEBLE. INGRESE UNO DISTINTO.`);
+                input.value = "";
+                input.focus();
+            }
+        }
+
+        function obtenerFechaActual() {
+            let ahora = new Date();
+            let opciones = { day: '2-digit', month: 'long', year: 'numeric' };
+            return ahora.toLocaleDateString('es-MX', opciones).toUpperCase();
         }
 
         function toUpper(val) {
@@ -590,6 +609,7 @@
             document.getElementById('modalTitulo').innerText = "NUEVO REGISTRO INMOBILIARIO";
             document.getElementById('formRegistro').reset();
             document.getElementById('f_id').value = "";
+            document.getElementById('f_actualizacion').value = obtenerFechaActual();
             document.getElementById('f_colonia').innerHTML = '<option value="">-- INGRESE C.P. PRIMERO --</option>';
             document.getElementById('cpStatus').innerText = "";
             document.getElementById('btnEliminarModal').classList.add('hidden');
@@ -632,7 +652,7 @@
             document.getElementById('f_avances').value = toUpper(item.avances);
             document.getElementById('f_observaciones').value = toUpper(item.observaciones);
             document.getElementById('f_recepcion').value = toUpper(item.recepcion);
-            document.getElementById('f_actualizacion').value = toUpper(item.actualizacion);
+            document.getElementById('f_actualizacion').value = item.actualizacion || obtenerFechaActual();
 
             calcularUtilidades();
 
@@ -649,15 +669,31 @@
             event.preventDefault();
             let index = parseInt(document.getElementById('editIndex').value);
             let idIngresado = document.getElementById('f_id').value;
+            let idEnlaceIngresado = toUpper(document.getElementById('f_id_enlace').value);
 
             if (!idIngresado) {
                 alert("POR FAVOR INGRESE UN ID (NÚMERO) PARA GUARDAR EL REGISTRO.");
                 return;
             }
 
+            // Doble verificación de duplicados al enviar
+            let duplicadoId = registros.some((r, idx) => r.id.toString() === idIngresado.toString() && idx !== index);
+            if (duplicadoId) {
+                alert(`¡ERROR! EL ID ${idIngresado} YA EXISTE EN OTRO REGISTRO.`);
+                return;
+            }
+
+            let duplicadoEnlace = registros.some((r, idx) => r.id_enlace.toUpperCase() === idEnlaceIngresado && idx !== index);
+            if (duplicadoEnlace && idEnlaceIngresado) {
+                alert(`¡ERROR! EL ID DE ENLACE "${idEnlaceIngresado}" YA ESTÁ REGISTRADO.`);
+                return;
+            }
+
+            let fechaHoy = obtenerFechaActual();
+
             let nuevoItem = {
                 id: parseInt(idIngresado),
-                id_enlace: toUpper(document.getElementById('f_id_enlace').value),
+                id_enlace: idEnlaceIngresado,
                 credito: toUpper(document.getElementById('f_credito').value),
                 cartera: toUpper(document.getElementById('f_cartera').value),
                 responsable: toUpper(document.getElementById('f_responsable').value),
@@ -677,7 +713,7 @@
                 avances: toUpper(document.getElementById('f_avances').value),
                 observaciones: toUpper(document.getElementById('f_observaciones').value),
                 recepcion: toUpper(document.getElementById('f_recepcion').value),
-                actualizacion: toUpper(document.getElementById('f_actualizacion').value)
+                actualizacion: fechaHoy
             };
 
             if (index === -1) {
