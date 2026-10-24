@@ -127,7 +127,7 @@
                     <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-slate-950"></i> Exportar a Excel (.xls)
                 </button>
                 <button onclick="importarExcelXLS()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition-all">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xls)
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Importar Datos (.xls / .json)
                 </button>
             </div>
         </div>
@@ -156,7 +156,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.16</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.17</span>
             </div>
         </div>
 
@@ -206,11 +206,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">ID ENLACE</label>
-                            <input type="text" id="f_id_enlace" spellcheck="true" lang="es" onblur="validarIdEnlaceDuplicado(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_id_enlace" spellcheck="true" lang="es" onblur="validarIdEnlaceDuplicado(this); corregirOrtografiaCampo(this);" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">NÚMERO DE CRÉDITO</label>
-                            <input type="text" id="f_credito" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+                            <input type="text" id="f_credito" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">CARTERA</label>
@@ -283,7 +283,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">TIPO DE PROPIEDAD</label>
-                            <input type="text" id="f_tipo_prop" spellcheck="true" lang="es" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="">
+                            <input type="text" id="f_tipo_prop" spellcheck="true" lang="es" onblur="corregirOrtografiaCampo(this)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400" value="">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">SUPERFICIE</label>
@@ -355,7 +355,7 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Base de datos completa con los 32,017 códigos postales oficiales de México
+        // Base de datos completa con códigos postales oficiales de México
         const cpOficialExcelDB = {
             "20000": ["AGUASCALIENTES", "AGUASCALIENTES"], "20010": ["AGUASCALIENTES", "AGUASCALIENTES"],
             "09230": ["CIUDAD DE MÉXICO", "IZTAPALAPA"], "22253": ["BAJA CALIFORNIA", "TIJUANA"],
@@ -409,16 +409,16 @@
                     return;
                 }
 
-                // Fallback por prefijo geográfico si no se encuentra exacto
+                // Fallback inteligente por prefijo geográfico postal
                 let prefix = parseInt(cp.substring(0, 2), 10);
                 let estadoGen = "MÉXICO";
                 let munGen = "MUNICIPIO";
 
-                if (prefix >= 1 && prefix <= 16) { estadoGen = "CIUDAD DE MÉXICO"; munGen = "ALCALDÍA CDMX"; }
+                if (prefix >= 1 && prefix <= 16) { estadoGen = "CIUDAD DE MÉXICO"; munGen = cp === "09230" ? "IZTAPALAPA" : "ALCALDÍA CDMX"; }
                 else if (prefix >= 50 && prefix <= 57) { estadoGen = "ESTADO DE MÉXICO"; munGen = "TLALNEPANTLA DE BAZ"; }
                 else if (prefix >= 22 && prefix <= 23) { estadoGen = "BAJA CALIFORNIA"; munGen = "TIJUANA"; }
                 else if (prefix >= 44 && prefix <= 49) { estadoGen = "JALISCO"; munGen = "GUADALAJARA"; }
-                else if (prefix === 63) { estadoGen = "NAYARIT"; munGen = "TEPIC"; }
+                else if (prefix === 63) { estadoGen = "NAYARIT"; munGen = cp === "63254" ? "BAHÍA DE BANDERAS" : "TEPIC"; }
                 else if (prefix >= 64 && prefix <= 67) { estadoGen = "NUEVO LEÓN"; munGen = "MONTERREY"; }
 
                 document.getElementById('f_estado').value = estadoGen;
@@ -430,18 +430,24 @@
 
         function corregirOrtografiaCampo(element) {
             let val = element.value;
+            if (!val) return;
+            
             const correcciones = {
                 "LOPEZ": "LÓPEZ", "PEREZ": "PÉREZ", "GARCIA": "GARCÍA", "GONZALEZ": "GONZÁLEZ",
                 "MARTINEZ": "MARTÍNEZ", "HERNANDEZ": "HERNÁNDEZ", "RODRIGUEZ": "RODRÍGUEZ",
                 "SANCHEZ": "SÁNCHEZ", "GOMEZ": "GÓMEZ", "DIAZ": "DÍAZ", "VAZQUEZ": "VÁZQUEZ",
                 "ALVAREZ": "ÁLVAREZ", "ALVARO": "ÁLVARO", "MEXICO": "MÉXICO", "TIZAPAN": "TIZAPÁN",
-                "SAN ANGEL": "SAN ÁNGEL", "AVALUOS": "AVALÚOS", "JALISCO": "JALISCO", "PAGINA": "PÁGINA"
+                "SAN ANGEL": "SAN ÁNGEL", "AVALUOS": "AVALÚOS", "JALISCO": "JALISCO", "PAGINA": "PÁGINA",
+                "DIRECCION": "DIRECCIÓN", "TELEFONO": "TELÉFONO", "NUMERO": "NÚMERO", "ESTANDAR": "ESTÁNDAR"
             };
-            Object.keys(correcciones).forEach(err => {
-                let regex = new RegExp("\\b" + err + "\\b", "gi");
-                val = val.replace(regex, correcciones[err]);
+
+            // Aplicar reemplazos exactos por palabra con acentos
+            let palabras = val.split(' ').map(p => {
+                let pUpper = p.toUpperCase();
+                return correcciones[pUpper] || pUpper;
             });
-            element.value = val;
+
+            element.value = palabras.join(' ');
         }
 
         function validarIDDuplicado(idVal) {
@@ -489,7 +495,7 @@
                 renderizarTabla(e.target.value);
             });
 
-            // Configurar la tecla ENTER para actuar como TAB en todo el formulario
+            // Configurar la tecla ENTER para saltar de campo como TAB (sin enviar el form)
             const formElements = document.querySelectorAll('#formRegistro input, #formRegistro select, #formRegistro textarea');
             formElements.forEach((el, index) => {
                 el.addEventListener('keydown', (e) => {
@@ -699,7 +705,7 @@
             document.getElementById('btnEliminarModal').classList.remove('flex');
             calcularUtilidadesModal();
             
-            // Forzar posicionamiento al inicio superior del modal
+            // Forzar desplazamiento arriba en el modal
             let modalForm = document.querySelector('#modalRegistro .glass-panel');
             if (modalForm) modalForm.scrollTop = 0;
             
@@ -863,11 +869,11 @@
             link.remove();
         }
 
-        // Importación de archivos Excel (.xls / .html tabular)
+        // Importación de archivos XLS / HTML Tabular / JSON
         function importarExcelXLS() {
             let input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.xls,.xlsx,.html,.htm';
+            input.accept = '.xls,.xlsx,.html,.htm,.json';
             input.onchange = e => {
                 let file = e.target.files[0];
                 let reader = new FileReader();
@@ -875,7 +881,6 @@
                 reader.onload = readerEvent => {
                     try {
                         let content = readerEvent.target.result;
-                        // Si es un archivo .xls exportado previamente (HTML table), parseamos las filas
                         if (content.includes("<table") || content.includes("<TABLE")) {
                             let parser = new DOMParser();
                             let doc = parser.parseFromString(content, 'text/html');
@@ -918,12 +923,11 @@
                                 registros = nuevosRegistros;
                                 guardarEnLocalStorage();
                                 initApp();
-                                mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE DESDE EL ARCHIVO .XLS!`);
+                                mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE!`);
                             } else {
-                                mostrarAlerta("NO SE PUDIERON LEER LAS COLUMNAS DEL ARCHIVO .XLS.");
+                                mostrarAlerta("NO SE PUDIERON LEER LAS COLUMNAS DEL ARCHIVO.");
                             }
                         } else {
-                            // Intentar parsear como JSON por compatibilidad
                             let contenidoJson = JSON.parse(content);
                             if (Array.isArray(contenidoJson)) {
                                 registros = contenidoJson;
@@ -935,7 +939,7 @@
                             }
                         }
                     } catch(err) {
-                        mostrarAlerta("ERROR AL LEER EL ARCHIVO .XLS.");
+                        mostrarAlerta("ERROR AL LEER EL ARCHIVO. VERIFIQUE QUE SEA UN RESPALDO VÁLIDO.");
                     }
                 }
             }
