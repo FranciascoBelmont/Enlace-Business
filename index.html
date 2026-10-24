@@ -140,7 +140,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.6</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.7</span>
             </div>
         </div>
 
@@ -342,7 +342,6 @@
             let val = input.value.trim();
             if (!val) return;
 
-            // Detectar formatos cortos como 20/08/23, 20-08-2023, 20.08.23 o 20/8/23
             let partes = val.split(/[\/\-\.]/);
             if (partes.length === 3) {
                 let dia = parseInt(partes[0], 10);
@@ -350,7 +349,7 @@
                 let anio = parseInt(partes[2], 10);
 
                 if (anio < 100) {
-                    anio += 2000; // Convierte '23' en '2023'
+                    anio += 2000;
                 }
 
                 if (!isNaN(dia) && !isNaN(mesIdx) && mesIdx >= 0 && mesIdx < 12 && !isNaN(anio)) {
@@ -553,8 +552,8 @@
 
                 tr.innerHTML = `
                     <td class="p-3 pl-4">
-                        <span class="font-bold text-white group-hover:text-cyan-400 transition-colors">${item.id}</span>
-                        <div class="text-[10px] text-cyan-400/80 font-mono">${item.id_enlace}</div>
+                        <span class="font-bold text-white group-hover:text-cyan-400 transition-colors">${item.id_enlace || 'SIN ENLACE'}</span>
+                        <div class="text-[10px] text-cyan-400/80 font-mono">${item.id}</div>
                     </td>
                     <td class="p-3">
                         <div class="font-semibold text-slate-200">${item.credito}</div>
@@ -675,9 +674,7 @@
             document.getElementById('f_status').value = toUpper(item.status);
             document.getElementById('f_avances').value = toUpper(item.avances);
             document.getElementById('f_observaciones').value = toUpper(item.observaciones);
-            document.getElementById('f_recepcion').value = toUpper(item.recepcion);
-            
-            // Forzar siempre la FECHA ACTUAL al abrir para editar
+            document.getElementById('f_recepcion').value = item.recepcion;
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
 
             calcularUtilidades();
