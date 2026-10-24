@@ -158,7 +158,7 @@
             </div>
             <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span id="contadorMostrados">Mostrando 0 registros</span>
-                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.19</span>
+                <span class="text-cyan-400 font-medium">Enlace Business Database Engine v3.20</span>
             </div>
         </div>
 
@@ -428,7 +428,7 @@
             }
         }
 
-        // Corrector ortográfico y de acentos automático avanzado para México
+        // Corrector ortográfico y de acentos automático
         function aplicarCorreccionOrtografica(texto) {
             if (!texto) return "";
             let val = texto.toString().toUpperCase().trim();
@@ -445,12 +445,9 @@
                 "PROPIETARIO": "PROPIETARIO", "LITIGIOSO": "LITIGIOSO", "LITIGABLE": "LITIGABLE"
             };
 
-            // Reemplazar palabras completas si coinciden con el diccionario
             let palabras = val.split(' ').map(p => {
                 let limpia = p.replace(/[\,\.\;\:]/g, '');
-                let signo = p.match(/[\,\.\;\:]/g) || ["", ""];
-                let corregida = diccionarioAcentos[limpia] || limpia;
-                return corregida;
+                return diccionarioAcentos[limpia] || limpia;
             });
 
             return palabras.join(' ');
@@ -485,7 +482,28 @@
             return ahora.toLocaleDateString('es-MX', opciones).toUpperCase();
         }
 
-        let registros = JSON.parse(localStorage.getItem('enlace_business_db')) || [];
+        // RECUPERACIÓN ROBUSTA DE DATOS DE CUALQUIER VERSIÓN ANTERIOR
+        let registros = [];
+        try {
+            let datosGuardados = localStorage.getItem('enlace_business_db');
+            if (datosGuardados) {
+                registros = JSON.parse(datosGuardados);
+            } else {
+                // Rescatar por si estaban guardados con otra llave anterior
+                let keysToTry = Object.keys(localStorage);
+                for (let k of keysToTry) {
+                    if (k.includes('enlace') || k.includes('db') || k.includes('business')) {
+                        let parsed = JSON.parse(localStorage.getItem(k));
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            registros = parsed;
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch(e) {
+            registros = [];
+        }
 
         function initApp() {
             lucide.createIcons();
@@ -531,10 +549,10 @@
             let filtrados = registros.filter(item => {
                 let matchBusqueda = 
                     item.id.toString().includes(filtroBusqueda) ||
-                    item.credito.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
-                    item.direccion.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
-                    item.colonia.toUpperCase().includes(filtroBusqueda.toUpperCase()) ||
-                    item.id_enlace.toUpperCase().includes(filtroBusqueda.toUpperCase());
+                    (item.credito && item.credito.toUpperCase().includes(filtroBusqueda.toUpperCase())) ||
+                    (item.direccion && item.direccion.toUpperCase().includes(filtroBusqueda.toUpperCase())) ||
+                    (item.colonia && item.colonia.toUpperCase().includes(filtroBusqueda.toUpperCase())) ||
+                    (item.id_enlace && item.id_enlace.toUpperCase().includes(filtroBusqueda.toUpperCase()));
 
                 let matchEstado = fEstado === '' || item.estado === fEstado;
                 let matchMunicipio = fMunicipio === '' || item.municipio === fMunicipio;
@@ -555,8 +573,10 @@
 
             filtrados.forEach((item, index) => {
                 let realIndex = registros.indexOf(item);
-                let utilidadPesos = item.precio_venta - item.precio_pre;
-                let utilidadPorc = item.precio_pre > 0 ? (utilidadPesos / item.precio_pre) * 100 : 0;
+                let precioPre = item.precio_pre || 0;
+                let precioVenta = item.precio_venta || 0;
+                let utilidadPesos = precioVenta - precioPre;
+                let utilidadPorc = precioPre > 0 ? (utilidadPesos / precioPre) * 100 : 0;
 
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-900/70 transition-all cursor-pointer group";
@@ -568,24 +588,24 @@
                         <div class="text-[10px] text-cyan-400/80 font-mono">${item.id}</div>
                     </td>
                     <td class="p-3">
-                        <div class="font-semibold text-slate-200">${item.credito}</div>
-                        <div class="text-[10px] text-slate-400 truncate max-w-[140px]">${item.cartera}</div>
+                        <div class="font-semibold text-slate-200">${item.credito || ''}</div>
+                        <div class="text-[10px] text-slate-400 truncate max-w-[140px]">${item.cartera || ''}</div>
                     </td>
                     <td class="p-3">
-                        <div class="font-medium text-slate-200">${item.colonia}</div>
-                        <div class="text-[10px] text-slate-400 truncate max-w-[180px]">${item.direccion}, ${item.municipio}</div>
+                        <div class="font-medium text-slate-200">${item.colonia || ''}</div>
+                        <div class="text-[10px] text-slate-400 truncate max-w-[180px]">${item.direccion || ''}, ${item.municipio || ''}</div>
                     </td>
-                    <td class="p-3 text-right font-mono text-slate-300">${formatMoney(item.precio_pre)}</td>
-                    <td class="p-3 text-right font-mono text-amber-400 font-semibold">${formatMoney(item.precio_venta)}</td>
+                    <td class="p-3 text-right font-mono text-slate-300">${formatMoney(precioPre)}</td>
+                    <td class="p-3 text-right font-mono text-amber-400 font-semibold">${formatMoney(precioVenta)}</td>
                     <td class="p-3 text-right">
                         <div class="font-mono text-emerald-400 font-bold">${formatMoney(utilidadPesos)}</div>
                         <div class="text-[10px] text-emerald-500 font-semibold">${utilidadPorc.toFixed(1)}%</div>
                     </td>
                     <td class="p-3">
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-cyan-300 border border-cyan-800/40 truncate max-w-[160px]">${item.etapa_legal}</span>
-                        <div class="text-[10px] text-slate-400 mt-0.5 truncate max-w-[160px]">${item.etapa_actual}</div>
+                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-cyan-300 border border-cyan-800/40 truncate max-w-[160px]">${item.etapa_legal || ''}</span>
+                        <div class="text-[10px] text-slate-400 mt-0.5 truncate max-w-[160px]">${item.etapa_actual || ''}</div>
                     </td>
-                    <td class="p-3"><span class="text-xs text-slate-300 font-medium">${item.responsable}</span></td>
+                    <td class="p-3"><span class="text-xs text-slate-300 font-medium">${item.responsable || ''}</span></td>
                     <td class="p-3 text-center pr-4" onclick="event.stopPropagation()">
                         <div class="flex items-center justify-center space-x-1">
                             <button onclick="abrirModalEditar(${realIndex})" title="Editar" class="p-1.5 bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 rounded text-slate-300 transition-all"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
@@ -662,8 +682,8 @@
 
         function actualizarKPIsFiltrados(filtrados) {
             let totalReg = filtrados.length;
-            let sumaUtilidad = filtrados.reduce((acc, r) => acc + (r.precio_venta - r.precio_pre), 0);
-            let sumaVenta = filtrados.reduce((acc, r) => acc + r.precio_venta, 0);
+            let sumaUtilidad = filtrados.reduce((acc, r) => acc + ((r.precio_venta || 0) - (r.precio_pre || 0)), 0);
+            let sumaVenta = filtrados.reduce((acc, r) => acc + (r.precio_venta || 0), 0);
             let promedioVenta = totalReg > 0 ? sumaVenta / totalReg : 0;
 
             document.getElementById('kpiTotal').innerText = totalReg;
@@ -718,25 +738,25 @@
             document.getElementById('modalTitulo').innerText = `EDITANDO REGISTRO ID: ${item.id}`;
 
             document.getElementById('f_id').value = item.id;
-            document.getElementById('f_id_enlace').value = aplicarCorreccionOrtografia(item.id_enlace);
-            document.getElementById('f_credito').value = aplicarCorreccionOrtografia(item.credito);
-            document.getElementById('f_cartera').value = aplicarCorreccionOrtografia(item.cartera);
-            document.getElementById('f_responsable').value = aplicarCorreccionOrtografia(item.responsable);
+            document.getElementById('f_id_enlace').value = aplicarCorreccionOrtografica(item.id_enlace);
+            document.getElementById('f_credito').value = aplicarCorreccionOrtografica(item.credito);
+            document.getElementById('f_cartera').value = aplicarCorreccionOrtografica(item.cartera);
+            document.getElementById('f_responsable').value = aplicarCorreccionOrtografica(item.responsable);
             document.getElementById('f_precio_pre').value = item.precio_pre;
             document.getElementById('f_precio_venta').value = item.precio_venta;
-            document.getElementById('f_tipo_prop').value = aplicarCorreccionOrtografia(item.tipo_prop);
+            document.getElementById('f_tipo_prop').value = aplicarCorreccionOrtografica(item.tipo_prop);
             document.getElementById('f_cp').value = item.cp;
-            document.getElementById('f_estado').value = aplicarCorreccionOrtografia(item.estado);
-            document.getElementById('f_municipio').value = aplicarCorreccionOrtografia(item.municipio);
-            document.getElementById('f_colonia').value = aplicarCorreccionOrtografia(item.colonia);
-            document.getElementById('f_direccion').value = aplicarCorreccionOrtografia(item.direccion);
-            document.getElementById('f_superficie').value = aplicarCorreccionOrtografia(item.superficie);
-            document.getElementById('f_construccion').value = aplicarCorreccionOrtografia(item.construccion);
-            document.getElementById('f_etapa_actual').value = aplicarCorreccionOrtografia(item.etapa_actual);
-            document.getElementById('f_etapa_legal').value = aplicarCorreccionOrtografia(item.etapa_legal);
-            document.getElementById('f_status').value = aplicarCorreccionOrtografia(item.status);
-            document.getElementById('f_avances').value = aplicarCorreccionOrtografia(item.avances);
-            document.getElementById('f_observaciones').value = aplicarCorreccionOrtografia(item.observaciones);
+            document.getElementById('f_estado').value = aplicarCorreccionOrtografica(item.estado);
+            document.getElementById('f_municipio').value = aplicarCorreccionOrtografica(item.municipio);
+            document.getElementById('f_colonia').value = aplicarCorreccionOrtografica(item.colonia);
+            document.getElementById('f_direccion').value = aplicarCorreccionOrtografica(item.direccion);
+            document.getElementById('f_superficie').value = aplicarCorreccionOrtografica(item.superficie);
+            document.getElementById('f_construccion').value = aplicarCorreccionOrtografica(item.construccion);
+            document.getElementById('f_etapa_actual').value = aplicarCorreccionOrtografica(item.etapa_actual);
+            document.getElementById('f_etapa_legal').value = aplicarCorreccionOrtografica(item.etapa_legal);
+            document.getElementById('f_status').value = aplicarCorreccionOrtografica(item.status);
+            document.getElementById('f_avances').value = aplicarCorreccionOrtografica(item.avances);
+            document.getElementById('f_observaciones').value = aplicarCorreccionOrtografica(item.observaciones);
             document.getElementById('f_recepcion').value = item.recepcion;
             document.getElementById('f_actualizacion').value = obtenerFechaActual();
 
@@ -760,4 +780,205 @@
 
         function calcularUtilidadesModal() {
             let pre = parseFloat(document.getElementById('f_precio_pre').value) || 0;
-            let venta = parseFloat(document.getElementById('f_precio_venta').
+            let venta = parseFloat(document.getElementById('f_precio_venta').value) || 0;
+            let utilPesos = venta - pre;
+            let utilPorc = pre > 0 ? (utilPesos / pre) * 100 : 0;
+            document.getElementById('f_utilidad_pesos').value = formatMoney(utilPesos);
+            document.getElementById('f_utilidad_porc').value = utilPorc.toFixed(2) + '%';
+        }
+
+        function guardarRegistro(event) {
+            event.preventDefault();
+            let index = parseInt(document.getElementById('editIndex').value);
+            let idIngresado = document.getElementById('f_id').value;
+
+            if (!idIngresado) {
+                mostrarAlerta("POR FAVOR INGRESE UN ID (NÚMERO).");
+                return;
+            }
+
+            let duplicadoId = registros.some((r, idx) => r.id.toString() === idIngresado.toString() && idx !== index);
+            if (duplicadoId) {
+                mostrarAlerta(`¡ERROR! EL ID ${idIngresado} YA EXISTE.`);
+                return;
+            }
+
+            let fechaHoy = obtenerFechaActual();
+
+            let nuevoItem = {
+                id: parseInt(idIngresado),
+                id_enlace: aplicarCorreccionOrtografica(document.getElementById('f_id_enlace').value),
+                credito: aplicarCorreccionOrtografica(document.getElementById('f_credito').value),
+                cartera: aplicarCorreccionOrtografica(document.getElementById('f_cartera').value),
+                responsable: aplicarCorreccionOrtografica(document.getElementById('f_responsable').value),
+                precio_pre: parseFloat(document.getElementById('f_precio_pre').value) || 0,
+                precio_venta: parseFloat(document.getElementById('f_precio_venta').value) || 0,
+                tipo_prop: aplicarCorreccionOrtografica(document.getElementById('f_tipo_prop').value),
+                cp: document.getElementById('f_cp').value,
+                estado: aplicarCorreccionOrtografica(document.getElementById('f_estado').value),
+                municipio: aplicarCorreccionOrtografica(document.getElementById('f_municipio').value),
+                colonia: aplicarCorreccionOrtografica(document.getElementById('f_colonia').value),
+                direccion: aplicarCorreccionOrtografica(document.getElementById('f_direccion').value),
+                superficie: aplicarCorreccionOrtografica(document.getElementById('f_superficie').value),
+                construccion: aplicarCorreccionOrtografica(document.getElementById('f_construccion').value),
+                etapa_actual: aplicarCorreccionOrtografica(document.getElementById('f_etapa_actual').value),
+                etapa_legal: aplicarCorreccionOrtografica(document.getElementById('f_etapa_legal').value),
+                status: aplicarCorreccionOrtografica(document.getElementById('f_status').value),
+                avances: aplicarCorreccionOrtografica(document.getElementById('f_avances').value),
+                observaciones: aplicarCorreccionOrtografica(document.getElementById('f_observaciones').value),
+                recepcion: aplicarCorreccionOrtografica(document.getElementById('f_recepcion').value),
+                actualizacion: fechaHoy
+            };
+
+            if (index === -1) {
+                registros.unshift(nuevoItem);
+            } else {
+                registros[index] = nuevoItem;
+            }
+
+            guardarEnLocalStorage();
+            poblarFiltros();
+            renderizarTabla();
+            cerrarModal();
+        }
+
+        function eliminarRegistro(index) {
+            if (confirm("¿ESTÁS SEGURO DE ELIMINAR ESTE REGISTRO?")) {
+                registros.splice(index, 1);
+                guardarEnLocalStorage();
+                poblarFiltros();
+                renderizarTabla();
+            }
+        }
+
+        function eliminarRegistroActual() {
+            let index = parseInt(document.getElementById('editIndex').value);
+            if (index !== -1) {
+                eliminarRegistro(index);
+                cerrarModal();
+            }
+        }
+
+        function verificarDuplicados() {
+            let creditos = registros.map(r => r.credito).filter(Boolean);
+            let duplicados = creditos.filter((item, index) => creditos.indexOf(item) !== index);
+            if (duplicados.length > 0) {
+                mostrarAlerta("¡ATENCIÓN! CRÉDITOS DUPLICADOS: " + [...new Set(duplicados)].join(', '));
+            } else {
+                mostrarAlerta("VERIFICACIÓN COMPLETA: NO HAY CRÉDITOS DUPLICADOS.");
+            }
+        }
+
+        function exportarExcelXLS() {
+            if (registros.length === 0) {
+                mostrarAlerta("NO HAY REGISTROS PARA EXPORTAR.");
+                return;
+            }
+            let htmlTabla = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body><table border="1"><thead><tr style="background-color: #00f0ff; color: #000; font-weight: bold;"><th>ID</th><th>ID ENLACE</th><th>CRÉDITO</th><th>CARTERA</th><th>RESPONSABLE</th><th>PRECIO PRE-AUTH</th><th>PRECIO VENTA</th><th>C.P.</th><th>ESTADO</th><th>MUNICIPIO</th><th>COLONIA</th><th>DIRECCIÓN</th><th>TIPO PROPIEDAD</th><th>SUPERFICIE</th><th>CONSTRUCCIÓN</th><th>ETAPA ACTUAL</th><th>ETAPA LEGAL</th><th>STATUS</th><th>AVANCES</th><th>OBSERVACIONES</th><th>FECHA RECEPCIÓN</th><th>FECHA ACTUALIZACIÓN</th></tr></thead><tbody>`;
+            registros.forEach(r => {
+                htmlTabla += `<tr><td>${r.id || ''}</td><td>${r.id_enlace || ''}</td><td>${r.credito || ''}</td><td>${r.cartera || ''}</td><td>${r.responsable || ''}</td><td>${r.precio_pre || 0}</td><td>${r.precio_venta || 0}</td><td>${r.cp || ''}</td><td>${r.estado || ''}</td><td>${r.municipio || ''}</td><td>${r.colonia || ''}</td><td>${r.direccion || ''}</td><td>${r.tipo_prop || ''}</td><td>${r.superficie || ''}</td><td>${r.construccion || ''}</td><td>${r.etapa_actual || ''}</td><td>${r.etapa_legal || ''}</td><td>${r.status || ''}</td><td>${r.avances || ''}</td><td>${r.observaciones || ''}</td><td>${r.recepcion || ''}</td><td>${r.actualizacion || ''}</td></tr>`;
+            });
+            htmlTabla += `</tbody></table></body></html>`;
+
+            let blob = new Blob([htmlTabla], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "enlace_business_base_activa.xls";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
+        function importarExcelXLS() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xls,.xlsx,.html,.htm,.json';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = readerEvent => {
+                    try {
+                        let content = readerEvent.target.result;
+                        if (content.includes("<table") || content.includes("<TABLE")) {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(content, 'text/html');
+                            let rows = doc.querySelectorAll('table tr');
+                            if (rows.length <= 1) {
+                                mostrarAlerta("EL ARCHIVO NO CONTIENE DATOS VÁLIDOS.");
+                                return;
+                            }
+                            let nuevosRegistros = [];
+                            for (let i = 1; i < rows.length; i++) {
+                                let cols = rows[i].querySelectorAll('td');
+                                if (cols.length >= 22) {
+                                    nuevosRegistros.push({
+                                        id: parseInt(cols[0].innerText) || 0,
+                                        id_enlace: aplicarCorreccionOrtografica(cols[1].innerText),
+                                        credito: aplicarCorreccionOrtografica(cols[2].innerText),
+                                        cartera: aplicarCorreccionOrtografica(cols[3].innerText),
+                                        responsable: aplicarCorreccionOrtografica(cols[4].innerText),
+                                        precio_pre: parseFloat(cols[5].innerText) || 0,
+                                        precio_venta: parseFloat(cols[6].innerText) || 0,
+                                        cp: cols[7].innerText.trim(),
+                                        estado: aplicarCorreccionOrtografica(cols[8].innerText),
+                                        municipio: aplicarCorreccionOrtografica(cols[9].innerText),
+                                        colonia: aplicarCorreccionOrtografica(cols[10].innerText),
+                                        direccion: aplicarCorreccionOrtografica(cols[11].innerText),
+                                        tipo_prop: aplicarCorreccionOrtografica(cols[12].innerText),
+                                        superficie: aplicarCorreccionOrtografica(cols[13].innerText),
+                                        construccion: aplicarCorreccionOrtografica(cols[14].innerText),
+                                        etapa_actual: aplicarCorreccionOrtografica(cols[15].innerText),
+                                        etapa_legal: aplicarCorreccionOrtografica(cols[16].innerText),
+                                        status: aplicarCorreccionOrtografica(cols[17].innerText),
+                                        avances: aplicarCorreccionOrtografica(cols[18].innerText),
+                                        observaciones: aplicarCorreccionOrtografica(cols[19].innerText),
+                                        recepcion: aplicarCorreccionOrtografica(cols[20].innerText),
+                                        actualizacion: aplicarCorreccionOrtografica(cols[21].innerText)
+                                    });
+                                }
+                            }
+                            if (nuevosRegistros.length > 0) {
+                                registros = nuevosRegistros;
+                                guardarEnLocalStorage();
+                                initApp();
+                                mostrarAlerta(`¡SE IMPORTARON ${nuevosRegistros.length} REGISTROS EXITOSAMENTE!`);
+                            } else {
+                                mostrarAlerta("NO SE PUDIERON LEER LAS COLUMNAS DEL ARCHIVO.");
+                            }
+                        } else {
+                            let contenidoJson = JSON.parse(content);
+                            if (Array.isArray(contenidoJson)) {
+                                registros = contenidoJson.map(r => ({
+                                    ...r,
+                                    cartera: aplicarCorreccionOrtografica(r.cartera),
+                                    responsable: aplicarCorreccionOrtografica(r.responsable),
+                                    estado: aplicarCorreccionOrtografica(r.estado),
+                                    municipio: aplicarCorreccionOrtografica(r.municipio),
+                                    colonia: aplicarCorreccionOrtografica(r.colonia),
+                                    direccion: aplicarCorreccionOrtografica(r.direccion),
+                                    etapa_actual: aplicarCorreccionOrtografica(r.etapa_actual),
+                                    etapa_legal: aplicarCorreccionOrtografica(r.etapa_legal),
+                                    status: aplicarCorreccionOrtografica(r.status),
+                                    avances: aplicarCorreccionOrtografica(r.avances),
+                                    observaciones: aplicarCorreccionOrtografica(r.observaciones)
+                                }));
+                                guardarEnLocalStorage();
+                                initApp();
+                                mostrarAlerta("¡BASE DE DATOS IMPORTADA Y CORREGIDA EXITOSAMENTE!");
+                            } else {
+                                mostrarAlerta("EL FORMATO DEL ARCHIVO NO ES VÁLIDO.");
+                            }
+                        }
+                    } catch(err) {
+                        mostrarAlerta("ERROR AL LEER EL ARCHIVO. VERIFIQUE QUE SEA UN RESPALDO VÁLIDO.");
+                    }
+                }
+            }
+            input.click();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
