@@ -139,4 +139,380 @@
           <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS RESPONSABLES</option>
           </select>
-          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-5
+          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+            <option value="">TODAS LAS ETAPAS LEGALES</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3 py-1.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-600 hover:text-white transition">
+            <i class="fa-solid fa-file-excel mr-1.5"></i>Exportar Excel
+          </button>
+          <label class="flex items-center rounded-xl border border-blue-600/40 bg-blue-600/10 px-3 py-1.5 text-[10px] font-bold text-blue-400 hover:bg-blue-600 hover:text-white cursor-pointer transition">
+            <i class="fa-solid fa-file-import mr-1.5"></i>Importar Excel
+            <input type="file" id="inputImportar" accept=".xlsx, .xls" onchange="importarExcel(event)" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="px-6 py-3.5">ID / ENLACE</th>
+                <th class="px-6 py-3.5">Crédito & Cartera</th>
+                <th class="px-6 py-3.5">Ubicación</th>
+                <th class="px-6 py-3.5">Precio Pre-Auth</th>
+                <th class="px-6 py-3.5">Precio Venta</th>
+                <th class="px-6 py-3.5">Margen</th>
+                <th class="px-6 py-3.5">Etapa Legal</th>
+                <th class="px-6 py-3.5 text-center">PDF</th>
+                <th class="px-6 py-3.5">Responsable</th>
+                <th class="px-6 py-3.5 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaRegistros" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+        <div class="flex items-center justify-between border-t border-slate-800 px-6 py-4 text-xs text-slate-400">
+          <span id="contadorPaginacion">Mostrando registros</span>
+          <span class="font-medium text-slate-300" id="infoTotalPie">Total</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL DE CAPTURA ACTUALIZADO ==================== -->
+  <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
+      
+      <!-- Cabecera Modal -->
+      <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-6">
+        <div class="flex items-center space-x-3.5">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
+            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura de Inmuebles & Activos</p>
+          </div>
+        </div>
+        <button onclick="cerrarModalNuevoRegistro()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Formulario Maestro Estilo Excel -->
+      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
+        
+        <!-- Fila 1: ID e IDs Enlace -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label-pro">ID (SISTEMA):</label>
+            <input type="text" id="regId" required class="input-pro font-bold" tabindex="1">
+          </div>
+          <div>
+            <label class="label-pro">ID ENLACE:</label>
+            <input type="text" id="regIdEnlace" class="input-pro" tabindex="2">
+          </div>
+        </div>
+
+        <!-- Fila 2: Crédito y Cartera -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label-pro">NÚMERO DE CRÉDITO:</label>
+            <input type="text" id="regCredito" class="input-pro" tabindex="3">
+          </div>
+          <div>
+            <label class="label-pro">CARTERA:</label>
+            <input type="text" id="regCartera" class="input-pro" tabindex="4">
+          </div>
+        </div>
+
+        <!-- Fila 3: Responsable y Tipo de Propiedad -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label-pro">RESPONSABLE:</label>
+            <input type="text" id="regResponsable" class="input-pro" tabindex="5">
+          </div>
+          <div>
+            <label class="label-pro">TIPO DE PROPIEDAD:</label>
+            <input type="text" id="regTipoPropiedad" class="input-pro" tabindex="6">
+          </div>
+        </div>
+
+        <!-- Fila 4: Código Postal y Estado -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="label-pro">CÓDIGO POSTAL:</label>
+            <input type="text" id="regCp" class="input-pro text-center" tabindex="7">
+          </div>
+          <div class="md:col-span-2">
+            <label class="label-pro">ESTADO:</label>
+            <input type="text" id="regEstado" class="input-pro" tabindex="8">
+          </div>
+        </div>
+
+        <!-- Fila 5: Municipio y Colonia -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label-pro">MUNICIPIO:</label>
+            <input type="text" id="regMunicipio" class="input-pro" tabindex="9">
+          </div>
+          <div>
+            <label class="label-pro">COLONIA:</label>
+            <input type="text" id="regColonia" class="input-pro" tabindex="10">
+          </div>
+        </div>
+
+        <!-- Fila 6: Dirección Completa -->
+        <div>
+          <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
+          <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="11" placeholder="INGRESE LA DIRECCIÓN COMPLETA...">
+        </div>
+
+        <!-- Fila 7: Superficie y Construcción (Reducidas al ancho compacto) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="label-pro">SUPERFICIE:</label>
+            <input type="text" id="regSuperficie" class="input-pro max-w-[240px]" tabindex="12">
+          </div>
+          <div>
+            <label class="label-pro">CONSTRUCCIÓN:</label>
+            <input type="text" id="regConstruccion" class="input-pro max-w-[240px]" tabindex="13">
+          </div>
+        </div>
+
+        <!-- Fila 8: Observaciones Amplias -->
+        <div>
+          <label class="label-pro">OBSERVACIONES:</label>
+          <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="14" placeholder="INGRESE LAS OBSERVACIONES AMPLIAS...">
+        </div>
+
+        <!-- Fila 9: Avances Amplios -->
+        <div>
+          <label class="label-pro">AVANCES:</label>
+          <input type="text" id="regAvances" class="input-pro py-3" tabindex="15" placeholder="INGRESE LOS AVANCES COMPLETOS...">
+        </div>
+
+        <!-- Fila 10: Status Amplio -->
+        <div>
+          <label class="label-pro">STATUS:</label>
+          <input type="text" id="regStatus" class="input-pro py-3" tabindex="16" placeholder="INGRESE EL STATUS COMPLETO...">
+        </div>
+
+        <!-- Fila 11: Precios y Utilidades -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2 border-t border-blue-500/20">
+          <div>
+            <label class="label-pro">PRECIO PRE AUTORIZADO:</label>
+            <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold" placeholder="$0.00" tabindex="17">
+          </div>
+          <div>
+            <label class="label-pro">PRECIO VENTA:</label>
+            <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold text-amber-400" placeholder="$0.00" tabindex="18">
+          </div>
+          <div>
+            <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
+            <input type="text" id="regUtilidadPesos" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="$0.00">
+          </div>
+          <div>
+            <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
+            <input type="text" id="regUtilidadPorc" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="0.00%">
+          </div>
+        </div>
+
+        <!-- Fila 12: Etapa Legal y Etapa Actual -->
+        <div class="space-y-3 pt-2">
+          <div>
+            <label class="label-pro">ETAPA LEGAL:</label>
+            <input type="text" id="regEtapa" class="input-pro py-3" tabindex="19" placeholder="INGRESE LA ETAPA LEGAL COMPLETA...">
+          </div>
+          <div>
+            <label class="label-pro">ETAPA ACTUAL:</label>
+            <input type="text" id="regEtapaActual" class="input-pro py-3" tabindex="20" placeholder="INGRESE LA ETAPA ACTUAL COMPLETA...">
+          </div>
+        </div>
+
+        <!-- Fila 13: Recepción, Actualización y Botonera Final -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mt-2 border-t border-blue-500/20 items-end">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="label-pro">RECEPCIÓN:</label>
+              <input type="date" id="regRecepcion" class="input-pro text-xs py-2.5" tabindex="21">
+            </div>
+            <div>
+              <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
+              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2.5">
+            </div>
+          </div>
+          <div class="md:col-span-2 flex items-center justify-end gap-3">
+            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
+            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2.5 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    let baseDatos = [
+      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4", cp: "54088", direccion: "VIVEROS DE ASIS S4", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA", avances: "EN PROCESO", status: "ACTIVO" },
+      { id: "EN65211", cartera: "BANCOMER", credito: "20005455", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "PASEO DE DUBLIN S2", cp: "76840", direccion: "PASEO DE DUBLIN S2", precioPre: 798800.90, precioVenta: 890000.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA", avances: "EN PROCESO", status: "ACTIVO" },
+      { id: "EN1144", cartera: "BANAMEX", credito: "28000214", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "AVENIDA PASEO DEL SUR", cp: "76080", direccion: "AVENIDA PASEO DEL SUR 8905", precioPre: 750852.00, precioVenta: 912543.00, etapa: "EN PROCESO DE VENTA", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN REVISIÓN", avances: "CLIENTE JESSICA BERENICE RODRÍGUEZ", status: "SU EXPEDIENTE SE ENCUENTRA EN GO" }
+    ];
+
+    function validarAcceso(e) {
+      e.preventDefault();
+      if (document.getElementById('username').value.trim() === "belmont" && document.getElementById('password').value.trim() === "1492") {
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('mainApp').classList.add('flex');
+        cargarSelectoresIniciales();
+        aplicarFiltros();
+      } else {
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    }
+
+    function limpiar() {
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    function cerrarSesion() {
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      limpiar();
+    }
+
+    function abrirModalNuevoRegistro() {
+      document.getElementById('formNuevo').reset();
+      document.getElementById('regId').value = "";
+      document.getElementById('regUtilidadPesos').value = "$0.00";
+      document.getElementById('regUtilidadPorc').value = "0.00%";
+      document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('modalNuevoRegistro').classList.remove('hidden');
+      document.getElementById('regId').focus();
+    }
+
+    function cerrarModalNuevoRegistro() {
+      document.getElementById('modalNuevoRegistro').classList.add('hidden');
+    }
+
+    // Mayúsculas automáticas y navegación fluida con ENTER
+    document.addEventListenerListo, he reducido la tipografía de los selectores/botones de filtro. Pasamos de `text-xs` (12px) a un tamaño más refinado de `10px` (clase `text-[10px]`) con un padding más compacto, para que la barra se vea equilibrada, elegante y nada estorbosa.
+
+Aquí tienes el código completo con este ajuste:
+
+```html
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENLACE Business PRO - Sistema Integral</title>
+  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+  <script src="[https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js](https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js)"></script>
+  <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+    .bg-grid { background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 0); background-size: 24px 24px; }
+    .modal-backdrop { background: rgba(2, 6, 23, 0.92); backdrop-filter: blur(16px); }
+    .modal-box {
+      background: linear-gradient(135deg, #090e1a 0%, #030712 100%);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9);
+    }
+    .input-pro {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      color: #f8fafc;
+      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 500;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
+    }
+    .input-pro:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      outline: none;
+      background: rgba(15, 23, 42, 1);
+    }
+    .label-pro {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      display: block;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-100 bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- ==================== PANTALLA DE LOGIN ==================== -->
+  <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-grid p-4">
+    <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
+      <div class="mb-8 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-500 ring-1 ring-blue-500/30">
+          <i class="fa-solid fa-shield-halved text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-white">ENLACE Business PRO</h1>
+        <p class="mt-1 text-sm text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
+      </div>
+
+      <form id="loginForm" onsubmit="validarAcceso(event)" class="space-y-5">
+        <div>
+          <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
+          <input type="text" id="username" required class="input-pro" placeholder="INGRESE SU USUARIO">
+        </div>
+        <div>
+          <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+          <input type="password" id="password" required class="input-pro" placeholder="••••••••">
+        </div>
+        <div id="loginError" class="hidden rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-xs font-medium text-red-400">
+          Usuario o contraseña incorrectos.
+        </div>
+        <div class="flex items-center space-x-3 pt-2">
+          <button type="button" onclick="limpiar()" class="w-1/2 rounded-xl border border-slate-700 bg-slate-800/80 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-700">Cancelar</button>
+          <button type="submit" class="w-1/2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 shadow-lg shadow-blue-600/20">Ingresar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== PANEL PRINCIPAL ==================== -->
+  <div id="mainApp" class="hidden min-h-full flex-col">
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center space-x-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-md">
+            <i class="fa-solid fa-building text-lg"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-white">ENLACE <span class="text-blue-500">BUSINESS PRO</span></h1>
+            <p class="text-xs text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <input type="text" id="inputBuscador" oninput="aplicarFiltros()" placeholder="BUSCAR EN BASE DE DATOS..." class="input-pro w-64 hidden md:block py-2 text-xs">
+          <button onclick="abrirModalNuevoRegistro()" class="flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md">
+            <i class="fa-solid fa-plus mr-1.5"></i>Nuevo Registro
+          </button>
+          <button onclick="cerrarSesion()" title="Cerrar Sesión" class="rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-slate-300 hover:bg-red-500/20 hover:text-red-400">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-2xl border border-slate-800
