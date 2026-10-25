@@ -101,7 +101,7 @@
     </header>
 
     <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      <!-- Tarjetas KPI Centradas y con Fuente Reducida Un Punto -->
+      <!-- Tarjetas KPI Centradas -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">TOTAL REGISTROS</span>
@@ -634,16 +634,16 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="px-6 py-4">
-              <div class="font-extrabold text-white text-sm">${item.id}</div>
+              <div class="font-bold text-xs text-white">${item.id}</div>
               <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.idEnlace || 'S/N'}</div>
             </td>
             <td class="px-6 py-4">
-              <div class="font-bold text-white">${item.cartera}</div>
+              <div class="font-bold text-xs text-white">${item.cartera}</div>
               <div class="text-[11px] text-slate-400 mt-0.5">${item.credito}</div>
             </td>
             <td class="px-6 py-4">
-              <div class="font-medium text-white text-sm">${item.direccion || 'S/D'}</div>
-              <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.colonia || 'S/D'}</div>
+              <div class="font-bold text-xs text-white uppercase">${item.direccion || 'S/D'}</div>
+              <div class="text-[11px] text-blue-400 font-semibold mt-0.5 uppercase">${item.colonia || 'S/D'}</div>
             </td>
             <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
