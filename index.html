@@ -122,7 +122,7 @@
         </div>
       </div>
 
-      <!-- Barra de Filtros Unificada -->
+      <!-- Barra de Filtros Unificada en una sola línea -->
       <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap items-center gap-2.5">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
@@ -559,11 +559,11 @@
 
       const indexExistente = baseDatos.findIndex(i => i.id === idCapturado);
       if (indexExistente > -1) {
-        baseDatos.splice(indexExistente, 1); // Quitar de su lugar actual
-        baseDatos.unshift(datosObjeto);       // Poner hasta arriba
+        baseDatos.splice(indexExistente, 1);
+        baseDatos.unshift(datosObjeto);
         alert("¡Registro actualizado con éxito!");
       } else {
-        baseDatos.unshift(datosObjeto);       // Poner hasta arriba
+        baseDatos.unshift(datosObjeto);
         alert("¡Registro guardado con éxito!");
       }
 
@@ -837,7 +837,6 @@
             pdf: false
           }));
 
-          // Fusionar sin borrar los existentes (actualizar si el ID ya existe, agregar al inicio si es nuevo)
           nuevosImportados.forEach(nuevo => {
             const indexExistente = baseDatos.findIndex(i => i.id === nuevo.id);
             if (indexExistente > -1) {
