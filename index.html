@@ -123,31 +123,31 @@
         </div>
       </div>
 
-      <!-- Barra de Filtros (FUENTES DE BOTONES Y SELECTORES REDUCIDAS A 10px) -->
+      <!-- Barra de Filtros -->
       <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap items-center gap-2.5">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
-          <select id="filtroEstado" onchange="alCambiarEstado()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroEstado" onchange="alCambiarEstado()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS ESTADOS</option>
           </select>
-          <select id="filtroMunicipio" onchange="alCambiarMunicipio()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroMunicipio" onchange="alCambiarMunicipio()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS MUNICIPIOS</option>
           </select>
-          <select id="filtroColonia" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroColonia" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODAS LAS COLONIAS</option>
           </select>
-          <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS RESPONSABLES</option>
           </select>
-          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-semibold text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODAS LAS ETAPAS LEGALES</option>
           </select>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3 py-1.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-600 hover:text-white transition">
+          <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-600 hover:text-white transition">
             <i class="fa-solid fa-file-excel mr-1.5"></i>Exportar Excel
           </button>
-          <label class="flex items-center rounded-xl border border-blue-600/40 bg-blue-600/10 px-3 py-1.5 text-[10px] font-bold text-blue-400 hover:bg-blue-600 hover:text-white cursor-pointer transition">
+          <label class="flex items-center rounded-xl border border-blue-600/40 bg-blue-600/10 px-3 py-1.5 text-[10px] font-semibold text-blue-400 hover:bg-blue-600 hover:text-white transition cursor-pointer">
             <i class="fa-solid fa-file-import mr-1.5"></i>Importar Excel
             <input type="file" id="inputImportar" accept=".xlsx, .xls" onchange="importarExcel(event)" class="hidden">
           </label>
@@ -183,7 +183,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ACTUALIZADO ==================== -->
+  <!-- ==================== MODAL DE CAPTURA ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -367,24 +367,31 @@
 
     function validarAcceso(e) {
       e.preventDefault();
-      if (document.getElementById('username').value.trim() === "belmont" && document.getElementById('password').value.trim() === "1492") {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const errorDiv = document.getElementById('loginError');
+
+      if (user === "belmont" && pass === "1492") {
+        errorDiv.classList.add('hidden');
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
         document.getElementById('mainApp').classList.add('flex');
         cargarSelectoresIniciales();
         aplicarFiltros();
       } else {
-        document.getElementById('loginError').classList.remove('hidden');
+        errorDiv.classList.remove('hidden');
       }
     }
 
     function limpiar() {
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
+      document.getElementById('loginError').classList.add('hidden');
     }
 
     function cerrarSesion() {
       document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('flex');
       document.getElementById('loginOverlay').classList.remove('hidden');
       limpiar();
     }
@@ -404,115 +411,286 @@
     }
 
     // Mayúsculas automáticas y navegación fluida con ENTER
-    document.addEventListenerListo, he reducido la tipografía de los selectores/botones de filtro. Pasamos de `text-xs` (12px) a un tamaño más refinado de `10px` (clase `text-[10px]`) con un padding más compacto, para que la barra se vea equilibrada, elegante y nada estorbosa.
+    document.addEventListener('input', function (e) {
+      if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
+        e.target.value = e.target.value.toUpperCase();
+      }
+    });
 
-Aquí tienes el código completo con este ajuste:
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const target = e.target;
+        if (target.tagName === 'INPUT' && !target.readOnly) {
+          e.preventDefault();
+          const focusables = Array.from(document.querySelectorAll('#formNuevo input, #formNuevo select')).filter(el => !el.readOnly);
+          const index = focusables.indexOf(target);
+          if (index > -1 && index + 1 < focusables.length) {
+            focusables[index + 1].focus();
+          }
+        }
+      }
+    });
 
-```html
-<!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ENLACE Business PRO - Sistema Integral</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <script src="[https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js](https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js)"></script>
-  <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-  <style>
-    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-    .bg-grid { background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 0); background-size: 24px 24px; }
-    .modal-backdrop { background: rgba(2, 6, 23, 0.92); backdrop-filter: blur(16px); }
-    .modal-box {
-      background: linear-gradient(135deg, #090e1a 0%, #030712 100%);
-      border: 1px solid rgba(59, 130, 246, 0.4);
-      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9);
+    function formatearMonedaInput(input) {
+      let valorLimpio = input.value.replace(/[^0-9.]/g, '');
+      let partes = valorLimpio.split('.');
+      if (partes.length > 2) valorLimpio = partes[0] + '.' + partes.slice(1).join('');
+      if (valorLimpio !== "") {
+        let entero = partes[0];
+        let decimales = partes.length > 1 ? '.' + partes[1].substring(0, 2) : '';
+        if (entero !== "") entero = Number(entero).toLocaleString('es-MX');
+        input.value = "$" + entero + decimales;
+      } else {
+        input.value = "";
+      }
     }
-    .input-pro {
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      color: #f8fafc;
-      text-transform: uppercase;
-      font-size: 13px;
-      font-weight: 500;
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 0.75rem;
-      transition: all 0.2s ease;
+
+    function obtenerValorNumerico(idInput) {
+      let val = document.getElementById(idInput).value;
+      if (!val) return 0;
+      return parseFloat(val.replace(/[^0-9.]/g, '')) || 0;
     }
-    .input-pro:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-      outline: none;
-      background: rgba(15, 23, 42, 1);
+
+    function calcularUtilidadModal() {
+      const pre = obtenerValorNumerico('regPrecioPre');
+      const venta = obtenerValorNumerico('regPrecioVenta');
+      const utilidadPesos = venta - pre;
+      const utilidadPorc = pre > 0 ? ((utilidadPesos / pre) * 100).toFixed(2) : 0;
+      document.getElementById('regUtilidadPesos').value = `$${utilidadPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+      document.getElementById('regUtilidadPorc').value = `${utilidadPorc}%`;
     }
-    .label-pro {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-      margin-bottom: 5px;
-      display: block;
+
+    function guardarNuevoRegistro(e) {
+      e.preventDefault();
+      const idCapturado = document.getElementById('regId').value.trim();
+      if (!idCapturado) {
+        alert("Por favor, ingrese el ID del Sistema.");
+        return;
+      }
+      baseDatos.unshift({
+        id: idCapturado,
+        cartera: document.getElementById('regCartera').value.trim() || "GENERAL",
+        credito: document.getElementById('regCredito').value.trim() || "S/N",
+        estado: document.getElementById('regEstado').value.trim() || "N/A",
+        municipio: document.getElementById('regMunicipio').value.trim() || "N/A",
+        colonia: document.getElementById('regColonia').value.trim() || "N/A",
+        cp: document.getElementById('regCp').value.trim() || "00000",
+        direccion: document.getElementById('regDireccion').value.trim() || "S/D",
+        observaciones: document.getElementById('regObservaciones').value.trim() || "S/D",
+        avances: document.getElementById('regAvances').value.trim() || "S/D",
+        status: document.getElementById('regStatus').value.trim() || "S/D",
+        precioPre: obtenerValorNumerico('regPrecioPre'),
+        precioVenta: obtenerValorNumerico('regPrecioVenta'),
+        etapa: document.getElementById('regEtapa').value.trim() || "EN PROCESO",
+        pdf: false,
+        responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
+      });
+      cargarSelectoresIniciales();
+      aplicarFiltros();
+      cerrarModalNuevoRegistro();
+      alert("¡Registro guardado con éxito!");
     }
-  </style>
-</head>
-<body class="h-full text-slate-100 bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
 
-  <!-- ==================== PANTALLA DE LOGIN ==================== -->
-  <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-grid p-4">
-    <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
-      <div class="mb-8 text-center">
-        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-500 ring-1 ring-blue-500/30">
-          <i class="fa-solid fa-shield-halved text-3xl"></i>
-        </div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">ENLACE Business PRO</h1>
-        <p class="mt-1 text-sm text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
-      </div>
+    function cargarSelectoresIniciales() {
+      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
+      const etapas = [...new Set(baseDatos.map(item => item.etapa))].sort();
+      const responsables = [...new Set(baseDatos.map(item => item.responsable))].sort();
 
-      <form id="loginForm" onsubmit="validarAcceso(event)" class="space-y-5">
-        <div>
-          <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
-          <input type="text" id="username" required class="input-pro" placeholder="INGRESE SU USUARIO">
-        </div>
-        <div>
-          <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
-          <input type="password" id="password" required class="input-pro" placeholder="••••••••">
-        </div>
-        <div id="loginError" class="hidden rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-xs font-medium text-red-400">
-          Usuario o contraseña incorrectos.
-        </div>
-        <div class="flex items-center space-x-3 pt-2">
-          <button type="button" onclick="limpiar()" class="w-1/2 rounded-xl border border-slate-700 bg-slate-800/80 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-700">Cancelar</button>
-          <button type="submit" class="w-1/2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 shadow-lg shadow-blue-600/20">Ingresar</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      const selEstado = document.getElementById('filtroEstado');
+      selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
+      estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
 
-  <!-- ==================== PANEL PRINCIPAL ==================== -->
-  <div id="mainApp" class="hidden min-h-full flex-col">
-    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <div class="flex items-center space-x-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-md">
-            <i class="fa-solid fa-building text-lg"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold tracking-tight text-white">ENLACE <span class="text-blue-500">BUSINESS PRO</span></h1>
-            <p class="text-xs text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-3">
-          <input type="text" id="inputBuscador" oninput="aplicarFiltros()" placeholder="BUSCAR EN BASE DE DATOS..." class="input-pro w-64 hidden md:block py-2 text-xs">
-          <button onclick="abrirModalNuevoRegistro()" class="flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md">
-            <i class="fa-solid fa-plus mr-1.5"></i>Nuevo Registro
-          </button>
-          <button onclick="cerrarSesion()" title="Cerrar Sesión" class="rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-slate-300 hover:bg-red-500/20 hover:text-red-400">
-            <i class="fa-solid fa-right-from-bracket"></i>
-          </button>
-        </div>
-      </div>
-    </header>
+      const selEtapa = document.getElementById('filtroEtapa');
+      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
+      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
 
-    <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-2xl border border-slate-800
+      const selResp = document.getElementById('filtroResponsable');
+      selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
+      responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
+
+      poblarMunicipios();
+      poblarColonias();
+    }
+
+    function alCambiarEstado() {
+      poblarMunicipios();
+      poblarColonias();
+      aplicarFiltros();
+    }
+
+    function alCambiarMunicipio() {
+      poblarColonias();
+      aplicarFiltros();
+    }
+
+    function poblarMunicipios() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const selMunicipio = document.getElementById('filtroMunicipio');
+      const munActual = selMunicipio.value;
+      let filtrados = baseDatos;
+      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
+      const municipios = [...new Set(filtrados.map(i => i.municipio))].sort();
+      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
+      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
+      if (municipios.includes(munActual)) selMunicipio.value = munActual;
+    }
+
+    function poblarColonias() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const selColonia = document.getElementById('filtroColonia');
+      const colActual = selColonia.value;
+      let filtrados = baseDatos;
+      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
+      if (municipioF) filtrados = filtrados.filter(i => i.municipio === municipioF);
+      const colonias = [...new Set(filtrados.map(i => i.colonia))].sort();
+      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
+      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
+      if (colonias.includes(colActual)) selColonia.value = colActual;
+    }
+
+    function aplicarFiltros() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const coloniaF = document.getElementById('filtroColonia').value;
+      const responsableF = document.getElementById('filtroResponsable').value;
+      const etapaF = document.getElementById('filtroEtapa').value;
+      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
+
+      const resultados = baseDatos.filter(item => {
+        const matchEdo = !estadoF || item.estado === estadoF;
+        const matchMun = !municipioF || item.municipio === municipioF;
+        const matchCol = !coloniaF || item.colonia === coloniaF;
+        const matchResp = !responsableF || item.responsable === responsableF;
+        const matchEtp = !etapaF || item.etapa === etapaF;
+        const matchTexto = !textoBusqueda || 
+          item.id.toLowerCase().includes(textoBusqueda) ||
+          item.cartera.toLowerCase().includes(textoBusqueda) ||
+          item.credito.toLowerCase().includes(textoBusqueda) ||
+          item.colonia.toLowerCase().includes(textoBusqueda) ||
+          item.municipio.toLowerCase().includes(textoBusqueda) ||
+          item.estado.toLowerCase().includes(textoBusqueda) ||
+          item.responsable.toLowerCase().includes(textoBusqueda);
+        return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
+      });
+
+      document.getElementById('kpiTotalRegistros').innerText = resultados.length;
+
+      if (resultados.length > 0) {
+        let conteoTipos = {};
+        resultados.forEach(i => {
+          let t = i.tipoPropiedad || "CASA HABITACIÓN";
+          conteoTipos[t] = (conteoTipos[t] || 0) + 1;
+        });
+        let maxTipo = Object.keys(conteoTipos)[0];
+        Object.keys(conteoTipos).forEach(t => { if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t; });
+        document.getElementById('kpiTipoPredominante').innerText = maxTipo;
+        document.getElementById('kpiTipoDetalle').innerText = `${conteoTipos[maxTipo]} de los registros`;
+      } else {
+        document.getElementById('kpiTipoPredominante').innerText = "N/A";
+        document.getElementById('kpiTipoDetalle').innerText = "0 registros";
+      }
+
+      const sumaVenta = resultados.reduce((acc, i) => acc + i.precioVenta, 0);
+      const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
+      document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      if (resultados.length > 0) {
+        let conteoCar = {};
+        resultados.forEach(i => conteoCar[i.cartera] = (conteoCar[i.cartera] || 0) + 1);
+        let maxCar = Object.keys(conteoCar)[0];
+        Object.keys(conteoCar).forEach(c => { if (conteoCar[c] > conteoCar[maxCar]) maxCar = c; });
+        document.getElementById('kpiCarteraPrincipal').innerText = maxCar;
+      } else {
+        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
+      }
+
+      const tbody = document.getElementById('tablaRegistros');
+      tbody.innerHTML = '';
+      resultados.forEach(item => {
+        const margenPesos = item.precioVenta - item.precioPre;
+        const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-6 py-4 font-bold text-white">${item.id}</td>
+            <td class="px-6 py-4">
+              <div class="font-bold text-white">${item.cartera}</div>
+              <div class="text-[11px] text-slate-400">Crédito: ${item.credito}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-medium text-slate-200">${item.colonia || ''}</div>
+              <div class="text-[11px] text-slate-400">${item.municipio}, ${item.estado}</div>
+            </td>
+            <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
+            <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
+            <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
+            <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
+            <td class="px-6 py-4 text-center">Editar</td>
+          </tr>
+        `;
+      });
+      document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
+      document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
+    }
+
+    function exportarExcel() {
+      const datosExportar = baseDatos.map(i => ({
+        "ID / ENLACE": i.id,
+        "CARTERA": i.cartera,
+        "CRÉDITO": i.credito,
+        "ESTADO": i.estado,
+        "MUNICIPIO": i.municipio,
+        "COLONIA": i.colonia,
+        "DIRECCIÓN": i.direccion,
+        "C.P.": i.cp,
+        "PRECIO PRE-AUTH": i.precioPre,
+        "PRECIO VENTA": i.precioVenta,
+        "ETAPA LEGAL": i.etapa,
+        "RESPONSABLE": i.responsable
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace");
+      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte.xlsx");
+    }
+
+    function importarExcel(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        if (jsonData.length > 0) {
+          baseDatos = jsonData.map((row, index) => ({
+            id: String(row["ID / ENLACE"] || row["ID"] || `EN${1000 + index}`),
+            cartera: String(row["CARTERA"] || row["Cartera"] || "GENERAL"),
+            credito: String(row["CRÉDITO"] || row["Crédito"] || "S/N"),
+            estado: String(row["ESTADO"] || row["Estado"] || "N/A"),
+            municipio: String(row["MUNICIPIO"] || row["Municipio"] || "N/A"),
+            colonia: String(row["COLONIA"] || row["Colonia"] || "N/A"),
+            direccion: String(row["DIRECCIÓN"] || row["Direccion"] || "S/D"),
+            cp: String(row["C.P."] || row["CP"] || "00000"),
+            precioPre: Number(row["PRECIO PRE-AUTH"] || row["Precio Pre-Auth"] || 500000),
+            precioVenta: Number(row["PRECIO VENTA"] || row["Precio Venta"] || 700000),
+            etapa: String(row["ETAPA LEGAL"] || row["Etapa Legal"] || "EN PROCESO"),
+            pdf: false,
+            responsable: String(row["RESPONSABLE"] || row["Responsable"] || "BELMONT"),
+            observaciones: "IMPORTADO DE EXCEL",
+            avances: "IMPORTADO",
+            status: "ACTIVO"
+          }));
+          cargarSelectoresIniciales();
+          aplicarFiltros();
+          alert(`¡Se importaron ${baseDatos.length} registros con éxito!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
