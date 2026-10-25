@@ -21,11 +21,10 @@
       border: 1px solid rgba(51, 65, 85, 0.9);
       color: #f8fafc;
       text-transform: uppercase;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 0.5rem;
       transition: all 0.2s ease;
     }
     .input-pro:focus {
@@ -34,19 +33,18 @@
       outline: none;
       background: rgba(15, 23, 42, 1);
     }
-    .label-pro {
+    .label-inline {
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
       color: #94a3b8;
-      margin-bottom: 5px;
-      display: block;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body class="h-full text-slate-100 bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
 
-  <!-- ==================== PANTALLA DE LOGIN (CAJAS LIMPIAS) ==================== -->
+  <!-- ==================== PANTALLA DE LOGIN ==================== -->
   <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-grid p-4">
     <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
       <div class="mb-8 text-center">
@@ -60,11 +58,11 @@
       <form id="loginForm" onsubmit="validarAcceso(event)" class="space-y-5">
         <div>
           <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
-          <input type="text" id="username" required class="input-pro">
+          <input type="text" id="username" required class="input-pro w-full py-2.5">
         </div>
         <div>
           <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
-          <input type="password" id="password" required class="input-pro">
+          <input type="password" id="password" required class="input-pro w-full py-2.5">
         </div>
         <div id="loginError" class="hidden rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-xs font-medium text-red-400">
           Usuario o contraseña incorrectos.
@@ -183,158 +181,171 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ESTILO EXCEL ==================== -->
+  <!-- ==================== MODAL DE CAPTURA IDENTICO A TU EXCEL ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
       <!-- Cabecera Modal -->
-      <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-6">
+      <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-5">
         <div class="flex items-center space-x-3.5">
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
-            <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-file-invoice-dollar text-base"></i>
           </div>
           <div>
             <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
             <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura de Inmuebles & Activos</p>
           </div>
         </div>
-        <button onclick="cerrarModalNuevoRegistro()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+        <button onclick="cerrarModalNuevoRegistro()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
-      <!-- Formulario Estilo Excel Proporcionado -->
-      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
+      <!-- Formulario Estilo Excel Con Títulos en Línea -->
+      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-3.5">
         
-        <!-- Dos Columnas Principales idénticas a tu Excel -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <!-- BLOQUE SUPERIOR DE DOS COLUMNAS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-3">
           
           <!-- COLUMNA IZQUIERDA -->
-          <div class="space-y-4">
-            <div>
-              <label class="label-pro">ID (SISTEMA):</label>
-              <input type="text" id="regId" required class="input-pro font-bold" tabindex="1">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">ID:</label>
+              <input type="text" id="regId" required class="input-pro w-32 font-bold" tabindex="1">
             </div>
-            <div>
-              <label class="label-pro">ID ENLACE:</label>
-              <input type="text" id="regIdEnlace" class="input-pro" tabindex="2">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">ID ENLACE:</label>
+              <input type="text" id="regIdEnlace" class="input-pro w-44" tabindex="2">
             </div>
-            <div>
-              <label class="label-pro">NÚMERO DE CRÉDITO:</label>
-              <input type="text" id="regCredito" class="input-pro" tabindex="3">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">NÚMERO DE CRÉDITO:</label>
+              <input type="text" id="regCredito" class="input-pro flex-1" tabindex="3">
             </div>
-            <div>
-              <label class="label-pro">CARTERA:</label>
-              <input type="text" id="regCartera" class="input-pro" tabindex="4">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">CARTERA:</label>
+              <input type="text" id="regCartera" class="input-pro flex-1" tabindex="4">
             </div>
-            <div>
-              <label class="label-pro">RESPONSABLE:</label>
-              <input type="text" id="regResponsable" class="input-pro" tabindex="5">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">RESPONSABLE:</label>
+              <input type="text" id="regResponsable" class="input-pro flex-1" tabindex="5">
             </div>
-            <div>
-              <label class="label-pro">TIPO DE PROPIEDAD:</label>
-              <input type="text" id="regTipoPropiedad" class="input-pro" tabindex="6">
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-              <div>
-                <label class="label-pro">C. POSTAL:</label>
-                <input type="text" id="regCp" class="input-pro text-center" tabindex="7">
-              </div>
-              <div class="col-span-2">
-                <label class="label-pro">ESTADO:</label>
-                <input type="text" id="regEstado" class="input-pro" tabindex="8">
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label-pro">MUNICIPIO:</label>
-                <input type="text" id="regMunicipio" class="input-pro" tabindex="9">
-              </div>
-              <div>
-                <label class="label-pro">COLONIA:</label>
-                <input type="text" id="regColonia" class="input-pro" tabindex="10">
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label-pro">SUPERFICIE:</label>
-                <input type="text" id="regSuperficie" class="input-pro" tabindex="11">
-              </div>
-              <div>
-                <label class="label-pro">CONSTRUCCIÓN:</label>
-                <input type="text" id="regConstruccion" class="input-pro" tabindex="12">
-              </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">TIPO DE PROPIEDAD:</label>
+              <input type="text" id="regTipoPropiedad" class="input-pro flex-1" tabindex="6">
             </div>
           </div>
 
           <!-- COLUMNA DERECHA (Precios, Utilidades y Etapas) -->
-          <div class="space-y-4">
-            <div>
-              <label class="label-pro">PRECIO PRE AUTORIZADO:</label>
-              <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold" placeholder="$0.00" tabindex="13">
+          <div class="space-y-3">
+            <div class="flex items-center justify-end gap-3">
+              <label class="label-inline text-blue-400">PRECIO PRE AUTORIZADO:</label>
+              <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-right" placeholder="$0.00" tabindex="13">
             </div>
-            <div>
-              <label class="label-pro">PRECIO VENTA:</label>
-              <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold text-amber-400" placeholder="$0.00" tabindex="14">
+            <div class="flex items-center justify-end gap-3">
+              <label class="label-inline text-amber-400">PRECIO VENTA:</label>
+              <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-amber-400 text-right" placeholder="$0.00" tabindex="14">
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
-                <input type="text" id="regUtilidadPesos" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="$0.00">
-              </div>
-              <div>
-                <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
-                <input type="text" id="regUtilidadPorc" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="0.00%">
-              </div>
+            <div class="flex items-center justify-end gap-3">
+              <label class="label-inline text-emerald-400">UTILIDAD ($):</label>
+              <input type="text" id="regUtilidadPesos" readonly class="input-pro w-44 bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold text-right" value="$0.00">
             </div>
-            <div>
-              <label class="label-pro">ETAPA ACTUAL:</label>
-              <input type="text" id="regEtapaActual" class="input-pro py-3" tabindex="15">
+            <div class="flex items-center justify-end gap-3">
+              <label class="label-inline text-emerald-400">UTILIDAD (%):</label>
+              <input type="text" id="regUtilidadPorc" readonly class="input-pro w-44 bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold text-right" value="0.00%">
             </div>
-            <div>
-              <label class="label-pro">ETAPA LEGAL:</label>
-              <input type="text" id="regEtapa" class="input-pro py-3" tabindex="16">
+            <div class="flex items-center gap-3 pt-1">
+              <label class="label-inline w-32">ETAPA ACTUAL:</label>
+              <input type="text" id="regEtapaActual" class="input-pro flex-1 py-1.5" tabindex="15">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-32">ETAPA LEGAL:</label>
+              <input type="text" id="regEtapa" class="input-pro flex-1 py-1.5" tabindex="16">
             </div>
           </div>
 
         </div>
 
-        <!-- SECCIÓN INFERIOR: Campos anchos de lado a lado -->
-        <div class="space-y-4 pt-2 border-t border-blue-500/20">
-          <div>
-            <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
-            <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="17" placeholder="INGRESE LA DIRECCIÓN COMPLETA...">
+        <!-- FILAS DE UBICACIÓN COMPACTAS -->
+        <div class="pt-2 border-t border-slate-800 space-y-3">
+          
+          <!-- C.P., ESTADO Y MUNICIPIO -->
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="flex items-center gap-2">
+              <label class="label-inline">CÓDIGO POSTAL:</label>
+              <input type="text" id="regCp" class="input-pro w-28 text-center" tabindex="7">
+            </div>
+            <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+              <label class="label-inline">ESTADO:</label>
+              <input type="text" id="regEstado" class="input-pro flex-1" tabindex="8">
+            </div>
+            <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+              <label class="label-inline">MUNICIPIO:</label>
+              <input type="text" id="regMunicipio" class="input-pro flex-1" tabindex="9">
+            </div>
           </div>
-          <div>
-            <label class="label-pro">OBSERVACIONES:</label>
-            <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="18" placeholder="INGRESE LAS OBSERVACIONES AMPLIAS...">
+
+          <!-- COLONIA Y DIRECCIÓN -->
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="flex items-center gap-2 flex-1 min-w-[250px]">
+              <label class="label-inline">COLONIA:</label>
+              <input type="text" id="regColonia" class="input-pro flex-1" tabindex="10">
+            </div>
+            <div class="flex items-center gap-2 flex-1 min-w-[300px]">
+              <label class="label-inline text-blue-400">DIRECCIÓN:</label>
+              <input type="text" id="regDireccion" class="input-pro flex-1 border-blue-500/50" tabindex="11">
+            </div>
           </div>
-          <div>
-            <label class="label-pro">AVANCES:</label>
-            <input type="text" id="regAvances" class="input-pro py-3" tabindex="19" placeholder="INGRESE LOS AVANCES COMPLETOS...">
+
+          <!-- SUPERFICIE, CONSTRUCCIÓN Y ENVÍO -->
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="flex items-center gap-2">
+              <label class="label-inline">SUPERFICIE:</label>
+              <input type="text" id="regSuperficie" class="input-pro w-28 text-center" tabindex="12">
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="label-inline">CONSTRUCCIÓN:</label>
+              <input type="text" id="regConstruccion" class="input-pro w-28 text-center" tabindex="17">
+            </div>
+            <div class="flex items-center gap-2 flex-1 min-w-[250px]">
+              <label class="label-inline">ENVÍO:</label>
+              <input type="text" id="regEnvio" class="input-pro flex-1" tabindex="18">
+            </div>
           </div>
-          <div>
-            <label class="label-pro">STATUS:</label>
-            <input type="text" id="regStatus" class="input-pro py-3" tabindex="20" placeholder="INGRESE EL STATUS COMPLETO...">
+
+        </div>
+
+        <!-- BLOQUES ANCHOS DE TEXTO LARGO (OBSERVACIONES, AVANCES, STATUS) -->
+        <div class="pt-2 border-t border-slate-800 space-y-3">
+          <div class="flex items-center gap-3">
+            <label class="label-inline w-32">OBSERVACIONES:</label>
+            <input type="text" id="regObservaciones" class="input-pro flex-1 py-2" tabindex="19">
+          </div>
+          <div class="flex items-center gap-3">
+            <label class="label-inline w-32">AVANCES:</label>
+            <input type="text" id="regAvances" class="input-pro flex-1 py-2" tabindex="20">
+          </div>
+          <div class="flex items-center gap-3">
+            <label class="label-inline w-32">STATUS:</label>
+            <input type="text" id="regStatus" class="input-pro flex-1 py-2" tabindex="21">
           </div>
         </div>
 
-        <!-- Fila Final: Recepción, Actualización y Botonera -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mt-2 border-t border-blue-500/20 items-end">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="label-pro">RECEPCIÓN:</label>
-              <input type="date" id="regRecepcion" class="input-pro text-xs py-2.5" tabindex="21">
+        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-blue-500/20">
+          <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+              <label class="label-inline">RECEPCIÓN:</label>
+              <input type="date" id="regRecepcion" class="input-pro w-36 text-xs" tabindex="22">
             </div>
-            <div>
-              <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
-              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2.5">
+            <div class="flex items-center gap-2">
+              <label class="label-inline text-blue-400">ACTUALIZACIÓN:</label>
+              <input type="text" id="regActualizacion" readonly class="input-pro w-40 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
             </div>
           </div>
-          <div class="md:col-span-2 flex items-center justify-end gap-3">
-            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
-            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
-            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2.5 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR</button>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
+            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR</button>
           </div>
         </div>
 
@@ -345,9 +356,7 @@
 
   <script>
     let baseDatos = [
-      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4", cp: "54088", direccion: "VIVEROS DE ASIS S4", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA", avances: "EN PROCESO", status: "ACTIVO" },
-      { id: "EN65211", cartera: "BANCOMER", credito: "20005455", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "PASEO DE DUBLIN S2", cp: "76840", direccion: "PASEO DE DUBLIN S2", precioPre: 798800.90, precioVenta: 890000.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA", avances: "EN PROCESO", status: "ACTIVO" },
-      { id: "EN1144", cartera: "BANAMEX", credito: "28000214", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "AVENIDA PASEO DEL SUR", cp: "76080", direccion: "AVENIDA PASEO DEL SUR 8905", precioPre: 750852.00, precioVenta: 912543.00, etapa: "EN PROCESO DE VENTA", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN REVISIÓN", avances: "CLIENTE JESSICA BERENICE RODRÍGUEZ", status: "SU EXPEDIENTE SE ENCUENTRA EN GO" }
+      { id: "15123", cartera: "TERTIUS", credito: "6200004505.00", estado: "BAJA CALIFORNIA SUR", municipio: "CABO SAN LUCAS", colonia: "MISIONES DE SANTA FE", cp: "23450", direccion: "SAN RAMÓN, LOTE 74, MANZANA A, VIVIENDA B", precioPre: 0.00, precioVenta: 502000.00, etapa: "DERECHO LITIGIOSOS", etapaActual: "INMUEBLE", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "SE REALIZO CARTA DE INSTRUCCIONES PARA LA NOTARIA 27/11/24", avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025", status: "PAGARON 30% $150,000.00, 12/12/23", envio: "CLIENTE SAMIRA COBOS VÁZQUEZ", superficie: "131.25m²", construccion: "107m²" }
     ];
 
     function validarAcceso(e) {
@@ -467,6 +476,10 @@
         precioPre: obtenerValorNumerico('regPrecioPre'),
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
         etapa: document.getElementById('regEtapa').value.trim() || "EN PROCESO",
+        etapaActual: document.getElementById('regEtapaActual').value.trim() || "S/D",
+        envio: document.getElementById('regEnvio').value.trim() || "S/D",
+        superficie: document.getElementById('regSuperficie').value.trim() || "0m²",
+        construccion: document.getElementById('regConstruccion').value.trim() || "0m²",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       });
@@ -564,7 +577,7 @@
       if (resultados.length > 0) {
         let conteoTipos = {};
         resultados.forEach(i => {
-          let t = i.tipoPropiedad || "CASA HABITACIÓN";
+          let t = i.tipoPropiedad || "PROPIEDAD";
           conteoTipos[t] = (conteoTipos[t] || 0) + 1;
         });
         let maxTipo = Object.keys(conteoTipos)[0];
