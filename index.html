@@ -123,6 +123,37 @@
         </div>
       </div>
 
+      <!-- Barra de Filtros -->
+      <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
+          <select id="filtroEstado" onchange="alCambiarEstado()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200">
+            <option value="">TODOS LOS ESTADOS</option>
+          </select>
+          <select id="filtroMunicipio" onchange="alCambiarMunicipio()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200">
+            <option value="">TODOS LOS MUNICIPIOS</option>
+          </select>
+          <select id="filtroColonia" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200">
+            <option value="">TODAS LAS COLONIAS</option>
+          </select>
+          <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200">
+            <option value="">TODOS LOS RESPONSABLES</option>
+          </select>
+          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200">
+            <option value="">TODAS LAS ETAPAS LEGALES</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3.5 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-600 hover:text-white">
+            <i class="fa-solid fa-file-excel mr-1.5"></i>Exportar Excel
+          </button>
+          <label class="flex items-center rounded-xl border border-blue-600/40 bg-blue-600/10 px-3.5 py-2 text-xs font-semibold text-blue-400 hover:bg-blue-600 hover:text-white cursor-pointer">
+            <i class="fa-solid fa-file-import mr-1.5"></i>Importar Excel
+            <input type="file" id="inputImportar" accept=".xlsx, .xls" onchange="importarExcel(event)" class="hidden">
+          </label>
+        </div>
+      </div>
+
       <!-- Tabla -->
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
@@ -144,11 +175,15 @@
             <tbody id="tablaRegistros" class="divide-y divide-slate-800/60"></tbody>
           </table>
         </div>
+        <div class="flex items-center justify-between border-t border-slate-800 px-6 py-4 text-xs text-slate-400">
+          <span id="contadorPaginacion">Mostrando registros</span>
+          <span class="font-medium text-slate-300" id="infoTotalPie">Total</span>
+        </div>
       </div>
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA EXACTO ==================== -->
+  <!-- ==================== MODAL DE CAPTURA CORREGIDO SEGÚN TUS LÍNEAS ROJAS ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -172,15 +207,15 @@
       <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <!-- COLUMNA 1 -->
+          <!-- COLUMNA 1 (IDs Cortos/Compactos tal como tachaste en rojo) -->
           <div class="space-y-3.5">
             <div>
               <label class="label-pro">ID (SISTEMA):</label>
-              <input type="text" id="regId" required class="input-pro max-w-[140px] font-bold" tabindex="1">
+              <input type="text" id="regId" required class="input-pro max-w-[150px] font-bold" tabindex="1">
             </div>
             <div>
               <label class="label-pro">ID ENLACE:</label>
-              <input type="text" id="regIdEnlace" class="input-pro max-w-[160px]" tabindex="2">
+              <input type="text" id="regIdEnlace" class="input-pro max-w-[180px]" tabindex="2">
             </div>
             <div>
               <label class="label-pro">NÚMERO DE CRÉDITO:</label>
@@ -200,11 +235,11 @@
             </div>
           </div>
 
-          <!-- COLUMNA 2 (Dirección y Observaciones Grandes) -->
+          <!-- COLUMNA 2 Y 3 (Dirección y Observaciones anchas / extendidas a lo ancho) -->
           <div class="space-y-3.5 md:col-span-2">
             <div>
               <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
-              <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="7">
+              <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="7" placeholder="INGRESE LA DIRECCIÓN COMPLETA...">
             </div>
 
             <div class="grid grid-cols-3 gap-3">
@@ -242,7 +277,7 @@
 
             <div>
               <label class="label-pro">OBSERVACIONES:</label>
-              <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="14">
+              <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="14" placeholder="INGRESE LAS OBSERVACIONES AMPLIAS...">
             </div>
           </div>
 
@@ -287,7 +322,7 @@
           </div>
         </div>
 
-        <!-- BOTONERA FINAL -->
+        <!-- BOTONERA FINAL (Actualización corta/compacta tal como tachaste en rojo) -->
         <div class="flex flex-wrap items-center justify-between pt-4 mt-2 border-t border-blue-500/20">
           <div class="flex items-center gap-3 w-full md:w-auto">
             <div>
@@ -296,7 +331,7 @@
             </div>
             <div>
               <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
-              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2 max-w-[150px]">
+              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2 max-w-[170px]">
             </div>
           </div>
           <div class="flex items-center gap-2 mt-4 md:mt-0">
@@ -312,7 +347,9 @@
 
   <script>
     let baseDatos = [
-      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4", cp: "54088", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA" }
+      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4", cp: "54088", direccion: "VIVEROS DE ASIS S4", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA" },
+      { id: "EN65211", cartera: "BANCOMER", credito: "20005455", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "PASEO DE DUBLIN S2", cp: "76840", direccion: "PASEO DE DUBLIN S2", precioPre: 798800.90, precioVenta: 890000.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA", observaciones: "NINGUNA" },
+      { id: "EN1144", cartera: "BANAMEX", credito: "28000214", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "AVENIDA PASEO DEL SUR", cp: "76080", direccion: "AVENIDA PASEO DEL SUR 8905", precioPre: 750852.00, precioVenta: 912543.00, etapa: "EN PROCESO DE VENTA", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN REVISIÓN" }
     ];
 
     function validarAcceso(e) {
@@ -321,6 +358,7 @@
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
         document.getElementById('mainApp').classList.add('flex');
+        cargarSelectoresIniciales();
         aplicarFiltros();
       } else {
         document.getElementById('loginError').classList.remove('hidden');
@@ -417,41 +455,218 @@
         municipio: document.getElementById('regMunicipio').value.trim() || "N/A",
         colonia: document.getElementById('regColonia').value.trim() || "N/A",
         cp: document.getElementById('regCp').value.trim() || "00000",
+        direccion: document.getElementById('regDireccion').value.trim() || "S/D",
+        observaciones: document.getElementById('regObservaciones').value.trim() || "S/D",
         precioPre: obtenerValorNumerico('regPrecioPre'),
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
         etapa: document.getElementById('regEtapa').value.trim() || "EN PROCESO",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       });
+      cargarSelectoresIniciales();
       aplicarFiltros();
       cerrarModalNuevoRegistro();
       alert("¡Registro guardado con éxito!");
     }
 
+    function cargarSelectoresIniciales() {
+      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
+      const etapas = [...new Set(baseDatos.map(item => item.etapa))].sort();
+      const responsables = [...new Set(baseDatos.map(item => item.responsable))].sort();
+
+      const selEstado = document.getElementById('filtroEstado');
+      selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
+      estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
+
+      const selEtapa = document.getElementById('filtroEtapa');
+      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
+      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
+
+      const selResp = document.getElementById('filtroResponsable');
+      selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
+      responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
+
+      poblarMunicipios();
+      poblarColonias();
+    }
+
+    function alCambiarEstado() {
+      poblarMunicipios();
+      poblarColonias();
+      aplicarFiltros();
+    }
+
+    function alCambiarMunicipio() {
+      poblarColonias();
+      aplicarFiltros();
+    }
+
+    function poblarMunicipios() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const selMunicipio = document.getElementById('filtroMunicipio');
+      const munActual = selMunicipio.value;
+      let filtrados = baseDatos;
+      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
+      const municipios = [...new Set(filtrados.map(i => i.municipio))].sort();
+      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
+      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
+      if (municipios.includes(munActual)) selMunicipio.value = munActual;
+    }
+
+    function poblarColonias() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const selColonia = document.getElementById('filtroColonia');
+      const colActual = selColonia.value;
+      let filtrados = baseDatos;
+      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
+      if (municipioF) filtrados = filtrados.filter(i => i.municipio === municipioF);
+      const colonias = [...new Set(filtrados.map(i => i.colonia))].sort();
+      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
+      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
+      if (colonias.includes(colActual)) selColonia.value = colActual;
+    }
+
     function aplicarFiltros() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const coloniaF = document.getElementById('filtroColonia').value;
+      const responsableF = document.getElementById('filtroResponsable').value;
+      const etapaF = document.getElementById('filtroEtapa').value;
+      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
+
+      const resultados = baseDatos.filter(item => {
+        const matchEdo = !estadoF || item.estado === estadoF;
+        const matchMun = !municipioF || item.municipio === municipioF;
+        const matchCol = !coloniaF || item.colonia === coloniaF;
+        const matchResp = !responsableF || item.responsable === responsableF;
+        const matchEtp = !etapaF || item.etapa === etapaF;
+        const matchTexto = !textoBusqueda || 
+          item.id.toLowerCase().includes(textoBusqueda) ||
+          item.cartera.toLowerCase().includes(textoBusqueda) ||
+          item.credito.toLowerCase().includes(textoBusqueda) ||
+          item.colonia.toLowerCase().includes(textoBusqueda) ||
+          item.municipio.toLowerCase().includes(textoBusqueda) ||
+          item.estado.toLowerCase().includes(textoBusqueda) ||
+          item.responsable.toLowerCase().includes(textoBusqueda);
+        return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
+      });
+
+      document.getElementById('kpiTotalRegistros').innerText = resultados.length;
+
+      if (resultados.length > 0) {
+        let conteoTipos = {};
+        resultados.forEach(i => {
+          let t = i.tipoPropiedad || "CASA HABITACIÓN";
+          conteoTipos[t] = (conteoTipos[t] || 0) + 1;
+        });
+        let maxTipo = Object.keys(conteoTipos)[0];
+        Object.keys(conteoTipos).forEach(t => { if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t; });
+        document.getElementById('kpiTipoPredominante').innerText = maxTipo;
+        document.getElementById('kpiTipoDetalle').innerText = `${conteoTipos[maxTipo]} de los registros`;
+      } else {
+        document.getElementById('kpiTipoPredominante').innerText = "N/A";
+        document.getElementById('kpiTipoDetalle').innerText = "0 registros";
+      }
+
+      const sumaVenta = resultados.reduce((acc, i) => acc + i.precioVenta, 0);
+      const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
+      document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      if (resultados.length > 0) {
+        let conteoCar = {};
+        resultados.forEach(i => conteoCar[i.cartera] = (conteoCar[i.cartera] || 0) + 1);
+        let maxCar = Object.keys(conteoCar)[0];
+        Object.keys(conteoCar).forEach(c => { if (conteoCar[c] > conteoCar[maxCar]) maxCar = c; });
+        document.getElementById('kpiCarteraPrincipal').innerText = maxCar;
+      } else {
+        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
+      }
+
       const tbody = document.getElementById('tablaRegistros');
       tbody.innerHTML = '';
-      document.getElementById('kpiTotalRegistros').innerText = baseDatos.length;
-      baseDatos.forEach(item => {
+      resultados.forEach(item => {
+        const margenPesos = item.precioVenta - item.precioPre;
+        const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="px-6 py-4 font-bold text-white">${item.id}</td>
-            <td class="px-6 py-4 font-bold text-white">${item.cartera}</td>
-            <td class="px-6 py-4 text-slate-200">${item.municipio}, ${item.estado}</td>
+            <td class="px-6 py-4">
+              <div class="font-bold text-white">${item.cartera}</div>
+              <div class="text-[11px] text-slate-400">Crédito: ${item.credito}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-medium text-slate-200">${item.colonia || ''}</div>
+              <div class="text-[11px] text-slate-400">${item.municipio}, ${item.estado}</div>
+            </td>
             <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-            <td class="px-6 py-4 font-bold text-emerald-400">$${(item.precioVenta - item.precioPre).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
             <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
-            <td class="px-6 py-4 text-center">Sin PDF</td>
+            <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
             <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
             <td class="px-6 py-4 text-center">Editar</td>
           </tr>
         `;
       });
+      document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
+      document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
-    function exportarExcel() {}
-    function importarExcel(e) {}
+    function exportarExcel() {
+      const datosExportar = baseDatos.map(i => ({
+        "ID / ENLACE": i.id,
+        "CARTERA": i.cartera,
+        "CRÉDITO": i.credito,
+        "ESTADO": i.estado,
+        "MUNICIPIO": i.municipio,
+        "COLONIA": i.colonia,
+        "DIRECCIÓN": i.direccion,
+        "C.P.": i.cp,
+        "PRECIO PRE-AUTH": i.precioPre,
+        "PRECIO VENTA": i.precioVenta,
+        "ETAPA LEGAL": i.etapa,
+        "RESPONSABLE": i.responsable
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace");
+      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte.xlsx");
+    }
+
+    function importarExcel(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        if (jsonData.length > 0) {
+          baseDatos = jsonData.map((row, index) => ({
+            id: String(row["ID / ENLACE"] || row["ID"] || `EN${1000 + index}`),
+            cartera: String(row["CARTERA"] || row["Cartera"] || "GENERAL"),
+            credito: String(row["CRÉDITO"] || row["Crédito"] || "S/N"),
+            estado: String(row["ESTADO"] || row["Estado"] || "N/A"),
+            municipio: String(row["MUNICIPIO"] || row["Municipio"] || "N/A"),
+            colonia: String(row["COLONIA"] || row["Colonia"] || "N/A"),
+            direccion: String(row["DIRECCIÓN"] || row["Direccion"] || "S/D"),
+            cp: String(row["C.P."] || row["CP"] || "00000"),
+            precioPre: Number(row["PRECIO PRE-AUTH"] || row["Precio Pre-Auth"] || 500000),
+            precioVenta: Number(row["PRECIO VENTA"] || row["Precio Venta"] || 700000),
+            etapa: String(row["ETAPA LEGAL"] || row["Etapa Legal"] || "EN PROCESO"),
+            pdf: false,
+            responsable: String(row["RESPONSABLE"] || row["Responsable"] || "BELMONT"),
+            observaciones: "IMPORTADO DE EXCEL"
+          }));
+          cargarSelectoresIniciales();
+          aplicarFiltros();
+          alert(`¡Se importaron ${baseDatos.length} registros con éxito!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
   </script>
 </body>
 </html>
