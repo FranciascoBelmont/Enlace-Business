@@ -183,7 +183,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA CORREGIDO SEGÚN TUS LÍNEAS ROJAS ==================== -->
+  <!-- ==================== MODAL DE CAPTURA PERFECTAMENTE PROPORCIONADO ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -207,7 +207,7 @@
       <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <!-- COLUMNA 1 (IDs Cortos/Compactos tal como tachaste en rojo) -->
+          <!-- COLUMNA 1 (IDs Cortos/Compactos y campos estándar) -->
           <div class="space-y-3.5">
             <div>
               <label class="label-pro">ID (SISTEMA):</label>
@@ -235,7 +235,7 @@
             </div>
           </div>
 
-          <!-- COLUMNA 2 Y 3 (Dirección y Observaciones anchas / extendidas a lo ancho) -->
+          <!-- COLUMNA 2 Y 3 (Dirección y Observaciones anchas / expandidas a lo ancho) -->
           <div class="space-y-3.5 md:col-span-2">
             <div>
               <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
@@ -303,6 +303,7 @@
           </div>
         </div>
 
+        <!-- Fila de Etapas, Status y Avances (CORREGIDA CON 4 COLUMNAS IGUAL QUE ARRIBA) -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
           <div>
             <label class="label-pro">ETAPA LEGAL:</label>
@@ -322,22 +323,22 @@
           </div>
         </div>
 
-        <!-- BOTONERA FINAL (Actualización corta/compacta tal como tachaste en rojo) -->
-        <div class="flex flex-wrap items-center justify-between pt-4 mt-2 border-t border-blue-500/20">
-          <div class="flex items-center gap-3 w-full md:w-auto">
+        <!-- BOTONERA FINAL (Actualización con ancho completo y cómodo) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mt-2 border-t border-blue-500/20 items-end">
+          <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="label-pro">RECEPCIÓN:</label>
-              <input type="date" id="regRecepcion" class="input-pro text-xs py-2" tabindex="21">
+              <input type="date" id="regRecepcion" class="input-pro text-xs py-2.5" tabindex="21">
             </div>
             <div>
               <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
-              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2 max-w-[170px]">
+              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2.5">
             </div>
           </div>
-          <div class="flex items-center gap-2 mt-4 md:mt-0">
-            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white">ELIMINAR</button>
-            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700">SALIR</button>
-            <button type="submit" class="rounded-xl bg-blue-600 px-6 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl">GUARDAR</button>
+          <div class="md:col-span-2 flex items-center justify-end gap-3">
+            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
+            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2.5 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR</button>
           </div>
         </div>
       </form>
