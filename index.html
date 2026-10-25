@@ -46,7 +46,7 @@
 </head>
 <body class="h-full text-slate-100 bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
 
-  <!-- ==================== PANTALLA DE LOGIN ==================== -->
+  <!-- ==================== PANTALLA DE LOGIN (CAJAS LIMPIAS) ==================== -->
   <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 bg-grid p-4">
     <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
       <div class="mb-8 text-center">
@@ -60,11 +60,11 @@
       <form id="loginForm" onsubmit="validarAcceso(event)" class="space-y-5">
         <div>
           <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
-          <input type="text" id="username" required class="input-pro" placeholder="INGRESE SU USUARIO">
+          <input type="text" id="username" required class="input-pro">
         </div>
         <div>
           <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
-          <input type="password" id="password" required class="input-pro" placeholder="••••••••">
+          <input type="password" id="password" required class="input-pro">
         </div>
         <div id="loginError" class="hidden rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-xs font-medium text-red-400">
           Usuario o contraseña incorrectos.
@@ -183,7 +183,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ESTILO EXCEL (2 COLUMNAS + BLOQUES COMPLETOS) ==================== -->
+  <!-- ==================== MODAL DE CAPTURA ESTILO EXCEL ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
