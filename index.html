@@ -10,19 +10,22 @@
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
     .bg-grid { background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 0); background-size: 24px 24px; }
-    .modal-backdrop { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(18px); }
+    .modal-backdrop { background: rgba(2, 6, 23, 0.92); backdrop-filter: blur(16px); }
     .modal-box {
       background: linear-gradient(135deg, #090e1a 0%, #030712 100%);
       border: 1px solid rgba(59, 130, 246, 0.4);
-      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 0 0 50px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9);
     }
     .input-pro {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(51, 65, 85, 0.85);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(51, 65, 85, 0.9);
       color: #f8fafc;
       text-transform: uppercase;
       font-size: 13px;
       font-weight: 500;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 0.75rem;
       transition: all 0.2s ease;
     }
     .input-pro:focus {
@@ -57,30 +60,17 @@
       <form id="loginForm" onsubmit="validarAcceso(event)" class="space-y-5">
         <div>
           <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-              <i class="fa-solid fa-user text-sm"></i>
-            </span>
-            <input type="text" id="username" required class="w-full rounded-xl border border-slate-700/80 bg-slate-950/80 py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Ingrese su usuario">
-          </div>
+          <input type="text" id="username" required class="input-pro" placeholder="INGRESE SU USUARIO">
         </div>
-
         <div>
           <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-              <i class="fa-solid fa-lock text-sm"></i>
-            </span>
-            <input type="password" id="password" required class="w-full rounded-xl border border-slate-700/80 bg-slate-950/80 py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="••••••••">
-          </div>
+          <input type="password" id="password" required class="input-pro" placeholder="••••••••">
         </div>
-
         <div id="loginError" class="hidden rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-center text-xs font-medium text-red-400">
           Usuario o contraseña incorrectos.
         </div>
-
         <div class="flex items-center space-x-3 pt-2">
-          <button type="button" onclick="limpiar()" class="w-1/2 rounded-xl border border-slate-700 bg-slate-800/80 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-700 hover:text-white">Cancelar</button>
+          <button type="button" onclick="limpiar()" class="w-1/2 rounded-xl border border-slate-700 bg-slate-800/80 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-700">Cancelar</button>
           <button type="submit" class="w-1/2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 shadow-lg shadow-blue-600/20">Ingresar</button>
         </div>
       </form>
@@ -92,7 +82,7 @@
     <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div class="flex items-center space-x-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-md">
             <i class="fa-solid fa-building text-lg"></i>
           </div>
           <div>
@@ -100,20 +90,12 @@
             <p class="text-xs text-slate-400">Sistema Integral de Recuperación Inmobiliaria & Legal</p>
           </div>
         </div>
-
         <div class="flex items-center space-x-3">
-          <div class="relative hidden md:block w-64">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
-              <i class="fa-solid fa-search text-xs"></i>
-            </span>
-            <input type="text" id="inputBuscador" oninput="aplicarFiltros()" placeholder="BUSCAR EN BASE DE DATOS..." class="w-full rounded-xl border border-slate-700/80 bg-slate-950/80 py-2 pl-9 pr-4 text-xs text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
-          </div>
-
-          <button onclick="abrirModalNuevoRegistro()" class="flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md shadow-blue-600/20">
+          <input type="text" id="inputBuscador" oninput="aplicarFiltros()" placeholder="BUSCAR EN BASE DE DATOS..." class="input-pro w-64 hidden md:block py-2 text-xs">
+          <button onclick="abrirModalNuevoRegistro()" class="flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md">
             <i class="fa-solid fa-plus mr-1.5"></i>Nuevo Registro
           </button>
-
-          <button onclick="cerrarSesion()" title="Cerrar Sesión" class="rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs font-semibold text-slate-300 transition hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/40">
+          <button onclick="cerrarSesion()" title="Cerrar Sesión" class="rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-slate-300 hover:bg-red-500/20 hover:text-red-400">
             <i class="fa-solid fa-right-from-bracket"></i>
           </button>
         </div>
@@ -121,83 +103,27 @@
     </header>
 
     <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      
-      <!-- Fila de Tarjetas Estadísticas -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <div class="flex items-center justify-between text-slate-400">
-            <span class="text-xs font-semibold uppercase tracking-wider">TOTAL REGISTROS</span>
-            <span class="rounded-md bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400 border border-blue-500/20">Base Activa</span>
-          </div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">TOTAL REGISTROS</span>
           <p id="kpiTotalRegistros" class="mt-3 text-3xl font-extrabold text-white">0</p>
         </div>
-
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <div class="flex items-center justify-between text-slate-400">
-            <span class="text-xs font-semibold uppercase tracking-wider">TIPO PROPIEDAD PREDOMINANTE</span>
-            <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400 border border-emerald-500/20">Mayoría</span>
-          </div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">TIPO PROPIEDAD PREDOMINANTE</span>
           <p id="kpiTipoPredominante" class="mt-3 text-xl font-extrabold text-emerald-400 truncate">N/A</p>
-          <p id="kpiTipoDetalle" class="text-xs font-normal text-emerald-400 mt-1">0 de los registros</p>
+          <p id="kpiTipoDetalle" class="text-xs text-emerald-400 mt-1">0 de los registros</p>
         </div>
-
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <div class="flex items-center justify-between text-slate-400">
-            <span class="text-xs font-semibold uppercase tracking-wider">PRECIO VENTA PROMEDIO</span>
-            <span class="rounded-md bg-amber-500/10 px-2 py-0.5 text-xs text-amber-400 border border-amber-500/20">Mercado</span>
-          </div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">PRECIO VENTA PROMEDIO</span>
           <p id="kpiPrecioPromedio" class="mt-3 text-2xl font-extrabold text-amber-400">$0.00</p>
         </div>
-
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <div class="flex items-center justify-between text-slate-400">
-            <span class="text-xs font-semibold uppercase tracking-wider">CARTERA PRINCIPAL</span>
-            <span class="rounded-md bg-purple-500/10 px-2 py-0.5 text-xs text-purple-400 border border-purple-500/20">Mayoría</span>
-          </div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">CARTERA PRINCIPAL</span>
           <p id="kpiCarteraPrincipal" class="mt-3 text-2xl font-extrabold text-white">N/A</p>
         </div>
       </div>
 
-      <!-- Barra de Filtros -->
-      <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
-        <div class="flex flex-wrap items-center gap-3">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center">
-            <i class="fa-solid fa-filter text-blue-500 mr-1.5"></i>FILTRAR POR:
-          </span>
-
-          <select id="filtroEstado" onchange="alCambiarEstado()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option value="">TODOS LOS ESTADOS</option>
-          </select>
-
-          <select id="filtroMunicipio" onchange="alCambiarMunicipio()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option value="">TODOS LOS MUNICIPIOS</option>
-          </select>
-
-          <select id="filtroColonia" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option value="">TODAS LAS COLONIAS</option>
-          </select>
-
-          <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option value="">TODOS LOS RESPONSABLES</option>
-          </select>
-
-          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none">
-            <option value="">TODAS LAS ETAPAS LEGALES</option>
-          </select>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3.5 py-2 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-600 hover:text-white">
-            <i class="fa-solid fa-file-excel mr-1.5"></i>Exportar a Excel (.xlsx)
-          </button>
-          <label class="flex items-center rounded-xl border border-blue-600/40 bg-blue-600/10 px-3.5 py-2 text-xs font-semibold text-blue-400 transition hover:bg-blue-600 hover:text-white cursor-pointer">
-            <i class="fa-solid fa-file-import mr-1.5"></i>Importar Datos (.xlsx / .xls)
-            <input type="file" id="inputImportar" accept=".xlsx, .xls" onchange="importarExcel(event)" class="hidden">
-          </label>
-        </div>
-      </div>
-
-      <!-- Tabla de Registros -->
+      <!-- Tabla -->
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
@@ -205,194 +131,178 @@
               <tr>
                 <th class="px-6 py-3.5">ID / ENLACE</th>
                 <th class="px-6 py-3.5">Crédito & Cartera</th>
-                <th class="px-6 py-3.5">Ubicación (Colonia / Mun / Edo)</th>
+                <th class="px-6 py-3.5">Ubicación</th>
                 <th class="px-6 py-3.5">Precio Pre-Auth</th>
                 <th class="px-6 py-3.5">Precio Venta</th>
-                <th class="px-6 py-3.5">Margen vs. Pre-Auth ($ / %)</th>
-                <th class="px-6 py-3.5">Etapa Legal / Actual</th>
-                <th class="px-6 py-3.5 text-center">Expedientes PDF</th>
+                <th class="px-6 py-3.5">Margen</th>
+                <th class="px-6 py-3.5">Etapa Legal</th>
+                <th class="px-6 py-3.5 text-center">PDF</th>
                 <th class="px-6 py-3.5">Responsable</th>
                 <th class="px-6 py-3.5 text-center">Acciones</th>
               </tr>
             </thead>
-            <tbody id="tablaRegistros" class="divide-y divide-slate-800/60">
-              <!-- Dinámico -->
-            </tbody>
+            <tbody id="tablaRegistros" class="divide-y divide-slate-800/60"></tbody>
           </table>
         </div>
-        
-        <div class="flex items-center justify-between border-t border-slate-800 px-6 py-4 text-xs text-slate-400">
-          <span id="contadorPaginacion">Mostrando 1 - 19 de 19 registros</span>
-          <span class="font-medium text-slate-300" id="infoTotalPie">1 - 19 de 19 registros</span>
-        </div>
       </div>
-
     </main>
   </div>
 
-  <!-- ==================== MODAL FORMULARIO NUEVO REGISTRO (CORREGIDO A TUS MEDIDAS EXACTAS) ==================== -->
+  <!-- ==================== MODAL DE CAPTURA EXACTO ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
-      <!-- Cabecera Ejecutiva -->
+      <!-- Cabecera Modal -->
       <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-6">
         <div class="flex items-center space-x-3.5">
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/30 ring-1 ring-blue-400/30">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
             <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
           </div>
           <div>
             <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
-            <p class="text-[11px] text-blue-400 font-semibold tracking-wide">Módulo Ejecutivo de Captura de Inmuebles & Activos</p>
+            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura de Inmuebles & Activos</p>
           </div>
         </div>
-        <button onclick="cerrarModalNuevoRegistro()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition">
+        <button onclick="cerrarModalNuevoRegistro()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
-      <!-- Formulario en 3 Columnas Estructurado con Medidas Óptimas -->
+      <!-- Formulario de 3 Columnas -->
       <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <!-- COLUMNA 1 (IDs Reducidos / Campos Compactos) -->
+          <!-- COLUMNA 1 -->
           <div class="space-y-3.5">
-            <div class="max-w-[160px]">
+            <div>
               <label class="label-pro">ID (SISTEMA):</label>
-              <input type="text" id="regId" required class="w-full rounded-xl input-pro py-2 px-3 font-bold tracking-wide focus-next">
+              <input type="text" id="regId" required class="input-pro max-w-[140px] font-bold" tabindex="1">
             </div>
-
-            <div class="max-w-[180px]">
+            <div>
               <label class="label-pro">ID ENLACE:</label>
-              <input type="text" id="regIdEnlace" class="w-full rounded-xl input-pro py-2 px-3 focus-next">
+              <input type="text" id="regIdEnlace" class="input-pro max-w-[160px]" tabindex="2">
             </div>
-
             <div>
               <label class="label-pro">NÚMERO DE CRÉDITO:</label>
-              <input type="text" id="regCredito" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
+              <input type="text" id="regCredito" class="input-pro" tabindex="3">
             </div>
-
             <div>
               <label class="label-pro">CARTERA:</label>
-              <input type="text" id="regCartera" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
+              <input type="text" id="regCartera" class="input-pro" tabindex="4">
             </div>
-
             <div>
               <label class="label-pro">RESPONSABLE:</label>
-              <input type="text" id="regResponsable" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
+              <input type="text" id="regResponsable" class="input-pro" tabindex="5">
             </div>
-
             <div>
               <label class="label-pro">TIPO DE PROPIEDAD:</label>
-              <input type="text" id="regTipoPropiedad" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
+              <input type="text" id="regTipoPropiedad" class="input-pro" tabindex="6">
+            </div>
+          </div>
+
+          <!-- COLUMNA 2 (Dirección y Observaciones Grandes) -->
+          <div class="space-y-3.5 md:col-span-2">
+            <div>
+              <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
+              <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="7">
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="label-pro">C. POSTAL:</label>
+                <input type="text" id="regCp" class="input-pro text-center" tabindex="8">
+              </div>
+              <div class="col-span-2">
+                <label class="label-pro">ESTADO:</label>
+                <input type="text" id="regEstado" class="input-pro" tabindex="9">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label-pro">MUNICIPIO:</label>
+                <input type="text" id="regMunicipio" class="input-pro" tabindex="10">
+              </div>
+              <div>
+                <label class="label-pro">COLONIA:</label>
+                <input type="text" id="regColonia" class="input-pro" tabindex="11">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label-pro">SUPERFICIE:</label>
+                <input type="text" id="regSuperficie" class="input-pro" tabindex="12">
+              </div>
+              <div>
+                <label class="label-pro">CONSTRUCCIÓN:</label>
+                <input type="text" id="regConstruccion" class="input-pro" tabindex="13">
+              </div>
             </div>
 
             <div>
               <label class="label-pro">OBSERVACIONES:</label>
-              <input type="text" id="regObservaciones" class="w-full rounded-xl input-pro py-2.5 px-3.5 focus-next">
-            </div>
-          </div>
-
-          <!-- COLUMNA 2 (Dirección Amplia a lo Ancho) -->
-          <div class="space-y-3.5">
-            <div>
-              <label class="label-pro text-blue-400">DIRECCIÓN:</label>
-              <input type="text" id="regDireccion" class="w-full rounded-xl input-pro py-2.5 px-3.5 border-blue-500/50 focus-next">
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="label-pro">C. POSTAL:</label>
-                <input type="text" id="regCp" class="w-full rounded-xl input-pro py-2 px-2 text-center focus-next">
-              </div>
-              <div class="col-span-2">
-                <label class="label-pro">ESTADO:</label>
-                <input type="text" id="regEstado" class="w-full rounded-xl input-pro py-2 px-3 focus-next">
-              </div>
-            </div>
-
-            <div>
-              <label class="label-pro">MUNICIPIO:</label>
-              <input type="text" id="regMunicipio" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
-            </div>
-
-            <div>
-              <label class="label-pro">COLONIA:</label>
-              <input type="text" id="regColonia" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label class="label-pro">SUPERFICIE:</label>
-                <input type="text" id="regSuperficie" class="w-full rounded-xl input-pro py-2 px-3 focus-next">
-              </div>
-              <div>
-                <label class="label-pro">CONSTRUCCIÓN:</label>
-                <input type="text" id="regConstruccion" class="w-full rounded-xl input-pro py-2 px-3 focus-next">
-              </div>
-            </div>
-
-            <div>
-              <label class="label-pro">AVANCES:</label>
-              <input type="text" id="regAvances" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
-            </div>
-          </div>
-
-          <!-- COLUMNA 3 (Precios y Estatus) -->
-          <div class="space-y-3.5">
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="label-pro">PRECIO PRE-AUTH:</label>
-                <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="w-full rounded-xl input-pro py-2 px-2.5 font-bold focus-next" placeholder="$0.00">
-              </div>
-              <div>
-                <label class="label-pro">PRECIO VENTA:</label>
-                <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="w-full rounded-xl input-pro py-2 px-2.5 text-amber-400 font-bold focus-next" placeholder="$0.00">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
-                <input type="text" id="regUtilidadPesos" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2 px-2 text-emerald-400 font-extrabold text-[12px]" value="$0.00">
-              </div>
-              <div>
-                <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
-                <input type="text" id="regUtilidadPorc" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2 px-2 text-emerald-400 font-extrabold text-[12px]" value="0.00%">
-              </div>
-            </div>
-
-            <div>
-              <label class="label-pro">ETAPA LEGAL:</label>
-              <input type="text" id="regEtapa" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
-            </div>
-
-            <div>
-              <label class="label-pro">ETAPA ACTUAL:</label>
-              <input type="text" id="regEtapaActual" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
-            </div>
-
-            <div>
-              <label class="label-pro">STATUS:</label>
-              <input type="text" id="regStatus" class="w-full rounded-xl input-pro py-2 px-3.5 focus-next">
+              <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="14">
             </div>
           </div>
 
         </div>
 
-        <!-- Fila Inferior: Recepción, Actualización Compacta y Botones -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 pt-4 mt-2 border-t border-blue-500/25 items-end">
+        <!-- SECCIÓN INFERIOR: Precios, Estatus y Fechas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-blue-500/20">
           <div>
-            <label class="label-pro">RECEPCIÓN:</label>
-            <input type="date" id="regRecepcion" class="w-full rounded-xl input-pro py-2 px-2 text-[12px] focus-next">
+            <label class="label-pro">PRECIO PRE-AUTH:</label>
+            <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold" placeholder="$0.00" tabindex="15">
           </div>
           <div>
-            <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
-            <input type="text" id="regActualizacion" readonly class="w-full rounded-xl bg-blue-950/40 border border-blue-500/50 py-2 px-2 text-blue-300 font-bold text-center text-xs">
+            <label class="label-pro">PRECIO VENTA:</label>
+            <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold text-amber-400" placeholder="$0.00" tabindex="16">
           </div>
-          <div class="col-span-2 flex items-center justify-end gap-2">
-            <button type="button" onclick="alert('Función de Eliminar Registro')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
-            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 hover:text-white transition">SALIR</button>
-            <button type="submit" class="rounded-xl bg-blue-600 px-5 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl shadow-blue-600/30 transition">GUARDAR</button>
+          <div>
+            <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
+            <input type="text" id="regUtilidadPesos" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="$0.00">
+          </div>
+          <div>
+            <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
+            <input type="text" id="regUtilidadPorc" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="0.00%">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+          <div>
+            <label class="label-pro">ETAPA LEGAL:</label>
+            <input type="text" id="regEtapa" class="input-pro" tabindex="17">
+          </div>
+          <div>
+            <label class="label-pro">ETAPA ACTUAL:</label>
+            <input type="text" id="regEtapaActual" class="input-pro" tabindex="18">
+          </div>
+          <div>
+            <label class="label-pro">STATUS:</label>
+            <input type="text" id="regStatus" class="input-pro" tabindex="19">
+          </div>
+          <div>
+            <label class="label-pro">AVANCES:</label>
+            <input type="text" id="regAvances" class="input-pro" tabindex="20">
+          </div>
+        </div>
+
+        <!-- BOTONERA FINAL -->
+        <div class="flex flex-wrap items-center justify-between pt-4 mt-2 border-t border-blue-500/20">
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div>
+              <label class="label-pro">RECEPCIÓN:</label>
+              <input type="date" id="regRecepcion" class="input-pro text-xs py-2" tabindex="21">
+            </div>
+            <div>
+              <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
+              <input type="text" id="regActualizacion" readonly class="input-pro bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs py-2 max-w-[150px]">
+            </div>
+          </div>
+          <div class="flex items-center gap-2 mt-4 md:mt-0">
+            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white">ELIMINAR</button>
+            <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700">SALIR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-6 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl">GUARDAR</button>
           </div>
         </div>
       </form>
@@ -402,54 +312,28 @@
 
   <script>
     let baseDatos = [
-      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4 - CASA EN CONDOMINIO", cp: "54088", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS Y CLG LITIGABLE HASTA REMATE RPS", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN65211", cartera: "BANCOMER", credito: "20005455", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "PASEO DE DUBLIN S2 - CASA EN RESIDENCIAL", cp: "76840", tipoPropiedad: "CASA EN RESIDENCIAL", precioPre: 798800.90, precioVenta: 890000.00, etapa: "OBTENCIÓN DE AVALÚOS Y CLG LITIGABLE HASTA REMATE RPS", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN1144", cartera: "BANAMEX", credito: "28000214", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "AVENIDA PASEO DEL SUR 8905, INTERIOR 4 - CASA EN CONDOMINIO", cp: "76080", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 750852.00, precioVenta: 912543.00, etapa: "EN PROCESO DE VENTA LITIGABLE HASTA REMATE RPS", pdf: false, responsable: "FRANCISCO BELMONT" },
-      { id: "EN6051", cartera: "TERTIUS", credito: "52120002154", estado: "CIUDAD DE MÉXICO", municipio: "IZTAPALAPA", colonia: "BOULEVARD REAL DE MINAS A-3 - CASA EN CONDOMINIO", cp: "09220", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 830690.00, precioVenta: 1000000.00, etapa: "EN PROCESO DE VENTA LITIGABLE HASTA REMATE RPS", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN7890", cartera: "BANCOMER", credito: "33104928", estado: "QUERÉTARO", municipio: "SANTIAGO DE QUERÉTARO", colonia: "JURICA CP:76840", cp: "76840", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 850000.00, precioVenta: 1380000.00, etapa: "EJECUCIÓN DE SENTENCIA", pdf: true, responsable: "ISRAEL MENDOZA" },
-      { id: "EN8123", cartera: "SANTANDER", credito: "44219082", estado: "JALISCO", municipio: "GUADALAJARA", colonia: "PROVIDENCIA - DEPARTAMENTO", cp: "44630", tipoPropiedad: "DEPARTAMENTO", precioPre: 1400000.00, precioVenta: 1850000.00, etapa: "ADJUDICACIÓN DIRECTA", pdf: true, responsable: "FRANCISCO BELMONT" },
-      { id: "EN9021", cartera: "INFONAVIT", credito: "55192831", estado: "ESTADO DE MÉXICO", municipio: "TOLUCA", colonia: "METEPEC CENTRO - CASA EN CONDOMINIO", cp: "52140", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 680000.00, precioVenta: 890000.00, etapa: "LITIGIO ACTIVO", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN3341", cartera: "HSBC", credito: "11829384", estado: "CIUDAD DE MÉXICO", municipio: "BENITO JUÁREZ", colonia: "DEL VALLE SUR - DEPARTAMENTO", cp: "03100", tipoPropiedad: "DEPARTAMENTO", precioPre: 1950000.00, precioVenta: 2450000.00, etapa: "EJECUCIÓN DE SENTENCIA", pdf: true, responsable: "FRANCISCO BELMONT" },
-      { id: "EN4452", cartera: "SCOTIABANK", credito: "66271920", estado: "NUEVO LEÓN", municipio: "MONTERREY", colonia: "SAN PEDRO GARZA GARCÍA - RESIDENCIA", cp: "66260", tipoPropiedad: "RESIDENCIA", precioPre: 2800000.00, precioVenta: 3500000.00, etapa: "ADJUDICACIÓN DIRECTA", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN5563", cartera: "PENDLUM", credito: "77382910", estado: "PUEBLA", municipio: "PUEBLA", colonia: "LA PAZ - CASA HABITACIÓN", cp: "72160", tipoPropiedad: "CASA HABITACIÓN", precioPre: 900000.00, precioVenta: 1150000.00, etapa: "LITIGIO ACTIVO", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN6674", cartera: "BANCOMER", credito: "88493021", estado: "QUERÉTARO", municipio: "CORREGIDORA", colonia: "EL PUEBLITO - CASA EN CONDOMINIO", cp: "76900", tipoPropiedad: "CASA EN CONDOMINIO", precioPre: 1100000.00, precioVenta: 1380000.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: true, responsable: "FRANCISCO BELMONT" },
-      { id: "EN7785", cartera: "BANAMEX", credito: "99504132", estado: "JALISCO", municipio: "ZAPOPAN", colonia: "PUERTA DE HIERRO - DEPARTAMENTO DE LUJO", cp: "45116", tipoPropiedad: "DEPARTAMENTO", precioPre: 3100000.00, precioVenta: 3900000.00, etapa: "EJECUCIÓN DE SENTENCIA", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN8896", cartera: "TERTIUS", credito: "10615243", estado: "MORELOS", municipio: "JIUTEPEC", colonia: "CIVAC - NAVE INDUSTRIAL", cp: "62578", tipoPropiedad: "NAVE INDUSTRIAL", precioPre: 4200000.00, precioVenta: 5400000.00, etapa: "LITIGIO ACTIVO", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN9907", cartera: "BBVA", credito: "21726354", estado: "CIUDAD DE MÉXICO", municipio: "CUAUHTÉMOC", colonia: "ROMA NORTE - DEPARTAMENTO", cp: "06700", tipoPropiedad: "DEPARTAMENTO", precioPre: 2400000.00, precioVenta: 3100000.00, etapa: "ADJUDICACIÓN DIRECTA", pdf: true, responsable: "FRANCISCO BELMONT" },
-      { id: "EN1018", cartera: "SANTANDER", credito: "32837465", estado: "ESTADO DE MÉXICO", municipio: "NAUCALPAN", colonia: "SATÉLITE - CASA HABITACIÓN", cp: "53100", tipoPropiedad: "CASA HABITACIÓN", precioPre: 1800000.00, precioVenta: 2300000.00, etapa: "EJECUCIÓN DE SENTENCIA", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN2129", cartera: "INFONAVIT", credito: "43948576", estado: "VERACRUZ", municipio: "VERACRUZ", colonia: "FRACCIONAMIENTO LOMAS 4 - CASA", cp: "91897", tipoPropiedad: "CASA HABITACIÓN", precioPre: 550000.00, precioVenta: 720000.00, etapa: "LITIGIO ACTIVO", pdf: false, responsable: "FRANCISCO BELMONT" },
-      { id: "EN3230", cartera: "HSBC", credito: "54059687", estado: "YUCATÁN", municipio: "MÉRIDA", colonia: "MONTEBELLO - RESIDENCIA", cp: "97113", tipoPropiedad: "RESIDENCIA", precioPre: 2600000.00, precioVenta: 3300000.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA" },
-      { id: "EN4341", cartera: "SCOTIABANK", credito: "65160798", estado: "QUINTANA ROO", municipio: "BENITO JUÁREZ", colonia: "ZONA HOTELERA - DEPARTAMENTO", cp: "77500", tipoPropiedad: "DEPARTAMENTO", precioPre: 4500000.00, precioVenta: 5800000.00, etapa: "ADJUDICACIÓN DIRECTA", pdf: true, responsable: "FRANCISCO BELMONT" },
-      { id: "EN5452", cartera: "PENDLUM", credito: "76271809", estado: "GUANAJUATO", municipio: "LEÓN", colonia: "JARDINES DEL MORAL - CASA", cp: "37160", tipoPropiedad: "CASA HABITACIÓN", precioPre: 1300000.00, precioVenta: 1650000.00, etapa: "EJECUCIÓN DE SENTENCIA", pdf: false, responsable: "ISRAEL MENDOZA" }
+      { id: "EN3012", cartera: "PENDLUM", credito: "22154445", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA DE BAZ", colonia: "VIVEROS DE ASIS S4", cp: "54088", precioPre: 355222.80, precioVenta: 450421.00, etapa: "OBTENCIÓN DE AVALÚOS", pdf: false, responsable: "ISRAEL MENDOZA" }
     ];
 
     function validarAcceso(e) {
       e.preventDefault();
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      const errorDiv = document.getElementById('loginError');
-
-      if (user === "belmont" && pass === "1492") {
-        errorDiv.classList.add('hidden');
+      if (document.getElementById('username').value.trim() === "belmont" && document.getElementById('password').value.trim() === "1492") {
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
         document.getElementById('mainApp').classList.add('flex');
-        cargarSelectoresIniciales();
         aplicarFiltros();
       } else {
-        errorDiv.classList.remove('hidden');
+        document.getElementById('loginError').classList.remove('hidden');
       }
     }
 
     function limpiar() {
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
-      document.getElementById('loginError').classList.add('hidden');
     }
 
     function cerrarSesion() {
       document.getElementById('mainApp').classList.add('hidden');
-      document.getElementById('mainApp').classList.remove('flex');
       document.getElementById('loginOverlay').classList.remove('hidden');
       limpiar();
     }
@@ -459,33 +343,28 @@
       document.getElementById('regId').value = "";
       document.getElementById('regUtilidadPesos').value = "$0.00";
       document.getElementById('regUtilidadPorc').value = "0.00%";
-      
-      const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
-      const fechaHoy = new Date().toLocaleDateString('es-MX', opcionesFecha);
-      document.getElementById('regActualizacion').value = fechaHoy;
-
+      document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
+      document.getElementById('regId').focus();
     }
 
     function cerrarModalNuevoRegistro() {
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // Conversión a Mayúsculas y Salto con ENTER entre campos
+    // Mayúsculas automáticas y navegación fluida con ENTER
     document.addEventListener('input', function (e) {
-      if (e.target.tagName === 'INPUT' && e.target.type === 'text' && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
-        if (!e.target.readOnly) {
-          e.target.value = e.target.value.toUpperCase();
-        }
+      if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
+        e.target.value = e.target.value.toUpperCase();
       }
     });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         const target = e.target;
-        if (target.classList.contains('focus-next') || target.tagName === 'INPUT') {
+        if (target.tagName === 'INPUT' && !target.readOnly) {
           e.preventDefault();
-          const focusables = Array.from(document.querySelectorAll('#formNuevo input, #formNuevo select'));
+          const focusables = Array.from(document.querySelectorAll('#formNuevo input, #formNuevo select')).filter(el => !el.readOnly);
           const index = focusables.indexOf(target);
           if (index > -1 && index + 1 < focusables.length) {
             focusables[index + 1].focus();
@@ -498,13 +377,10 @@
       let valorLimpio = input.value.replace(/[^0-9.]/g, '');
       let partes = valorLimpio.split('.');
       if (partes.length > 2) valorLimpio = partes[0] + '.' + partes.slice(1).join('');
-      
       if (valorLimpio !== "") {
         let entero = partes[0];
         let decimales = partes.length > 1 ? '.' + partes[1].substring(0, 2) : '';
-        if (entero !== "") {
-          entero = Number(entero).toLocaleString('es-MX');
-        }
+        if (entero !== "") entero = Number(entero).toLocaleString('es-MX');
         input.value = "$" + entero + decimales;
       } else {
         input.value = "";
@@ -514,8 +390,7 @@
     function obtenerValorNumerico(idInput) {
       let val = document.getElementById(idInput).value;
       if (!val) return 0;
-      let limpio = val.replace(/[^0-9.]/g, '');
-      return parseFloat(limpio) || 0;
+      return parseFloat(val.replace(/[^0-9.]/g, '')) || 0;
     }
 
     function calcularUtilidadModal() {
@@ -523,7 +398,6 @@
       const venta = obtenerValorNumerico('regPrecioVenta');
       const utilidadPesos = venta - pre;
       const utilidadPorc = pre > 0 ? ((utilidadPesos / pre) * 100).toFixed(2) : 0;
-
       document.getElementById('regUtilidadPesos').value = `$${utilidadPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
       document.getElementById('regUtilidadPorc').value = `${utilidadPorc}%`;
     }
@@ -535,8 +409,7 @@
         alert("Por favor, ingrese el ID del Sistema.");
         return;
       }
-
-      const nuevo = {
+      baseDatos.unshift({
         id: idCapturado,
         cartera: document.getElementById('regCartera').value.trim() || "GENERAL",
         credito: document.getElementById('regCredito').value.trim() || "S/N",
@@ -544,256 +417,41 @@
         municipio: document.getElementById('regMunicipio').value.trim() || "N/A",
         colonia: document.getElementById('regColonia').value.trim() || "N/A",
         cp: document.getElementById('regCp').value.trim() || "00000",
-        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "CASA HABITACIÓN",
         precioPre: obtenerValorNumerico('regPrecioPre'),
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
         etapa: document.getElementById('regEtapa').value.trim() || "EN PROCESO",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
-      };
-
-      baseDatos.unshift(nuevo);
-      cargarSelectoresIniciales();
+      });
       aplicarFiltros();
       cerrarModalNuevoRegistro();
-      alert("¡Registro guardado y agregado a la base de datos con éxito!");
-    }
-
-    function cargarSelectoresIniciales() {
-      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
-      const etapas = [...new Set(baseDatos.map(item => item.etapa))].sort();
-      const responsables = [...new Set(baseDatos.map(item => item.responsable))].sort();
-
-      const selEstado = document.getElementById('filtroEstado');
-      selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
-      estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
-
-      const selEtapa = document.getElementById('filtroEtapa');
-      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
-      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
-
-      const selResp = document.getElementById('filtroResponsable');
-      selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
-      responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
-
-      poblarMunicipios();
-      poblarColonias();
-    }
-
-    function alCambiarEstado() {
-      poblarMunicipios();
-      poblarColonias();
-      aplicarFiltros();
-    }
-
-    function alCambiarMunicipio() {
-      poblarColonias();
-      aplicarFiltros();
-    }
-
-    function poblarMunicipios() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const selMunicipio = document.getElementById('filtroMunicipio');
-      const munActual = selMunicipio.value;
-
-      let filtrados = baseDatos;
-      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
-
-      const municipios = [...new Set(filtrados.map(i => i.municipio))].sort();
-      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
-      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
-
-      if (municipios.includes(munActual)) {
-        selMunicipio.value = munActual;
-      }
-    }
-
-    function poblarColonias() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const municipioF = document.getElementById('filtroMunicipio').value;
-      const selColonia = document.getElementById('filtroColonia');
-      const colActual = selColonia.value;
-
-      let filtrados = baseDatos;
-      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
-      if (municipioF) filtrados = filtrados.filter(i => i.municipio === municipioF);
-
-      const colonias = [...new Set(filtrados.map(i => i.colonia))].sort();
-      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
-      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
-
-      if (colonias.includes(colActual)) {
-        selColonia.value = colActual;
-      }
+      alert("¡Registro guardado con éxito!");
     }
 
     function aplicarFiltros() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const municipioF = document.getElementById('filtroMunicipio').value;
-      const coloniaF = document.getElementById('filtroColonia').value;
-      const responsableF = document.getElementById('filtroResponsable').value;
-      const etapaF = document.getElementById('filtroEtapa').value;
-      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
-
-      const resultados = baseDatos.filter(item => {
-        const matchEdo = !estadoF || item.estado === estadoF;
-        const matchMun = !municipioF || item.municipio === municipioF;
-        const matchCol = !coloniaF || item.colonia === coloniaF;
-        const matchResp = !responsableF || item.responsable === responsableF;
-        const matchEtp = !etapaF || item.etapa === etapaF;
-        
-        const matchTexto = !textoBusqueda || 
-          item.id.toLowerCase().includes(textoBusqueda) ||
-          item.cartera.toLowerCase().includes(textoBusqueda) ||
-          item.credito.toLowerCase().includes(textoBusqueda) ||
-          item.colonia.toLowerCase().includes(textoBusqueda) ||
-          item.municipio.toLowerCase().includes(textoBusqueda) ||
-          item.estado.toLowerCase().includes(textoBusqueda) ||
-          item.responsable.toLowerCase().includes(textoBusqueda);
-
-        return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
-      });
-
-      document.getElementById('kpiTotalRegistros').innerText = resultados.length;
-
-      if (resultados.length > 0) {
-        const conteoTipos = {};
-        resultados.forEach(i => {
-          let tipo = i.tipoPropiedad || "S/D";
-          conteoTipos[tipo] = (conteoTipos[tipo] || 0) + 1;
-        });
-
-        let maxTipo = Object.keys(conteoTipos)[0];
-        Object.keys(conteoTipos).forEach(t => {
-          if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t;
-        });
-
-        const numOcurrencias = conteoTipos[maxTipo];
-        const porcentaje = ((numOcurrencias / resultados.length) * 100).toFixed(1);
-
-        document.getElementById('kpiTipoPredominante').innerText = maxTipo;
-        document.getElementById('kpiTipoDetalle').innerText = `${numOcurrencias} inmueble(s) (${porcentaje}%)`;
-      } else {
-        document.getElementById('kpiTipoPredominante').innerText = "N/A";
-        document.getElementById('kpiTipoDetalle').innerText = "0 de los registros";
-      }
-
-      const sumaVenta = resultados.reduce((acc, i) => acc + i.precioVenta, 0);
-      const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
-      document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-
-      if (resultados.length > 0) {
-        const conteoCarteras = {};
-        resultados.forEach(i => conteoCarteras[i.cartera] = (conteoCarteras[i.cartera] || 0) + 1);
-        let maxCar = Object.keys(conteoCarteras)[0];
-        Object.keys(conteoCarteras).forEach(c => {
-          if (conteoCarteras[c] > conteoCarteras[maxCar]) maxCar = c;
-        });
-        document.getElementById('kpiCarteraPrincipal').innerText = maxCar;
-      } else {
-        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
-      }
-
       const tbody = document.getElementById('tablaRegistros');
       tbody.innerHTML = '';
-      resultados.forEach(item => {
-        const margenPesos = item.precioVenta - item.precioPre;
-        const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
-        
+      document.getElementById('kpiTotalRegistros').innerText = baseDatos.length;
+      baseDatos.forEach(item => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="px-6 py-4 font-bold text-white">${item.id}</td>
-            <td class="px-6 py-4">
-              <div class="font-bold text-white">${item.cartera}</div>
-              <div class="text-[11px] text-slate-400">Crédito: ${item.credito}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="font-medium text-slate-200">${item.colonia}</div>
-              <div class="text-[11px] text-slate-400">${item.municipio}, ${item.estado} (CP: ${item.cp})</div>
-            </td>
-            <td class="px-6 py-4 font-semibold text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-white">${item.cartera}</td>
+            <td class="px-6 py-4 text-slate-200">${item.municipio}, ${item.estado}</td>
+            <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-            <td class="px-6 py-4">
-              <div class="font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
-              <div class="text-[11px] text-emerald-500">${margenPorc}%</div>
-            </td>
-            <td class="px-6 py-4 font-medium text-slate-300 max-w-xs text-[11px]">${item.etapa}</td>
-            <td class="px-6 py-4 text-center">
-              ${item.pdf ? '<span class="rounded bg-blue-500/10 px-2 py-1 text-[10px] font-bold text-blue-400 border border-blue-500/20">VER PDF</span>' : '<span class="text-slate-500 text-[11px]">Sin PDF</span>'}
-            </td>
-            <td class="px-6 py-4 font-semibold text-slate-200">${item.responsable}</td>
-            <td class="px-6 py-4 text-center">
-              <div class="flex items-center justify-center space-x-2">
-                <button onclick="alert('Editar registro ${item.id}')" title="Editar" class="rounded-lg bg-blue-600/20 p-2 text-blue-400 hover:bg-blue-600 hover:text-white transition"><i class="fa-solid fa-pen text-xs"></i></button>
-                <button onclick="alert('Eliminar registro ${item.id}')" title="Eliminar" class="rounded-lg bg-red-600/20 p-2 text-red-400 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash text-xs"></i></button>
-              </div>
-            </td>
+            <td class="px-6 py-4 font-bold text-emerald-400">$${(item.precioVenta - item.precioPre).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
+            <td class="px-6 py-4 text-center">Sin PDF</td>
+            <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
+            <td class="px-6 py-4 text-center">Editar</td>
           </tr>
         `;
       });
-
-      document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
-      document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
-    function exportarExcel() {
-      const datosExportar = baseDatos.map(i => ({
-        "ID / ENLACE": i.id,
-        "CARTERA": i.cartera,
-        "CRÉDITO": i.credito,
-        "ESTADO": i.estado,
-        "MUNICIPIO": i.municipio,
-        "COLONIA": i.colonia,
-        "C.P.": i.cp,
-        "TIPO PROPIEDAD": i.tipoPropiedad || "S/D",
-        "PRECIO PRE-AUTH": i.precioPre,
-        "PRECIO VENTA": i.precioVenta,
-        "ETAPA LEGAL": i.etapa,
-        "RESPONSABLE": i.responsable
-      }));
-
-      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace");
-      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte.xlsx");
-    }
-
-    function importarExcel(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-        if (jsonData.length > 0) {
-          baseDatos = jsonData.map((row, index) => ({
-            id: row["ID / ENLACE"] || row["ID"] || `EN${1000 + index}`,
-            cartera: row["CARTERA"] || row["Cartera"] || "GENERAL",
-            credito: row["CRÉDITO"] || row["Crédito"] || "S/N",
-            estado: row["ESTADO"] || row["Estado"] || "N/A",
-            municipio: row["MUNICIPIO"] || row["Municipio"] || "N/A",
-            colonia: row["COLONIA"] || row["Colonia"] || "N/A",
-            cp: row["C.P."] || row["CP"] || "00000",
-            tipoPropiedad: row["TIPO PROPIEDAD"] || row["Tipo"] || "CASA HABITACIÓN",
-            precioPre: Number(row["PRECIO PRE-AUTH"] || row["Precio Pre-Auth"] || 500000),
-            precioVenta: Number(row["PRECIO VENTA"] || row["Precio Venta"] || 700000),
-            etapa: row["ETAPA LEGAL"] || row["Etapa Legal"] || "EN PROCESO",
-            pdf: false,
-            responsable: row["RESPONSABLE"] || row["Responsable"] || "BELMONT"
-          }));
-
-          cargarSelectoresIniciales();
-          aplicarFiltros();
-          alert(`¡Se importaron ${baseDatos.length} registros exitosamente desde tu archivo Excel!`);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
+    function exportarExcel() {}
+    function importarExcel(e) {}
   </script>
 </body>
 </html>
