@@ -10,7 +10,6 @@
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
     .bg-grid { background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 0); background-size: 24px 24px; }
-    /* Estilos corporativos ejecutivos de alto nivel */
     .modal-backdrop { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(18px); }
     .modal-box {
       background: linear-gradient(135deg, #090e1a 0%, #030712 100%);
@@ -22,6 +21,8 @@
       border: 1px solid rgba(51, 65, 85, 0.85);
       color: #f8fafc;
       text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 500;
       transition: all 0.2s ease;
     }
     .input-pro:focus {
@@ -30,9 +31,13 @@
       outline: none;
       background: rgba(15, 23, 42, 1);
     }
-    .input-pro::placeholder {
-      color: #64748b;
-      text-transform: none;
+    .label-pro {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      display: block;
     }
   </style>
 </head>
@@ -227,7 +232,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL FORMULARIO NUEVO REGISTRO (AMPLIO HORIZONTAL 3 COLUMNAS) ==================== -->
+  <!-- ==================== MODAL FORMULARIO NUEVO REGISTRO (DISEÑO EXACTO REFERENCIA) ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -247,143 +252,149 @@
         </button>
       </div>
 
-      <!-- Formulario en 3 Columnas (Amplio Horizontal) -->
-      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4 text-xs">
+      <!-- Formulario en 3 Columnas Exacto a tu Referencia -->
+      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <!-- COLUMNA 1: Datos de Identificación y Crédito -->
+          <!-- COLUMNA 1 -->
           <div class="space-y-3.5">
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">ID (Sistema):</label>
-              <input type="text" id="regId" required class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white font-bold tracking-wide">
+              <label class="label-pro">ID (SISTEMA):</label>
+              <input type="text" id="regId" required class="w-full rounded-xl input-pro py-2.5 px-3.5 font-bold tracking-wide">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">ID Enlace:</label>
-              <input type="text" id="regIdEnlace" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">ID ENLACE:</label>
+              <input type="text" id="regIdEnlace" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Número de Crédito:</label>
-              <input type="text" id="regCredito" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">NÚMERO DE CRÉDITO:</label>
+              <input type="text" id="regCredito" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Cartera:</label>
-              <input type="text" id="regCartera" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">CARTERA:</label>
+              <input type="text" id="regCartera" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Responsable:</label>
-              <input type="text" id="regResponsable" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">RESPONSABLE:</label>
+              <input type="text" id="regResponsable" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Tipo de Propiedad:</label>
-              <input type="text" id="regTipoPropiedad" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">TIPO DE PROPIEDAD:</label>
+              <input type="text" id="regTipoPropiedad" class="w-full rounded-xl input-pro py-2.5 px-3.5">
+            </div>
+
+            <div>
+              <label class="label-pro">OBSERVACIONES:</label>
+              <input type="text" id="regObservaciones" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
           </div>
 
-          <!-- COLUMNA 2: Ubicación Geográfica -->
+          <!-- COLUMNA 2 (Con Dirección añadida) -->
           <div class="space-y-3.5">
+            <div>
+              <label class="label-pro text-blue-400">DIRECCIÓN:</label>
+              <input type="text" id="regDireccion" class="w-full rounded-xl input-pro py-2.5 px-3.5 border-blue-500/50">
+            </div>
+
             <div class="grid grid-cols-3 gap-2">
               <div>
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">C. Postal:</label>
-                <input type="text" id="regCp" class="w-full rounded-xl input-pro py-2.5 px-2 text-white text-center">
+                <label class="label-pro">C. POSTAL:</label>
+                <input type="text" id="regCp" class="w-full rounded-xl input-pro py-2.5 px-2 text-center">
               </div>
               <div class="col-span-2">
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Estado:</label>
-                <input type="text" id="regEstado" class="w-full rounded-xl input-pro py-2.5 px-3 text-white">
+                <label class="label-pro">ESTADO:</label>
+                <input type="text" id="regEstado" class="w-full rounded-xl input-pro py-2.5 px-3">
               </div>
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Municipio:</label>
-              <input type="text" id="regMunicipio" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">MUNICIPIO:</label>
+              <input type="text" id="regMunicipio" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Colonia:</label>
-              <input type="text" id="regColonia" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">COLONIA:</label>
+              <input type="text" id="regColonia" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div class="grid grid-cols-2 gap-2.5">
               <div>
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Superficie:</label>
-                <input type="text" id="regSuperficie" class="w-full rounded-xl input-pro py-2.5 px-3 text-white">
+                <label class="label-pro">SUPERFICIE:</label>
+                <input type="text" id="regSuperficie" class="w-full rounded-xl input-pro py-2.5 px-3">
               </div>
               <div>
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Construcción:</label>
-                <input type="text" id="regConstruccion" class="w-full rounded-xl input-pro py-2.5 px-3 text-white">
+                <label class="label-pro">CONSTRUCCIÓN:</label>
+                <input type="text" id="regConstruccion" class="w-full rounded-xl input-pro py-2.5 px-3">
               </div>
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Etapa Actual:</label>
-              <input type="text" id="regEtapaActual" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">AVANCES:</label>
+              <input type="text" id="regAvances" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
           </div>
 
-          <!-- COLUMNA 3: Precios, Utilidades, Legal y Fechas -->
+          <!-- COLUMNA 3 -->
           <div class="space-y-3.5">
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Precio Pre-Auth:</label>
-                <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="w-full rounded-xl input-pro py-2.5 px-2.5 text-white font-bold" placeholder="$0.00">
+                <label class="label-pro">PRECIO PRE-AUTH:</label>
+                <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="w-full rounded-xl input-pro py-2.5 px-2.5 font-bold" placeholder="$0.00">
               </div>
               <div>
-                <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Precio Venta:</label>
+                <label class="label-pro">PRECIO VENTA:</label>
                 <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="w-full rounded-xl input-pro py-2.5 px-2.5 text-amber-400 font-bold" placeholder="$0.00">
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-[9px] font-bold uppercase tracking-wider text-emerald-400 mb-1.5">Utilidad ($):</label>
-                <input type="text" id="regUtilidadPesos" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2.5 px-2 text-emerald-400 font-extrabold text-[11px]" value="$0.00">
+                <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
+                <input type="text" id="regUtilidadPesos" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2.5 px-2 text-emerald-400 font-extrabold text-[12px]" value="$0.00">
               </div>
               <div>
-                <label class="block text-[9px] font-bold uppercase tracking-wider text-emerald-400 mb-1.5">Utilidad (%):</label>
-                <input type="text" id="regUtilidadPorc" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2.5 px-2 text-emerald-400 font-extrabold text-[11px]" value="0.00%">
+                <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
+                <input type="text" id="regUtilidadPorc" readonly class="w-full rounded-xl bg-emerald-950/30 border border-emerald-500/40 py-2.5 px-2 text-emerald-400 font-extrabold text-[12px]" value="0.00%">
               </div>
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Etapa Legal:</label>
-              <input type="text" id="regEtapa" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">ETAPA LEGAL:</label>
+              <input type="text" id="regEtapa" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Observaciones:</label>
-              <input type="text" id="regObservaciones" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">ETAPA ACTUAL:</label>
+              <input type="text" id="regEtapaActual" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Avances:</label>
-              <input type="text" id="regAvances" class="w-full rounded-xl input-pro py-2.5 px-3.5 text-white">
+              <label class="label-pro">STATUS:</label>
+              <input type="text" id="regStatus" class="w-full rounded-xl input-pro py-2.5 px-3.5">
             </div>
           </div>
 
         </div>
 
-        <!-- Fila Inferior Completa: Status, Recepción, Actualización y Botonera -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 pt-3 border-t border-blue-500/20 items-end">
+        <!-- Fila Inferior: Recepción, Actualización y Botonera -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 pt-4 mt-2 border-t border-blue-500/20 items-end">
           <div>
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Status:</label>
-            <input type="text" id="regStatus" class="w-full rounded-xl input-pro py-2.5 px-3 text-white">
+            <label class="label-pro">RECEPCIÓN:</label>
+            <input type="date" id="regRecepcion" class="w-full rounded-xl input-pro py-2.5 px-2 text-[12px]">
           </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Recepción:</label>
-            <input type="date" id="regRecepcion" class="w-full rounded-xl input-pro py-2 px-2 text-white text-[11px]">
+          <div class="col-span-2">
+            <label class="label-pro text-blue-400">ACTUALIZACIÓN:</label>
+            <input type="text" id="regActualizacion" readonly class="w-full rounded-xl bg-blue-950/40 border border-blue-500/50 py-2.5 px-3 text-blue-300 font-bold text-center text-xs">
           </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-blue-400 mb-1.5">Actualización:</label>
-            <input type="text" id="regActualizacion" readonly class="w-full rounded-xl bg-blue-950/40 border border-blue-500/50 py-2.5 px-2 text-blue-300 font-bold text-[10px] text-center">
-          </div>
-          <div class="flex items-center justify-end gap-2 pt-2 md:pt-0">
+          <div class="flex items-center justify-end gap-2">
             <button type="button" onclick="alert('Función de Eliminar Registro')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 hover:text-white transition">SALIR</button>
-            <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl shadow-blue-600/30 transition">GUARDAR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl shadow-blue-600/30 transition">GUARDAR</button>
           </div>
         </div>
       </form>
@@ -462,7 +473,7 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // Conversión automática a Mayúsculas en todos los inputs de texto
+    // Conversión automática a Mayúsculas en tiempo real
     document.addEventListener('input', function (e) {
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
         if (!e.target.readOnly) {
