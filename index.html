@@ -182,7 +182,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA (SIN CAMBIOS) ==================== -->
+  <!-- ==================== MODAL DE CAPTURA (INTACTO) ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -357,7 +357,7 @@
 
   <script>
     let baseDatos = [
-      { id: "15123", cartera: "TERTIUS", credito: "6200004505.00", estado: "BAJA CALIFORNIA SUR", municipio: "CABO SAN LUCAS", colonia: "MISIONES DE SANTA FE", cp: "23450", direccion: "SAN RAMÓN, LOTE 74, MANZANA A, VIVIENDA B", precioPre: 0.00, precioVenta: 502000.00, etapa: "DERECHO LITIGIOSOS", etapaActual: "INMUEBLE", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "SE REALIZO CARTA DE INSTRUCCIONES PARA LA NOTARIA 27/11/24", avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025", status: "PAGARON 30% $150,000.00, 12/12/23", envio: "CLIENTE SAMIRA COBOS VÁZQUEZ", superficie: "131.25m²", construccion: "107m²" }
+      { id: "15123", idEnlace: "EN08712", cartera: "TERTIUS", credito: "6200004505.00", estado: "BAJA CALIFORNIA SUR", municipio: "CABO SAN LUCAS", colonia: "MISIONES DE SANTA FE", cp: "23450", direccion: "SAN RAMÓN, LOTE 74, MANZANA A, VIVIENDA B", precioPre: 0.00, precioVenta: 502000.00, etapa: "DERECHO LITIGIOSOS", etapaActual: "INMUEBLE", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "SE REALIZO CARTA DE INSTRUCCIONES PARA LA NOTARIA 27/11/24", avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025", status: "PAGARON 30% $150,000.00, 12/12/23", envio: "CLIENTE SAMIRA COBOS VÁZQUEZ", superficie: "131.25m²", construccion: "107m²" }
     ];
 
     function validarAcceso(e) {
@@ -484,6 +484,7 @@
       }
       baseDatos.unshift({
         id: idCapturado,
+        idEnlace: document.getElementById('regIdEnlace').value.trim() || "S/N",
         cartera: document.getElementById('regCartera').value.trim() || "GENERAL",
         credito: document.getElementById('regCredito').value.trim() || "S/N",
         estado: document.getElementById('regEstado').value.trim() || "N/A",
@@ -584,6 +585,7 @@
         const matchEtp = !etapaF || item.etapa === etapaF;
         const matchTexto = !textoBusqueda || 
           item.id.toLowerCase().includes(textoBusqueda) ||
+          (item.idEnlace && item.idEnlace.toLowerCase().includes(textoBusqueda)) ||
           item.cartera.toLowerCase().includes(textoBusqueda) ||
           item.credito.toLowerCase().includes(textoBusqueda) ||
           item.colonia.toLowerCase().includes(textoBusqueda) ||
@@ -631,10 +633,13 @@
         const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
-            <td class="px-6 py-4 font-bold text-white">${item.id}</td>
+            <td class="px-6 py-4">
+              <div class="font-extrabold text-white text-sm">${item.id}</div>
+              <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.idEnlace || 'S/N'}</div>
+            </td>
             <td class="px-6 py-4">
               <div class="font-bold text-white">${item.cartera}</div>
-              <div class="text-[11px] text-slate-400">Crédito: ${item.credito}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${item.credito}</div>
             </td>
             <td class="px-6 py-4">
               <div class="font-medium text-slate-200">${item.colonia || ''}</div>
@@ -656,7 +661,8 @@
 
     function exportarExcel() {
       const datosExportar = baseDatos.map(i => ({
-        "ID / ENLACE": i.id,
+        "ID": i.id,
+        "ID ENLACE": i.idEnlace,
         "CARTERA": i.cartera,
         "CRÉDITO": i.credito,
         "ESTADO": i.estado,
@@ -686,7 +692,8 @@
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         if (jsonData.length > 0) {
           baseDatos = jsonData.map((row, index) => ({
-            id: String(row["ID / ENLACE"] || row["ID"] || `EN${1000 + index}`),
+            id: String(row["ID"] || row["ID / ENLACE"] || `EN${1000 + index}`),
+            idEnlace: String(row["ID ENLACE"] || row["Enlace"] || "S/N"),
             cartera: String(row["CARTERA"] || row["Cartera"] || "GENERAL"),
             credito: String(row["CRÉDITO"] || row["Crédito"] || "S/N"),
             estado: String(row["ESTADO"] || row["Estado"] || "N/A"),
