@@ -183,9 +183,9 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ==================== -->
+  <!-- ==================== MODAL DE CAPTURA ESTILO EXCEL (2 COLUMNAS + BLOQUES COMPLETOS) ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
-    <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
+    <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
       <!-- Cabecera Modal -->
       <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-6">
@@ -203,138 +203,123 @@
         </button>
       </div>
 
-      <!-- Formulario Maestro Estilo Excel -->
+      <!-- Formulario Estilo Excel Proporcionado -->
       <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-4">
         
-        <!-- Fila 1: ID e IDs Enlace -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Dos Columnas Principales idénticas a tu Excel -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          
+          <!-- COLUMNA IZQUIERDA -->
+          <div class="space-y-4">
+            <div>
+              <label class="label-pro">ID (SISTEMA):</label>
+              <input type="text" id="regId" required class="input-pro font-bold" tabindex="1">
+            </div>
+            <div>
+              <label class="label-pro">ID ENLACE:</label>
+              <input type="text" id="regIdEnlace" class="input-pro" tabindex="2">
+            </div>
+            <div>
+              <label class="label-pro">NÚMERO DE CRÉDITO:</label>
+              <input type="text" id="regCredito" class="input-pro" tabindex="3">
+            </div>
+            <div>
+              <label class="label-pro">CARTERA:</label>
+              <input type="text" id="regCartera" class="input-pro" tabindex="4">
+            </div>
+            <div>
+              <label class="label-pro">RESPONSABLE:</label>
+              <input type="text" id="regResponsable" class="input-pro" tabindex="5">
+            </div>
+            <div>
+              <label class="label-pro">TIPO DE PROPIEDAD:</label>
+              <input type="text" id="regTipoPropiedad" class="input-pro" tabindex="6">
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="label-pro">C. POSTAL:</label>
+                <input type="text" id="regCp" class="input-pro text-center" tabindex="7">
+              </div>
+              <div class="col-span-2">
+                <label class="label-pro">ESTADO:</label>
+                <input type="text" id="regEstado" class="input-pro" tabindex="8">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label-pro">MUNICIPIO:</label>
+                <input type="text" id="regMunicipio" class="input-pro" tabindex="9">
+              </div>
+              <div>
+                <label class="label-pro">COLONIA:</label>
+                <input type="text" id="regColonia" class="input-pro" tabindex="10">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label-pro">SUPERFICIE:</label>
+                <input type="text" id="regSuperficie" class="input-pro" tabindex="11">
+              </div>
+              <div>
+                <label class="label-pro">CONSTRUCCIÓN:</label>
+                <input type="text" id="regConstruccion" class="input-pro" tabindex="12">
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA (Precios, Utilidades y Etapas) -->
+          <div class="space-y-4">
+            <div>
+              <label class="label-pro">PRECIO PRE AUTORIZADO:</label>
+              <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold" placeholder="$0.00" tabindex="13">
+            </div>
+            <div>
+              <label class="label-pro">PRECIO VENTA:</label>
+              <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold text-amber-400" placeholder="$0.00" tabindex="14">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
+                <input type="text" id="regUtilidadPesos" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="$0.00">
+              </div>
+              <div>
+                <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
+                <input type="text" id="regUtilidadPorc" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="0.00%">
+              </div>
+            </div>
+            <div>
+              <label class="label-pro">ETAPA ACTUAL:</label>
+              <input type="text" id="regEtapaActual" class="input-pro py-3" tabindex="15">
+            </div>
+            <div>
+              <label class="label-pro">ETAPA LEGAL:</label>
+              <input type="text" id="regEtapa" class="input-pro py-3" tabindex="16">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SECCIÓN INFERIOR: Campos anchos de lado a lado -->
+        <div class="space-y-4 pt-2 border-t border-blue-500/20">
           <div>
-            <label class="label-pro">ID (SISTEMA):</label>
-            <input type="text" id="regId" required class="input-pro font-bold" tabindex="1">
+            <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
+            <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="17" placeholder="INGRESE LA DIRECCIÓN COMPLETA...">
           </div>
           <div>
-            <label class="label-pro">ID ENLACE:</label>
-            <input type="text" id="regIdEnlace" class="input-pro" tabindex="2">
+            <label class="label-pro">OBSERVACIONES:</label>
+            <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="18" placeholder="INGRESE LAS OBSERVACIONES AMPLIAS...">
+          </div>
+          <div>
+            <label class="label-pro">AVANCES:</label>
+            <input type="text" id="regAvances" class="input-pro py-3" tabindex="19" placeholder="INGRESE LOS AVANCES COMPLETOS...">
+          </div>
+          <div>
+            <label class="label-pro">STATUS:</label>
+            <input type="text" id="regStatus" class="input-pro py-3" tabindex="20" placeholder="INGRESE EL STATUS COMPLETO...">
           </div>
         </div>
 
-        <!-- Fila 2: Crédito y Cartera -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="label-pro">NÚMERO DE CRÉDITO:</label>
-            <input type="text" id="regCredito" class="input-pro" tabindex="3">
-          </div>
-          <div>
-            <label class="label-pro">CARTERA:</label>
-            <input type="text" id="regCartera" class="input-pro" tabindex="4">
-          </div>
-        </div>
-
-        <!-- Fila 3: Responsable y Tipo de Propiedad -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="label-pro">RESPONSABLE:</label>
-            <input type="text" id="regResponsable" class="input-pro" tabindex="5">
-          </div>
-          <div>
-            <label class="label-pro">TIPO DE PROPIEDAD:</label>
-            <input type="text" id="regTipoPropiedad" class="input-pro" tabindex="6">
-          </div>
-        </div>
-
-        <!-- Fila 4: Código Postal y Estado -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="label-pro">CÓDIGO POSTAL:</label>
-            <input type="text" id="regCp" class="input-pro text-center" tabindex="7">
-          </div>
-          <div class="md:col-span-2">
-            <label class="label-pro">ESTADO:</label>
-            <input type="text" id="regEstado" class="input-pro" tabindex="8">
-          </div>
-        </div>
-
-        <!-- Fila 5: Municipio y Colonia -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="label-pro">MUNICIPIO:</label>
-            <input type="text" id="regMunicipio" class="input-pro" tabindex="9">
-          </div>
-          <div>
-            <label class="label-pro">COLONIA:</label>
-            <input type="text" id="regColonia" class="input-pro" tabindex="10">
-          </div>
-        </div>
-
-        <!-- Fila 6: Dirección Completa -->
-        <div>
-          <label class="label-pro text-blue-400">DIRECCIÓN DE LA PROPIEDAD:</label>
-          <input type="text" id="regDireccion" class="input-pro py-3 border-blue-500/50" tabindex="11" placeholder="INGRESE LA DIRECCIÓN COMPLETA...">
-        </div>
-
-        <!-- Fila 7: Superficie y Construcción (Reducidas al ancho compacto) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="label-pro">SUPERFICIE:</label>
-            <input type="text" id="regSuperficie" class="input-pro max-w-[240px]" tabindex="12">
-          </div>
-          <div>
-            <label class="label-pro">CONSTRUCCIÓN:</label>
-            <input type="text" id="regConstruccion" class="input-pro max-w-[240px]" tabindex="13">
-          </div>
-        </div>
-
-        <!-- Fila 8: Observaciones Amplias -->
-        <div>
-          <label class="label-pro">OBSERVACIONES:</label>
-          <input type="text" id="regObservaciones" class="input-pro py-3" tabindex="14" placeholder="INGRESE LAS OBSERVACIONES AMPLIAS...">
-        </div>
-
-        <!-- Fila 9: Avances Amplios -->
-        <div>
-          <label class="label-pro">AVANCES:</label>
-          <input type="text" id="regAvances" class="input-pro py-3" tabindex="15" placeholder="INGRESE LOS AVANCES COMPLETOS...">
-        </div>
-
-        <!-- Fila 10: Status Amplio -->
-        <div>
-          <label class="label-pro">STATUS:</label>
-          <input type="text" id="regStatus" class="input-pro py-3" tabindex="16" placeholder="INGRESE EL STATUS COMPLETO...">
-        </div>
-
-        <!-- Fila 11: Precios y Utilidades -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2 border-t border-blue-500/20">
-          <div>
-            <label class="label-pro">PRECIO PRE AUTORIZADO:</label>
-            <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold" placeholder="$0.00" tabindex="17">
-          </div>
-          <div>
-            <label class="label-pro">PRECIO VENTA:</label>
-            <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro font-bold text-amber-400" placeholder="$0.00" tabindex="18">
-          </div>
-          <div>
-            <label class="label-pro text-emerald-400">UTILIDAD ($):</label>
-            <input type="text" id="regUtilidadPesos" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="$0.00">
-          </div>
-          <div>
-            <label class="label-pro text-emerald-400">UTILIDAD (%):</label>
-            <input type="text" id="regUtilidadPorc" readonly class="input-pro bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold" value="0.00%">
-          </div>
-        </div>
-
-        <!-- Fila 12: Etapa Legal y Etapa Actual -->
-        <div class="space-y-3 pt-2">
-          <div>
-            <label class="label-pro">ETAPA LEGAL:</label>
-            <input type="text" id="regEtapa" class="input-pro py-3" tabindex="19" placeholder="INGRESE LA ETAPA LEGAL COMPLETA...">
-          </div>
-          <div>
-            <label class="label-pro">ETAPA ACTUAL:</label>
-            <input type="text" id="regEtapaActual" class="input-pro py-3" tabindex="20" placeholder="INGRESE LA ETAPA ACTUAL COMPLETA...">
-          </div>
-        </div>
-
-        <!-- Fila 13: Recepción, Actualización y Botonera Final -->
+        <!-- Fila Final: Recepción, Actualización y Botonera -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mt-2 border-t border-blue-500/20 items-end">
           <div class="grid grid-cols-2 gap-3">
             <div>
