@@ -101,23 +101,24 @@
     </header>
 
     <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+      <!-- Tarjetas KPI Centradas y con Fuente Reducida Un Punto -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">TOTAL REGISTROS</span>
-          <p id="kpiTotalRegistros" class="mt-3 text-3xl font-extrabold text-white">0</p>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">TOTAL REGISTROS</span>
+          <p id="kpiTotalRegistros" class="mt-2 text-2xl font-extrabold text-white">0</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">TIPO PROPIEDAD PREDOMINANTE</span>
-          <p id="kpiTipoPredominante" class="mt-3 text-xl font-extrabold text-emerald-400 truncate">N/A</p>
-          <p id="kpiTipoDetalle" class="text-xs text-emerald-400 mt-1">0 de los registros</p>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">TIPO PROPIEDAD PREDOMINANTE</span>
+          <p id="kpiTipoPredominante" class="mt-2 text-lg font-extrabold text-emerald-400 truncate">N/A</p>
+          <p id="kpiTipoDetalle" class="text-[11px] text-emerald-400 mt-0.5">0 de los registros</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">PRECIO VENTA PROMEDIO</span>
-          <p id="kpiPrecioPromedio" class="mt-3 text-2xl font-extrabold text-amber-400">$0.00</p>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">PRECIO VENTA PROMEDIO</span>
+          <p id="kpiPrecioPromedio" class="mt-2 text-xl font-extrabold text-amber-400">$0.00</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">CARTERA PRINCIPAL</span>
-          <p id="kpiCarteraPrincipal" class="mt-3 text-2xl font-extrabold text-white">N/A</p>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">CARTERA PRINCIPAL</span>
+          <p id="kpiCarteraPrincipal" class="mt-2 text-xl font-extrabold text-white">N/A</p>
         </div>
       </div>
 
@@ -181,7 +182,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ==================== -->
+  <!-- ==================== MODAL DE CAPTURA (SIN CAMBIOS) ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -330,7 +331,7 @@
           </div>
         </div>
 
-        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL (FECHAS AMPLIADAS Y FORMATO HOMOGÉNEO) -->
+        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL -->
         <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-blue-500/20">
           <div class="flex items-center gap-6">
             <div class="flex items-center gap-2">
@@ -707,7 +708,7 @@
           alert(`¡Se importaron ${baseDatos.length} registros con éxito!`);
         }
       };
-      reader.readAsBuffer(file);
+      reader.readAsArrayBuffer(file);
     }
   </script>
 </body>
