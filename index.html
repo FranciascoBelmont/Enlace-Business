@@ -122,7 +122,7 @@
         </div>
       </div>
 
-      <!-- Barra de Filtros -->
+      <!-- Barra de Filtros Unificada -->
       <div class="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap items-center gap-2.5">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
@@ -141,6 +141,9 @@
           <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODAS LAS ETAPAS LEGALES</option>
           </select>
+          <button onclick="borrarFiltros()" title="Borrar todos los filtros" class="flex items-center rounded-xl border border-slate-700 bg-slate-800/80 px-2.5 py-1.5 text-[10px] font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition">
+            <i class="fa-solid fa-filter-circle-xmark mr-1 text-slate-400"></i>Limpiar Filtros
+          </button>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="exportarExcel()" class="flex items-center rounded-xl border border-emerald-600/40 bg-emerald-600/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-600 hover:text-white transition">
@@ -162,7 +165,7 @@
                 <th class="px-6 py-3.5">ID / ENLACE</th>
                 <th class="px-6 py-3.5">Crédito & Cartera</th>
                 <th class="px-6 py-3.5">Ubicación</th>
-                <th class="px-6 py-3.5">Precio Pre-Auth</th>
+                <th class="px-6 py-3.5">Precio Pre-Auto</th>
                 <th class="px-6 py-3.5">Precio Venta</th>
                 <th class="px-6 py-3.5">Margen</th>
                 <th class="px-6 py-3.5">Etapa Legal</th>
@@ -182,7 +185,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA (INTACTO) ==================== -->
+  <!-- ==================== MODAL DE CAPTURA ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -239,7 +242,7 @@
           <!-- COLUMNA DERECHA (Precios, Utilidades y Etapas) -->
           <div class="space-y-3">
             <div class="flex items-center justify-end gap-3">
-              <label class="label-inline text-blue-400">PRECIO PRE AUTORIZADO:</label>
+              <label class="label-inline text-blue-400">PRECIO PRE AUTO:</label>
               <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-right" placeholder="$0.00" tabindex="13">
             </div>
             <div class="flex items-center justify-end gap-3">
@@ -357,8 +360,8 @@
 
   <script>
     let baseDatos = [
-      { id: "57", idEnlace: "EN5124", cartera: "BANCOMER", credito: "FA874777", estado: "CIUDAD DE MÉXICO", municipio: "TLALPAN", colonia: "BRISAS DEL PACIFICO", cp: "01090", direccion: "LA LOMAS 25", precioPre: 0.00, precioVenta: 700000.00, etapa: "PROCESO JUDICIAL", etapaActual: "REMATE EN PROCESO", pdf: false, responsable: "MARIO DURAN", observaciones: "TODA LA DOCUMENTACION EN ORDEN", avances: "SE PUEDE VENDER", status: "LITIGABLE", envio: "EN PROCESO DE VENTA", superficie: "250m²", construccion: "350m²" },
-      { id: "15123", idEnlace: "EN08712", cartera: "TERTIUS", credito: "6200004505.00", estado: "BAJA CALIFORNIA SUR", municipio: "CABO SAN LUCAS", colonia: "MISIONES DE SANTA FE", cp: "23450", direccion: "SAN RAMÓN, LOTE 74, MANZANA A, VIVIENDA B", precioPre: 0.00, precioVenta: 502000.00, etapa: "DERECHO LITIGIOSOS", etapaActual: "INMUEBLE", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "SE REALIZO CARTA DE INSTRUCCIONES PARA LA NOTARIA 27/11/24", avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025", status: "PAGARON 30% $150,000.00, 12/12/23", envio: "CLIENTE SAMIRA COBOS VÁZQUEZ", superficie: "131.25m²", construccion: "107m²" }
+      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²" },
+      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²" }
     ];
 
     function validarAcceso(e) {
@@ -570,6 +573,18 @@
       if (colonias.includes(colActual)) selColonia.value = colActual;
     }
 
+    function borrarFiltros() {
+      document.getElementById('filtroEstado').value = "";
+      document.getElementById('filtroMunicipio').value = "";
+      document.getElementById('filtroColonia').value = "";
+      document.getElementById('filtroResponsable').value = "";
+      document.getElementById('filtroEtapa').value = "";
+      document.getElementById('inputBuscador').value = "";
+      poblarMunicipios();
+      poblarColonias();
+      aplicarFiltros();
+    }
+
     function aplicarFiltros() {
       const estadoF = document.getElementById('filtroEstado').value;
       const municipioF = document.getElementById('filtroMunicipio').value;
@@ -652,7 +667,16 @@
             <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
             <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
             <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
-            <td class="px-6 py-4 text-center">Editar</td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <button onclick="alert('Editar registro ${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
+                  <i class="fa-solid fa-pen-to-square text-xs"></i>
+                </button>
+                <button onclick="alert('Eliminar registro ${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </td>
           </tr>
         `;
       });
@@ -671,7 +695,7 @@
         "COLONIA": i.colonia,
         "DIRECCIÓN": i.direccion,
         "C.P.": i.cp,
-        "PRECIO PRE-AUTH": i.precioPre,
+        "PRECIO PRE-AUTO": i.precioPre,
         "PRECIO VENTA": i.precioVenta,
         "ETAPA LEGAL": i.etapa,
         "RESPONSABLE": i.responsable
@@ -702,7 +726,7 @@
             colonia: String(row["COLONIA"] || row["Colonia"] || "N/A"),
             direccion: String(row["DIRECCIÓN"] || row["Direccion"] || "S/D"),
             cp: String(row["C.P."] || row["CP"] || "00000"),
-            precioPre: Number(row["PRECIO PRE-AUTH"] || row["Precio Pre-Auth"] || 500000),
+            precioPre: Number(row["PRECIO PRE-AUTO"] || row["Precio Pre-Auto"] || 500000),
             precioVenta: Number(row["PRECIO VENTA"] || row["Precio Venta"] || 700000),
             etapa: String(row["ETAPA LEGAL"] || row["Etapa Legal"] || "EN PROCESO"),
             pdf: false,
