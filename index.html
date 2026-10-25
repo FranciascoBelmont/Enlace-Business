@@ -185,7 +185,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE CAPTURA ==================== -->
+  <!-- ==================== MODAL DE CAPTURA / EDICIÓN ==================== -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
@@ -196,8 +196,8 @@
             <i class="fa-solid fa-file-invoice-dollar text-base"></i>
           </div>
           <div>
-            <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
-            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura de Inmuebles & Activos</p>
+            <h2 id="modalTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
+            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura y Edición de Inmuebles</p>
           </div>
         </div>
         <button onclick="cerrarModalNuevoRegistro()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
@@ -206,7 +206,7 @@
       </div>
 
       <!-- Formulario Estilo Excel Con Títulos en Línea -->
-      <form id="formNuevo" onsubmit="guardarNuevoRegistro(event)" class="space-y-3.5">
+      <form id="formNuevo" onsubmit="guardarRegistroModal(event)" class="space-y-3.5">
         
         <!-- BLOQUE SUPERIOR DE DOS COLUMNAS -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-3">
@@ -347,9 +347,8 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <button type="button" onclick="alert('Función de Eliminar')" class="rounded-xl border border-red-500/40 bg-red-500/10 px-5 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
-            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR</button>
+            <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
           </div>
         </div>
 
@@ -360,8 +359,8 @@
 
   <script>
     let baseDatos = [
-      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²" },
-      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²" }
+      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026" },
+      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026" }
     ];
 
     function validarAcceso(e) {
@@ -398,19 +397,57 @@
     function abrirModalNuevoRegistro() {
       document.getElementById('formNuevo').reset();
       document.getElementById('regId').value = "";
+      document.getElementById('regId').readOnly = false; // Permitir escribir ID nuevo
       document.getElementById('regRecepcion').value = "";
       document.getElementById('regUtilidadPesos').value = "$0.00";
       document.getElementById('regUtilidadPorc').value = "0.00%";
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+      document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
       document.getElementById('regId').focus();
+    }
+
+    function abrirModalEditarRegistro(idItem) {
+      const item = baseDatos.find(i => i.id === idItem);
+      if (!item) return;
+
+      document.getElementById('regId').value = item.id;
+      document.getElementById('regId').readOnly = true; // El ID no cambia al editar
+      document.getElementById('regIdEnlace').value = item.idEnlace || "";
+      document.getElementById('regCredito').value = item.credito || "";
+      document.getElementById('regCartera').value = item.cartera || "";
+      document.getElementById('regResponsable').value = item.responsable || "";
+      document.getElementById('regTipoPropiedad').value = item.tipoPropiedad || "";
+      document.getElementById('regCp').value = item.cp || "";
+      document.getElementById('regEstado').value = item.estado || "";
+      document.getElementById('regMunicipio').value = item.municipio || "";
+      document.getElementById('regColonia').value = item.colonia || "";
+      document.getElementById('regDireccion').value = item.direccion || "";
+      document.getElementById('regSuperficie').value = item.superficie || "";
+      document.getElementById('regConstruccion').value = item.construccion || "";
+      document.getElementById('regEnvio').value = item.envio || "";
+      
+      document.getElementById('regPrecioPre').value = item.precioPre ? "$" + item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
+      document.getElementById('regPrecioVenta').value = item.precioVenta ? "$" + item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
+      
+      calcularUtilidadModal();
+
+      document.getElementById('regEtapaActual').value = item.etapaActual || "";
+      document.getElementById('regEtapa').value = item.etapa || "";
+      document.getElementById('regObservaciones').value = item.observaciones || "";
+      document.getElementById('regAvances').value = item.avances || "";
+      document.getElementById('regStatus').value = item.status || "";
+      document.getElementById('regRecepcion').value = item.recepcion || "";
+      document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+      document.getElementById('modalTituloTexto').innerText = `EDITAR REGISTRO ID: ${item.id}`;
+      document.getElementById('modalNuevoRegistro').classList.remove('hidden');
     }
 
     function cerrarModalNuevoRegistro() {
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // Formateador dinámico de fecha manual a formato "DD DE MES DE AAAA"
     function formatearFechaTexto(input) {
       let val = input.value.trim();
       if (!val) return;
@@ -429,7 +466,6 @@
       }
     }
 
-    // Mayúsculas automáticas y navegación fluida con ENTER
     document.addEventListener('input', function (e) {
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
         e.target.value = e.target.value.toUpperCase();
@@ -479,14 +515,15 @@
       document.getElementById('regUtilidadPorc').value = `${utilidadPorc}%`;
     }
 
-    function guardarNuevoRegistro(e) {
+    function guardarRegistroModal(e) {
       e.preventDefault();
       const idCapturado = document.getElementById('regId').value.trim();
       if (!idCapturado) {
         alert("Por favor, ingrese el ID del Sistema.");
         return;
       }
-      baseDatos.unshift({
+
+      const datosObjeto = {
         id: idCapturado,
         idEnlace: document.getElementById('regIdEnlace').value.trim() || "S/N",
         cartera: document.getElementById('regCartera').value.trim() || "GENERAL",
@@ -506,13 +543,35 @@
         envio: document.getElementById('regEnvio').value.trim() || "S/D",
         superficie: document.getElementById('regSuperficie').value.trim() || "0m²",
         construccion: document.getElementById('regConstruccion').value.trim() || "0m²",
+        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "CASA",
+        recepcion: document.getElementById('regRecepcion').value.trim() || "S/F",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
-      });
+      };
+
+      const indexExistente = baseDatos.findIndex(i => i.id === idCapturado);
+      if (indexExistente > -1) {
+        // Actualizar existente
+        baseDatos[indexExistente] = datosObjeto;
+        alert("¡Registro actualizado con éxito!");
+      } else {
+        // Crear nuevo al inicio
+        baseDatos.unshift(datosObjeto);
+        alert("¡Registro guardado con éxito!");
+      }
+
       cargarSelectoresIniciales();
       aplicarFiltros();
       cerrarModalNuevoRegistro();
-      alert("¡Registro guardado con éxito!");
+    }
+
+    function eliminarRegistro(idItem) {
+      if (confirm(`¿Está seguro de eliminar el registro ID: ${idItem}?`)) {
+        baseDatos = baseDatos.filter(i => i.id !== idItem);
+        cargarSelectoresIniciales();
+        aplicarFiltros();
+        alert("¡Registro eliminado correctamente!");
+      }
     }
 
     function cargarSelectoresIniciales() {
@@ -669,10 +728,10 @@
             <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
             <td class="px-6 py-4 text-center">
               <div class="flex items-center justify-center space-x-2">
-                <button onclick="alert('Editar registro ${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
+                <button onclick="abrirModalEditarRegistro('${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
                   <i class="fa-solid fa-pen-to-square text-xs"></i>
                 </button>
-                <button onclick="alert('Eliminar registro ${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
+                <button onclick="eliminarRegistro('${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
                   <i class="fa-solid fa-trash-can text-xs"></i>
                 </button>
               </div>
