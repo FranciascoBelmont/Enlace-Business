@@ -359,8 +359,8 @@
 
   <script>
     let baseDatos = [
-      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026" },
-      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026" }
+      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" },
+      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
     ];
 
     function validarAcceso(e) {
@@ -397,7 +397,7 @@
     function abrirModalNuevoRegistro() {
       document.getElementById('formNuevo').reset();
       document.getElementById('regId').value = "";
-      document.getElementById('regId').readOnly = false; // Permitir escribir ID nuevo
+      document.getElementById('regId').readOnly = false;
       document.getElementById('regRecepcion').value = "";
       document.getElementById('regUtilidadPesos').value = "$0.00";
       document.getElementById('regUtilidadPorc').value = "0.00%";
@@ -412,7 +412,7 @@
       if (!item) return;
 
       document.getElementById('regId').value = item.id;
-      document.getElementById('regId').readOnly = true; // El ID no cambia al editar
+      document.getElementById('regId').readOnly = true;
       document.getElementById('regIdEnlace').value = item.idEnlace || "";
       document.getElementById('regCredito').value = item.credito || "";
       document.getElementById('regCartera').value = item.cartera || "";
@@ -545,17 +545,16 @@
         construccion: document.getElementById('regConstruccion').value.trim() || "0m²",
         tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "CASA",
         recepcion: document.getElementById('regRecepcion').value.trim() || "S/F",
+        actualizacion: document.getElementById('regActualizacion').value.trim() || "S/F",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       };
 
       const indexExistente = baseDatos.findIndex(i => i.id === idCapturado);
       if (indexExistente > -1) {
-        // Actualizar existente
         baseDatos[indexExistente] = datosObjeto;
         alert("¡Registro actualizado con éxito!");
       } else {
-        // Crear nuevo al inicio
         baseDatos.unshift(datosObjeto);
         alert("¡Registro guardado con éxito!");
       }
@@ -744,25 +743,41 @@
     }
 
     function exportarExcel() {
-      const datosExportar = baseDatos.map(i => ({
-        "ID": i.id,
-        "ID ENLACE": i.idEnlace,
-        "CARTERA": i.cartera,
-        "CRÉDITO": i.credito,
-        "ESTADO": i.estado,
-        "MUNICIPIO": i.municipio,
-        "COLONIA": i.colonia,
-        "DIRECCIÓN": i.direccion,
-        "C.P.": i.cp,
-        "PRECIO PRE-AUTO": i.precioPre,
-        "PRECIO VENTA": i.precioVenta,
-        "ETAPA LEGAL": i.etapa,
-        "RESPONSABLE": i.responsable
-      }));
+      const datosExportar = baseDatos.map(i => {
+        const utilPesos = i.precioVenta - i.precioPre;
+        const utilPorc = i.precioPre > 0 ? ((utilPesos / i.precioPre) * 100).toFixed(2) + "%" : "0.00%";
+        return {
+          "ID": i.id,
+          "ID ENLACE": i.idEnlace,
+          "NÚMERO DE CRÉDITO": i.credito,
+          "CARTERA": i.cartera,
+          "RESPONSABLE": i.responsable,
+          "TIPO DE PROPIEDAD": i.tipoPropiedad,
+          "CÓDIGO POSTAL": i.cp,
+          "ESTADO": i.estado,
+          "MUNICIPIO": i.municipio,
+          "COLONIA": i.colonia,
+          "DIRECCIÓN": i.direccion,
+          "SUPERFICIE": i.superficie,
+          "CONSTRUCCIÓN": i.construccion,
+          "SEGUIMIENTO": i.envio,
+          "PRECIO PRE-AUTO": i.precioPre,
+          "PRECIO VENTA": i.precioVenta,
+          "UTILIDAD ($)": utilPesos,
+          "UTILIDAD (%)": utilPorc,
+          "ETAPA ACTUAL": i.etapaActual,
+          "ETAPA LEGAL": i.etapa,
+          "OBSERVACIONES": i.observaciones,
+          "AVANCES": i.avances,
+          "STATUS": i.status,
+          "RECEPCIÓN": i.recepcion,
+          "ACTUALIZACIÓN": i.actualizacion
+        };
+      });
       const worksheet = XLSX.utils.json_to_sheet(datosExportar);
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace");
-      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte.xlsx");
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace Completo");
+      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte_Completo.xlsx");
     }
 
     function importarExcel(e) {
@@ -778,25 +793,32 @@
           baseDatos = jsonData.map((row, index) => ({
             id: String(row["ID"] || row["ID / ENLACE"] || `EN${1000 + index}`),
             idEnlace: String(row["ID ENLACE"] || row["Enlace"] || "S/N"),
-            cartera: String(row["CARTERA"] || row["Cartera"] || "GENERAL"),
-            credito: String(row["CRÉDITO"] || row["Crédito"] || "S/N"),
-            estado: String(row["ESTADO"] || row["Estado"] || "N/A"),
-            municipio: String(row["MUNICIPIO"] || row["Municipio"] || "N/A"),
-            colonia: String(row["COLONIA"] || row["Colonia"] || "N/A"),
-            direccion: String(row["DIRECCIÓN"] || row["Direccion"] || "S/D"),
-            cp: String(row["C.P."] || row["CP"] || "00000"),
-            precioPre: Number(row["PRECIO PRE-AUTO"] || row["Precio Pre-Auto"] || 500000),
-            precioVenta: Number(row["PRECIO VENTA"] || row["Precio Venta"] || 700000),
-            etapa: String(row["ETAPA LEGAL"] || row["Etapa Legal"] || "EN PROCESO"),
-            pdf: false,
-            responsable: String(row["RESPONSABLE"] || row["Responsable"] || "BELMONT"),
-            observaciones: "IMPORTADO DE EXCEL",
-            avances: "IMPORTADO",
-            status: "ACTIVO"
+            credito: String(row["NÚMERO DE CRÉDITO"] || row["CRÉDITO"] || "S/N"),
+            cartera: String(row["CARTERA"] || "GENERAL"),
+            responsable: String(row["RESPONSABLE"] || "BELMONT"),
+            tipoPropiedad: String(row["TIPO DE PROPIEDAD"] || "CASA"),
+            cp: String(row["CÓDIGO POSTAL"] || row["C.P."] || "00000"),
+            estado: String(row["ESTADO"] || "N/A"),
+            municipio: String(row["MUNICIPIO"] || "N/A"),
+            colonia: String(row["COLONIA"] || "N/A"),
+            direccion: String(row["DIRECCIÓN"] || "S/D"),
+            superficie: String(row["SUPERFICIE"] || "0m²"),
+            construccion: String(row["CONSTRUCCIÓN"] || "0m²"),
+            envio: String(row["SEGUIMIENTO"] || "S/D"),
+            precioPre: Number(row["PRECIO PRE-AUTO"] || row["PRECIO PRE-AUTH"] || 0),
+            precioVenta: Number(row["PRECIO VENTA"] || 0),
+            etapaActual: String(row["ETAPA ACTUAL"] || "S/D"),
+            etapa: String(row["ETAPA LEGAL"] || "EN PROCESO"),
+            observaciones: String(row["OBSERVACIONES"] || "S/D"),
+            avances: String(row["AVANCES"] || "S/D"),
+            status: String(row["STATUS"] || "ACTIVO"),
+            recepcion: String(row["RECEPCIÓN"] || "S/F"),
+            actualizacion: String(row["ACTUALIZACIÓN"] || "S/F"),
+            pdf: false
           }));
           cargarSelectoresIniciales();
           aplicarFiltros();
-          alert(`¡Se importaron ${baseDatos.length} registros con éxito!`);
+          alert(`¡Se importaron ${baseDatos.length} registros con toda su información con éxito!`);
         }
       };
       reader.readAsArrayBuffer(file);
