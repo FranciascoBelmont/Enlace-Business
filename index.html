@@ -347,6 +347,7 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
+            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
             <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
           </div>
@@ -362,6 +363,8 @@
       { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" },
       { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
     ];
+
+    let idItemEnEdicion = null;
 
     function validarAcceso(e) {
       e.preventDefault();
@@ -396,6 +399,7 @@
 
     function abrirModalNuevoRegistro() {
       document.getElementById('formNuevo').reset();
+      idItemEnEdicion = null;
       document.getElementById('regId').value = "";
       document.getElementById('regId').readOnly = false;
       document.getElementById('regRecepcion').value = "";
@@ -403,6 +407,7 @@
       document.getElementById('regUtilidadPorc').value = "0.00%";
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
       document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
+      document.getElementById('btnEliminarModal').classList.add('hidden');
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
       document.getElementById('regId').focus();
     }
@@ -411,6 +416,7 @@
       const item = baseDatos.find(i => i.id === idItem);
       if (!item) return;
 
+      idItemEnEdicion = item.id;
       document.getElementById('regId').value = item.id;
       document.getElementById('regId').readOnly = true;
       document.getElementById('regIdEnlace').value = item.idEnlace || "";
@@ -441,6 +447,7 @@
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
 
       document.getElementById('modalTituloTexto').innerText = `EDITAR REGISTRO ID: ${item.id}`;
+      document.getElementById('btnEliminarModal').classList.remove('hidden');
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
     }
 
@@ -552,10 +559,11 @@
 
       const indexExistente = baseDatos.findIndex(i => i.id === idCapturado);
       if (indexExistente > -1) {
-        baseDatos[indexExistente] = datosObjeto;
+        baseDatos.splice(indexExistente, 1); // Quitar de su lugar actual
+        baseDatos.unshift(datosObjeto);       // Poner hasta arriba
         alert("¡Registro actualizado con éxito!");
       } else {
-        baseDatos.unshift(datosObjeto);
+        baseDatos.unshift(datosObjeto);       // Poner hasta arriba
         alert("¡Registro guardado con éxito!");
       }
 
@@ -570,6 +578,18 @@
         cargarSelectoresIniciales();
         aplicarFiltros();
         alert("¡Registro eliminado correctamente!");
+      }
+    }
+
+    function eliminarRegistroDesdeModal() {
+      if (idItemEnEdicion) {
+        if (confirm(`¿Está seguro de eliminar el registro ID: ${idItemEnEdicion}?`)) {
+          baseDatos = baseDatos.filter(i => i.id !== idItemEnEdicion);
+          cargarSelectoresIniciales();
+          aplicarFiltros();
+          cerrarModalNuevoRegistro();
+          alert("¡Registro eliminado correctamente!");
+        }
       }
     }
 
@@ -790,7 +810,7 @@
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         if (jsonData.length > 0) {
-          baseDatos = jsonData.map((row, index) => ({
+          let nuevosImportados = jsonData.map((row, index) => ({
             id: String(row["ID"] || row["ID / ENLACE"] || `EN${1000 + index}`),
             idEnlace: String(row["ID ENLACE"] || row["Enlace"] || "S/N"),
             credito: String(row["NÚMERO DE CRÉDITO"] || row["CRÉDITO"] || "S/N"),
@@ -816,9 +836,20 @@
             actualizacion: String(row["ACTUALIZACIÓN"] || "S/F"),
             pdf: false
           }));
+
+          // Fusionar sin borrar los existentes (actualizar si el ID ya existe, agregar al inicio si es nuevo)
+          nuevosImportados.forEach(nuevo => {
+            const indexExistente = baseDatos.findIndex(i => i.id === nuevo.id);
+            if (indexExistente > -1) {
+              baseDatos[indexExistente] = nuevo;
+            } else {
+              baseDatos.unshift(nuevo);
+            }
+          });
+
           cargarSelectoresIniciales();
           aplicarFiltros();
-          alert(`¡Se importaron ${baseDatos.length} registros con toda su información con éxito!`);
+          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
         }
       };
       reader.readAsArrayBuffer(file);
