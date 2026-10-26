@@ -50,7 +50,7 @@
       scrollbar-width: none;
     }
 
-    /* SCROLLBAR OSCURO Y MINIMALISTA PARA LA LISTA DE EVENTOS DEL DÍA */
+    /* SCROLLBAR OSCURO Y MINIMALISTA PARA LISTAS */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -209,7 +209,7 @@
             <button onclick="abrirModalPlanning()" class="flex items-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-calendar-days mr-1.5"></i>Planning
             </button>
-            <button onclick="alert('Módulo Tareas en desarrollo')" class="flex items-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-semibold text-cyan-400 hover:bg-cyan-500 hover:text-white transition">
+            <button onclick="abrirModalTareas()" class="flex items-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-semibold text-cyan-400 hover:bg-cyan-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-list-check mr-1.5"></i>Tareas
             </button>
             <button onclick="alert('Módulo Seguimiento en desarrollo')" class="flex items-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-[10px] font-semibold text-indigo-400 hover:bg-indigo-500 hover:text-white transition">
@@ -263,6 +263,119 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- ==================== MODAL DE TAREAS EJECUTIVO ==================== -->
+  <div id="modalTareas" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
+      
+      <!-- Cabecera Modal Tareas -->
+      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-4 mb-5">
+        <div class="flex items-center space-x-3.5">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-list-check text-base"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO - MÓDULO DE TAREAS</h2>
+            <p class="text-[11px] text-cyan-400 font-semibold">Gestión Operativa, Prioridades y Vinculación Inmobiliaria</p>
+          </div>
+        </div>
+        <button onclick="cerrarModalTareas()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Contenido Principal: Dos Columnas (Formulario izq / Listado der) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Columna Izquierda: Crear / Editar Tarea -->
+        <div class="rounded-2xl border border-cyan-500/30 bg-cyan-950/20 p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-3.5">
+            <div class="border-b border-cyan-500/20 pb-2">
+              <h3 id="tituloFormTarea" class="text-xs font-extrabold text-cyan-400 uppercase tracking-wider">NUEVA TAREA OPERATIVA</h3>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Título de la Tarea:</label>
+              <input type="text" id="tareaTitulo" class="input-pro w-full py-2 text-xs" placeholder="EJ. REVISAR ESCRITURACIÓN">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Descripción / Notas:</label>
+              <textarea id="tareaDescripcion" rows="2" class="input-pro w-full resize-none py-2 text-xs" placeholder="DETALLES DE LA TAREA..."></textarea>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Vincular con ID Enlace:</label>
+              <select id="tareaInmuebleId" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-medium text-slate-200 focus:border-cyan-500 focus:outline-none w-full">
+                <option value="">-- SIN VINCULAR (TAREA GENERAL) --</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Prioridad:</label>
+                <select id="tareaPrioridad" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-2 text-xs font-medium text-slate-200 focus:border-cyan-500 focus:outline-none w-full">
+                  <option value="ALTA">ALTA</option>
+                  <option value="MEDIA" selected>MEDIA</option>
+                  <option value="BAJA">BAJA</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Fecha Límite:</label>
+                <input type="date" id="tareaFechaLimite" class="input-pro w-full py-2 text-xs text-center">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1">Estado:</label>
+              <select id="tareaEstado" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-2 text-xs font-medium text-slate-200 focus:border-cyan-500 focus:outline-none w-full">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN PROCESO">EN PROCESO</option>
+                <option value="COMPLETADA">COMPLETADA</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-cyan-500/20 flex items-center gap-2">
+            <button type="button" id="btnCancelarEdicionTarea" onclick="resetFormularioTarea()" class="hidden w-1/3 rounded-xl border border-slate-700 bg-slate-800 py-2.5 text-[11px] font-extrabold text-slate-300 hover:bg-slate-700 transition">Cancelar</button>
+            <button type="button" onclick="guardarTareaOperativa()" class="flex-1 rounded-xl bg-cyan-600 py-2.5 text-xs font-extrabold text-white hover:bg-cyan-500 shadow-lg shadow-cyan-600/30 transition">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i>GUARDAR TAREA
+            </button>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Listado de Tareas (Filtros y Tarjetas) -->
+        <div class="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col justify-between space-y-4">
+          <div>
+            <!-- Filtros de Tareas -->
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR:</span>
+                <select id="filtroEstadoTarea" onchange="renderizarListaTareas()" class="rounded-xl border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-cyan-500 focus:outline-none">
+                  <option value="">TODOS LOS ESTADOS</option>
+                  <option value="PENDIENTE">PENDIENTE</option>
+                  <option value="EN PROCESO">EN PROCESO</option>
+                  <option value="COMPLETADA">COMPLETADA</option>
+                </select>
+              </div>
+              <span id="contadorTareasTotal" class="text-[11px] text-cyan-400 font-semibold">0 tareas registradas</span>
+            </div>
+
+            <!-- Contenedor Scrollable de Tareas -->
+            <div id="contenedorListaTareas" class="space-y-2.5 max-h-[360px] overflow-y-auto custom-scrollbar pr-1">
+              <!-- Se inyecta dinámicamente -->
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-800 text-right">
+            <span class="text-[11px] text-slate-400">Haz clic en <i class="fa-solid fa-pen-to-square text-cyan-400"></i> para editar o <i class="fa-solid fa-trash-can text-red-400"></i> para eliminar.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 
   <!-- ==================== MODAL DE PLANNING / CALENDARIO EJECUTIVO ==================== -->
@@ -325,7 +438,7 @@
               <h4 id="fechaSeleccionadaTitulo" class="text-sm font-extrabold text-white mt-0.5">SELECCIONA UN DÍA</h4>
             </div>
 
-            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA (CON PALOMITA ✅ Y SCROLLBAR OSCURO) -->
+            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA -->
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block mb-2">Eventos Registrados del Día:</span>
               <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
@@ -574,7 +687,7 @@
 
           <div class="flex items-center gap-3 ml-auto self-end">
             <button type="button" id="btnImprimirModal" onclick="imprimirDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR FICHA</button>
-            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
+            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
             <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
           </div>
@@ -636,9 +749,26 @@
       localStorage.setItem('enlace_business_agenda', JSON.stringify(agendaData));
     }
 
+    // GESTIÓN DE TAREAS OPERATIVAS
+    function cargarTareas() {
+      const guardado = localStorage.getItem('enlace_business_tareas');
+      if (!guardado) return [];
+      try {
+        return JSON.parse(guardado);
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function guardarTareasStorage() {
+      localStorage.setItem('enlace_business_tareas', JSON.stringify(tareasData));
+    }
+
     let baseDatos = cargarBaseDatos();
     let agendaData = cargarAgenda();
+    let tareasData = cargarTareas();
     let idItemEnEdicion = null;
+    let tareaIdEnEdicion = null;
     let modoDuplicadosActivo = false;
     let temporalesArchivosPdf = [];
 
@@ -677,6 +807,179 @@
       limpiar();
     }
 
+    // MÓDULO DE TAREAS
+    function abrirModalTareas() {
+      document.getElementById('modalTareas').classList.remove('hidden');
+      
+      const selectInm = document.getElementById('tareaInmuebleId');
+      selectInm.innerHTML = '<option value="">-- SIN VINCULAR (TAREA GENERAL) --</option>';
+      baseDatos.forEach(i => {
+        let idEnlaceText = i.idEnlace ? i.idEnlace : `ID:${i.id}`;
+        selectInm.innerHTML += `<option value="${i.id}">ID ENLACE: ${idEnlaceText} | ${i.direccion || 'S/D'} (${i.colonia || ''})</option>`;
+      });
+
+      resetFormularioTarea();
+      renderizarListaTareas();
+    }
+
+    function cerrarModalTareas() {
+      document.getElementById('modalTareas').classList.add('hidden');
+    }
+
+    function resetFormularioTarea() {
+      tareaIdEnEdicion = null;
+      document.getElementById('tareaTitulo').value = '';
+      document.getElementById('tareaDescripcion').value = '';
+      document.getElementById('tareaInmuebleId').value = '';
+      document.getElementById('tareaPrioridad').value = 'MEDIA';
+      document.getElementById('tareaFechaLimite').value = '';
+      document.getElementById('tareaEstado').value = 'PENDIENTE';
+      document.getElementById('tituloFormTarea').innerText = 'NUEVA TAREA OPERATIVA';
+      document.getElementById('btnCancelarEdicionTarea').classList.add('hidden');
+    }
+
+    function guardarTareaOperativa() {
+      const titulo = document.getElementById('tareaTitulo').value.trim();
+      const descripcion = document.getElementById('tareaDescripcion').value.trim();
+      const inmuebleId = document.getElementById('tareaInmuebleId').value;
+      const prioridad = document.getElementById('tareaPrioridad').value;
+      const fechaLimite = document.getElementById('tareaFechaLimite').value;
+      const estado = document.getElementById('tareaEstado').value;
+
+      if (!titulo) {
+        alert("Por favor ingrese el título de la tarea.");
+        return;
+      }
+
+      if (tareaIdEnEdicion) {
+        let idx = tareasData.findIndex(t => t.id === tareaIdEnEdicion);
+        if (idx > -1) {
+          tareasData[idx] = {
+            ...tareasData[idx],
+            titulo,
+            descripcion,
+            inmuebleId,
+            prioridad,
+            fechaLimite,
+            estado
+          };
+        }
+        alert("¡Tarea actualizada con éxito!");
+      } else {
+        const nuevaTarea = {
+          id: 'task_' + Date.now(),
+          titulo,
+          descripcion,
+          inmuebleId,
+          prioridad,
+          fechaLimite,
+          estado,
+          creacion: new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()
+        };
+        tareasData.unshift(nuevaTarea);
+        alert("¡Tarea creada con éxito!");
+      }
+
+      guardarTareasStorage();
+      resetFormularioTarea();
+      renderizarListaTareas();
+    }
+
+    function renderizarListaTareas() {
+      const contenedor = document.getElementById('contenedorListaTareas');
+      const filtroEstado = document.getElementById('filtroEstadoTarea').value;
+      contenedor.innerHTML = '';
+
+      let filtradas = tareasData;
+      if (filtroEstado) {
+        filtradas = tareasData.filter(t => t.estado === filtroEstado);
+      }
+
+      document.getElementById('contadorTareasTotal').innerText = `${filtradas.length} tareas registradas`;
+
+      if (filtradas.length === 0) {
+        contenedor.innerHTML = '<p class="text-xs text-slate-500 italic py-4 text-center">No hay tareas registradas con este filtro.</p>';
+        return;
+      }
+
+      filtradas.forEach(t => {
+        let badgePrioridad = '';
+        if (t.prioridad === 'ALTA') badgePrioridad = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/30">ALTA</span>';
+        else if (t.prioridad === 'MEDIA') badgePrioridad = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">MEDIA</span>';
+        else badgePrioridad = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-blue-500/20 text-blue-400 border border-blue-500/30">BAJA</span>';
+
+        let badgeEstado = '';
+        if (t.estado === 'COMPLETADA') badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">COMPLETADA</span>';
+        else if (t.estado === 'EN PROCESO') badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">EN PROCESO</span>';
+        else badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-slate-700/50 text-slate-300 border border-slate-600">PENDIENTE</span>';
+
+        let badgeInmuebleHtml = '';
+        if (t.inmuebleId) {
+          const inmueble = baseDatos.find(i => String(i.id) === String(t.inmuebleId));
+          if (inmueble) {
+            let idEnlaceText = inmueble.idEnlace ? inmueble.idEnlace : `ID: ${inmueble.id}`;
+            badgeInmuebleHtml = `<div class="text-[10px] text-blue-400 font-bold mt-1">📌 ${idEnlaceText} - ${inmueble.direccion || 'S/D'}</div>`;
+          }
+        }
+
+        let fechaLimiteHtml = t.fechaLimite ? `<span class="text-[10px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>Límite: ${t.fechaLimite}</span>` : '';
+
+        contenedor.innerHTML += `
+          <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-3.5 hover:border-cyan-500/40 transition shadow">
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="text-xs font-extrabold text-white uppercase">${t.titulo}</h4>
+                  ${badgePrioridad}
+                  ${badgeEstado}
+                </div>
+                ${t.descripcion ? `<p class="text-[11px] text-slate-300 mb-1">${t.descripcion}</p>` : ''}
+                ${badgeInmuebleHtml}
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <button onclick="editarTarea('${t.id}')" title="Editar Tarea" class="h-7 w-7 rounded-lg bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600 hover:text-white transition flex items-center justify-center">
+                  <i class="fa-solid fa-pen-to-square text-xs"></i>
+                </button>
+                <button onclick="eliminarTarea('${t.id}')" title="Eliminar Tarea" class="h-7 w-7 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition flex items-center justify-center">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
+              <span>Creado: ${t.creacion || 'S/D'}</span>
+              ${fechaLimiteHtml}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function editarTarea(id) {
+      const t = tareasData.find(item => item.id === id);
+      if (!t) return;
+
+      tareaIdEnEdicion = t.id;
+      document.getElementById('tareaTitulo').value = t.titulo || '';
+      document.getElementById('tareaDescripcion').value = t.descripcion || '';
+      document.getElementById('tareaInmuebleId').value = t.inmuebleId || '';
+      document.getElementById('tareaPrioridad').value = t.prioridad || 'MEDIA';
+      document.getElementById('tareaFechaLimite').value = t.fechaLimite || '';
+      document.getElementById('tareaEstado').value = t.estado || 'PENDIENTE';
+
+      document.getElementById('tituloFormTarea').innerText = `EDITAR TAREA ID: ${t.id.slice(-4)}`;
+      document.getElementById('btnCancelarEdicionTarea').classList.remove('hidden');
+    }
+
+    function eliminarTarea(id) {
+      if (confirm("¿Está seguro de eliminar esta tarea?")) {
+        tareasData = tareasData.filter(t => t.id !== id);
+        guardarTareasStorage();
+        renderizarListaTareas();
+        alert("¡Tarea eliminada correctamente!");
+      }
+    }
+
+    // GESTIÓN DE CALENDARIO / PLANNING
     function abrirModalPlanning() {
       document.getElementById('modalPlanning').classList.remove('hidden');
       renderizarCalendario();
@@ -1367,7 +1670,6 @@
         });
       }
 
-      // ACTUALIZACIÓN DINÁMICA DE LA TARJETA KPI "TOTAL REGISTROS" (CON TAMAÑO EXACTO)
       let etiquetaFiltroActivo = "";
       if (coloniaF) {
         etiquetaFiltroActivo = ` ${coloniaF}`;
