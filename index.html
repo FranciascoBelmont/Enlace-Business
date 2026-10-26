@@ -1234,4 +1234,19 @@
             const indexExistente = baseDatos.findIndex(i => String(i.id) === String(nuevo.id));
             if (indexExistente > -1) {
               baseDatos[indexExistente] = { ...nuevo, archivosPdf: baseDatos[indexExistente].archivosPdf || [], pdf: (baseDatos[indexExistente].archivosPdf || []).length > 0 };
-            } else
+            } else {
+              baseDatos.unshift(nuevo);
+            }
+          });
+
+          guardarBaseDatos();
+          actualizarSelectoresFiltros();
+          aplicarFiltros();
+          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
