@@ -41,6 +41,15 @@
       white-space: nowrap;
     }
 
+    /* OCULTAR SCROLLBAR EN LAS CELDAS DEL CALENDARIO */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     /* ESTILO POST-IT / HOJA FLOTANTE EJECUTIVA */
     .postit-card {
       background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
@@ -310,7 +319,7 @@
 
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Nuevo Evento / Anotación:</label>
-              <textarea id="notaTexto" rows="2" class="input-pro w-full resize-none py-2 text-xs" placeholder="ESCRIBE TU CITA O RECORDATORIO..."></textarea>
+              <textarea id="notaTexto" rows="2" class="input-pro w-full resize-none py-2 text-xs" placeholder=""></textarea>
             </div>
 
             <div>
@@ -727,7 +736,8 @@
 
         let indicadorHtml = tieneEventos ? `<span class="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-emerald-400"></span>` : '';
         
-        let eventosHtml = '<div class="space-y-1 overflow-y-auto max-h-14 pr-0.5 mt-1">';
+        // Se agrega la clase no-scrollbar para ocultar la barra de desplazamiento en cada celda
+        let eventosHtml = '<div class="space-y-1 overflow-y-auto no-scrollbar max-h-14 pr-0.5 mt-1">';
         eventosDia.forEach(ev => {
           let previewTexto = ev.texto ? ev.texto : 'Evento vinculado';
           eventosHtml += `<div onclick="event.stopPropagation(); abrirPostit('${fechaStr}', '${ev.id}')" class="text-[9px] text-emerald-200 truncate bg-emerald-950/90 border border-emerald-500/40 px-1.5 py-0.5 rounded hover:bg-emerald-900 transition font-medium" title="Haz clic para Post-it / Editar"><i class="fa-solid fa-note-sticky text-amber-400 mr-1"></i>${previewTexto}</div>`;
@@ -1099,6 +1109,10 @@
 
     document.addEventListener('input', function (e) {
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
+        e.target.value = e.target.value.toUpperCase();
+      }
+      // Conversión automática a mayúsculas para TEXTAREAS (incluyendo notaTexto y postitTextoEdit)
+      if (e.target.tagName === 'TEXTAREA') {
         e.target.value = e.target.value.toUpperCase();
       }
     });
