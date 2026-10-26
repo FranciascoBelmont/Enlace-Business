@@ -407,14 +407,22 @@
 
     function cargarBaseDatos() {
       const guardado = localStorage.getItem('enlace_business_db');
+      let datos = datosIniciales;
       if (guardado) {
         try {
-          return JSON.parse(guardado);
+          datos = JSON.parse(guardado);
         } catch(e) {
-          return datosIniciales;
+          datos = datosIniciales;
         }
       }
-      return datosIniciales;
+      // LIMPIEZA AUTOMÁTICA: Si algún registro guardado tiene "S/D" por defecto en envío, lo vaciamos
+      datos = datos.map(item => {
+        if (item.envio === "S/D") {
+          item.envio = "";
+        }
+        return item;
+      });
+      return datos;
     }
 
     function guardarBaseDatos() {
@@ -496,7 +504,7 @@
       document.getElementById('regDireccion').value = item.direccion || "";
       document.getElementById('regSuperficie').value = item.superficie || "";
       document.getElementById('regConstruccion').value = item.construccion || "";
-      document.getElementById('regEnvio').value = item.envio || "";
+      document.getElementById('regEnvio').value = (item.envio === "S/D") ? "" : (item.envio || "");
       
       document.getElementById('regPrecioPre').value = item.precioPre ? "$" + Number(item.precioPre).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
       document.getElementById('regPrecioVenta').value = item.precioVenta ? "$" + Number(item.precioVenta).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
@@ -1160,7 +1168,9 @@
             const direccionVal = buscarCampo(["DIRECCIÓN", "DIRECCION", "direccion"]) || "";
             const superficieVal = buscarCampo(["SUPERFICIE", "superficie"]) || "";
             const construccionVal = buscarCampo(["CONSTRUCCIÓN", "CONSTRUCCION", "construccion"]) || "";
-            const envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "";
+            let envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "";
+            if (envioVal === "S/D") envioVal = "";
+
             const precioPreVal = Number(buscarCampo(["PRECIO PRE-AUTO", "PRECIO PRE AUTO", "PRECIO PRE-AUTH", "VALOR PRE AUTORIZADO", "VALOR PRE-AUTORIZADO", "precioPre"])) || 0;
             const precioVentaVal = Number(buscarCampo(["PRECIO VENTA", "VALOR VENTA", "precioVenta"])) || 0;
             const etapaActualVal = buscarCampo(["ETAPA ACTUAL", "etapaActual"]) || "";
@@ -1214,3 +1224,11 @@
           guardarBaseDatos();
           actualizarSelectoresFiltros();
           aplicarFiltros();
+          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
