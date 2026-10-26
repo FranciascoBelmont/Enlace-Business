@@ -79,7 +79,7 @@
       transform: rotate(0deg) scale(1.01);
     }
 
-    /* ESTILOS EXCLUSIVOS DE IMPRESIÓN ENLACE BUSINESS */
+    /* ESTILOS EXCLUSIVOS DE IMPRESIÓN ENLACE BUSINESS (FICHA TÉCNICA) */
     @media print {
       body * { visibility: hidden !important; }
       #printableArea, #printableArea * { visibility: visible !important; }
@@ -88,12 +88,12 @@
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
-        padding: 0 !important;
+        padding: 10mm !important;
         margin: 0 !important;
         background: #ffffff !important;
         color: #000000 !important;
       }
-      @page { margin: 10mm; size: A4 portrait; }
+      @page { margin: 0mm; size: A4 portrait; }
     }
   </style>
 </head>
@@ -912,14 +912,12 @@
       cerrarModalSeguimiento();
       if (tipo === 'TAREA') {
         abrirModalTareas();
-        // Opcional: Buscar y resaltar o editar la tarea si se desea
         setTimeout(() => {
           editarTarea(identificador);
         }, 150);
       } else if (tipo === 'AGENDA') {
         abrirModalPlanning();
         if (fechaExtra) {
-          // Cambiar el mes del planning a la fecha del evento si es necesario y seleccionar día
           let partes = fechaExtra.split('-');
           if (partes.length === 3) {
             fechaActualPlanning = new Date(partes[0], partes[1] - 1, 1);
@@ -955,7 +953,6 @@
       });
       document.getElementById('dashKpiEventos').innerText = totalEventosAgenda;
 
-      // Renderizar Lista de Inmuebles bajo Seguimiento
       const contInm = document.getElementById('dashListaInmueblesSeg');
       contInm.innerHTML = '';
       document.getElementById('dashContadorInmuebles').innerText = `${inmueblesConSeguimiento.length} inmuebles`;
@@ -983,7 +980,6 @@
         });
       }
 
-      // Renderizar Tareas y Eventos Recientes con Redirección al hacer Clic en la Caja
       const contAct = document.getElementById('dashListaActividades');
       contAct.innerHTML = '';
       
@@ -2040,6 +2036,157 @@
       });
       document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
+    }
+
+    // FUNCIÓN DE IMPRESIÓN PROFESIONAL (FICHA TÉCNICA)
+    function imprimirDesdeModal() {
+      const idVal = document.getElementById('regId').value.trim();
+      const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
+      const creditoVal = document.getElementById('regCredito').value.trim();
+      const carteraVal = document.getElementById('regCartera').value.trim();
+      const responsableVal = document.getElementById('regResponsable').value.trim();
+      const tipoPropiedadVal = document.getElementById('regTipoPropiedad').value.trim();
+      const cpVal = document.getElementById('regCp').value.trim();
+      const estadoVal = document.getElementById('regEstado').value.trim();
+      const municipioVal = document.getElementById('regMunicipio').value.trim();
+      const coloniaVal = document.getElementById('regColonia').value.trim();
+      const direccionVal = document.getElementById('regDireccion').value.trim();
+      const superficieVal = document.getElementById('regSuperficie').value.trim();
+      const construccionVal = document.getElementById('regConstruccion').value.trim();
+      const envioVal = document.getElementById('regEnvio').value.trim();
+      const precioPreVal = document.getElementById('regPrecioPre').value.trim() || "$0.00";
+      const precioVentaVal = document.getElementById('regPrecioVenta').value.trim() || "$0.00";
+      const utilidadPesosVal = document.getElementById('regUtilidadPesos').value.trim() || "$0.00";
+      const utilidadPorcVal = document.getElementById('regUtilidadPorc').value.trim() || "0.00%";
+      const etapaActualVal = document.getElementById('regEtapaActual').value.trim();
+      const etapaVal = document.getElementById('regEtapa').value.trim();
+      const observacionesVal = document.getElementById('regObservaciones').value.trim();
+      const avancesVal = document.getElementById('regAvances').value.trim();
+      const statusVal = document.getElementById('regStatus').value.trim();
+      const recepcionVal = document.getElementById('regRecepcion').value.trim();
+      const actualizacionVal = document.getElementById('regActualizacion').value.trim();
+
+      const printableArea = document.getElementById('printableArea');
+      printableArea.innerHTML = `
+        <div style="font-family: Arial, sans-serif; color: #000; width: 100%; max-width: 210mm; margin: 0 auto; padding: 15mm; background: #fff; box-sizing: border-box;">
+          
+          <!-- CABECERA CON LOGOTIPO VECTORIAL Y DATOS CLAVE -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 50px; height: 50px; background: #0284c7; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                EB
+              </div>
+              <div>
+                <h1 style="margin: 0; font-size: 20px; font-weight: 900; color: #0f172a; letter-spacing: 0.5px;">ENLACE BUSINESS</h1>
+                <p style="margin: 2px 0 0 0; font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 1px;">SISTEMA INTEGRAL INMOBILIARIO & LEGAL</p>
+              </div>
+            </div>
+            <div style="text-align: right; font-size: 12px; line-height: 1.5;">
+              <div><strong>ID:</strong> ${idVal || 'N/A'}</div>
+              <div><strong>ID Enlace Business:</strong> <span style="color: #2563eb; font-weight: bold;">${idEnlaceVal || 'N/A'}</span></div>
+              <div><strong>Número de Crédito:</strong> ${creditoVal || 'N/A'}</div>
+            </div>
+          </div>
+
+          <!-- PRECIOS Y UTILIDADES -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div>
+              <div style="font-size: 11px; font-weight: bold; color: #64748b; margin-bottom: 4px;">VALOR PRE AUTORIZADO</div>
+              <div style="font-size: 15px; font-weight: 800; color: #0f172a;">${precioPreVal}</div>
+              <div style="font-size: 11px; font-weight: bold; color: #64748b; margin-top: 10px; margin-bottom: 4px;">VALOR VENTA</div>
+              <div style="font-size: 15px; font-weight: 800; color: #d97706;">${precioVentaVal}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: bold; color: #64748b; margin-bottom: 4px;">UTILIDAD ($)</div>
+              <div style="font-size: 15px; font-weight: 800; color: #16a34a;">${utilidadPesosVal}</div>
+              <div style="font-size: 11px; font-weight: bold; color: #64748b; margin-top: 10px; margin-bottom: 4px;">UTILIDAD (%)</div>
+              <div style="font-size: 15px; font-weight: 800; color: #16a34a;">${utilidadPorcVal}</div>
+            </div>
+          </div>
+
+          <!-- DATOS GENERALES Y UBICACIÓN -->
+          <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 12px; font-weight: 900; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase;">Ubicación e Información del Inmueble</h3>
+            <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 6px 0; width: 25%; font-weight: bold; color: #475569;">Tipo de Propiedad:</td>
+                <td style="padding: 6px 0; width: 75%; font-weight: 700; text-transform: uppercase;">${tipoPropiedadVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Estado:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${estadoVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Municipio / Alcaldía:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Colonia:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${coloniaVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Dirección:</td>
+                <td style="padding: 6px 0; font-weight: 800; color: #1e3a8a; text-transform: uppercase;">${direccionVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Código Postal:</td>
+                <td style="padding: 6px 0; font-weight: 700;">${cpVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Superficie / Const.:</td>
+                <td style="padding: 6px 0; font-weight: 700;">Sup: ${superficieVal || 'N/A'} &nbsp;|&nbsp; Const: ${construccionVal || 'N/A'}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- ETAPAS Y SEGUIMIENTO LEGAL -->
+          <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 12px; font-weight: 900; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase;">Estatus Legal y Operativo</h3>
+            <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 6px 0; width: 25%; font-weight: bold; color: #475569;">Cartera:</td>
+                <td style="padding: 6px 0; width: 75%; font-weight: 700; text-transform: uppercase;">${carteraVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Etapa Actual:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase; color: #2563eb;">${etapaActualVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Etapa Legal:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${etapaVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Observaciones:</td>
+                <td style="padding: 6px 0; font-weight: 600; text-transform: uppercase;">${observacionesVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Avances:</td>
+                <td style="padding: 6px 0; font-weight: 600; text-transform: uppercase;">${avancesVal || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #475569;">Status:</td>
+                <td style="padding: 6px 0; font-weight: 700; text-transform: uppercase;">${statusVal || 'N/A'}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- PIE DE PÁGINA Y RESPONSABLE -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px solid #0f172a; padding-top: 15px; margin-top: 30px; font-size: 11px;">
+            <div>
+              <div><strong>Responsable:</strong> ${responsableVal || 'N/A'}</div>
+              <div><strong>Recepción:</strong> ${recepcionVal || 'N/A'}</div>
+              <div style="color: #64748b; margin-top: 2px;"><strong>Actualización:</strong> ${actualizacionVal || 'N/A'}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: bold; color: #2563eb; font-size: 12px;">www.enlacebusiness.mx</div>
+              <div style="color: #64748b; font-size: 10px; margin-top: 2px;">Documento Oficial Generado por Enlace Business PRO</div>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      window.print();
     }
 
     function exportarExcel() {
