@@ -518,6 +518,22 @@
       }
     }
 
+    // Función auxiliar para convertir números de serie de Excel o fechas a texto formateado en español
+    function limpiarYFormatearFecha(valor) {
+      if (!valor) return "";
+      let valStr = String(valor).trim();
+      // Si es un número puro de Excel (ej: 45329)
+      if (!isNaN(valStr) && Number(valStr) > 1000 && Number(valStr) < 60000) {
+        let serial = Number(valStr);
+        // Corrección del error de salto de bisiesto de 1900 en Excel
+        let utc_days = Math.floor(serial - 25569);
+        let utc_value = utc_days * 86400;
+        let dateInfo = new Date(utc_value * 1000);
+        return dateInfo.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
+      }
+      return valStr.toUpperCase();
+    }
+
     document.addEventListener('input', function (e) {
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
         e.target.value = e.target.value.toUpperCase();
@@ -1050,7 +1066,11 @@
             const observacionesVal = buscarCampo(["OBSERVACIONES", "observaciones"]) || "";
             const avancesVal = buscarCampo(["AVANCES", "avances"]) || "";
             const statusVal = buscarCampo(["STATUS", "status"]) || "";
-            const recepcionVal = buscarCampo(["RECEPCIÓN", "RECEPCION", "recepcion"]) || "";
+            
+            // CORRECCIÓN APLICADA AQUÍ: Limpieza y formato correcto de la fecha de recepción
+            const recepcionCruda = buscarCampo(["RECEPCIÓN", "RECEPCION", "recepcion"]);
+            const recepcionVal = limpiarYFormatearFecha(recepcionCruda);
+            
             const actualizacionVal = buscarCampo(["ACTUALIZACIÓN", "ACTUALIZACION", "actualizacion"]) || "";
 
             return {
