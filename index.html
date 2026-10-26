@@ -50,6 +50,22 @@
       scrollbar-width: none;
     }
 
+    /* SCROLLBAR OSCURO Y MINIMALISTA PARA LA LISTA DE EVENTOS DEL DÍA */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(3, 7, 18, 0.5);
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.3);
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.6);
+    }
+
     /* ESTILO POST-IT / HOJA FLOTANTE EJECUTIVA */
     .postit-card {
       background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
@@ -309,10 +325,10 @@
               <h4 id="fechaSeleccionadaTitulo" class="text-sm font-extrabold text-white mt-0.5">SELECCIONA UN DÍA</h4>
             </div>
 
-            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA (CON PALOMITA ✅) -->
+            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA (CON PALOMITA ✅ Y SCROLLBAR OSCURO) -->
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block mb-2">Eventos Registrados del Día:</span>
-              <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+              <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
                 <!-- Se inyecta dinámicamente -->
               </div>
             </div>
@@ -736,7 +752,6 @@
 
         let indicadorHtml = tieneEventos ? `<span class="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-emerald-400"></span>` : '';
         
-        // Se agrega la clase no-scrollbar para ocultar la barra de desplazamiento en cada celda
         let eventosHtml = '<div class="space-y-1 overflow-y-auto no-scrollbar max-h-14 pr-0.5 mt-1">';
         eventosDia.forEach(ev => {
           let previewTexto = ev.texto ? ev.texto : 'Evento vinculado';
@@ -1111,7 +1126,6 @@
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
         e.target.value = e.target.value.toUpperCase();
       }
-      // Conversión automática a mayúsculas para TEXTAREAS (incluyendo notaTexto y postitTextoEdit)
       if (e.target.tagName === 'TEXTAREA') {
         e.target.value = e.target.value.toUpperCase();
       }
