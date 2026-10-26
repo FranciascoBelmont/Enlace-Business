@@ -118,7 +118,7 @@
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">CARTERA PRINCIPAL</span>
-          <p id="kpiCarteraPrincipal" class="mt-2 text-xl font-extrabold text-white truncate">N/A</p>
+          <p id="kpiCarteraPrincipal" class="mt-2 text-xl font-extrabold text-white">N/A</p>
         </div>
       </div>
 
@@ -362,28 +362,11 @@
   </div>
 
   <script>
-    const datosIniciales = [
+    let baseDatos = [
       { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" },
       { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
     ];
 
-    function cargarBaseDatos() {
-      const guardado = localStorage.getItem('enlace_business_db');
-      if (guardado) {
-        try {
-          return JSON.parse(guardado);
-        } catch(e) {
-          return datosIniciales;
-        }
-      }
-      return datosIniciales;
-    }
-
-    function guardarBaseDatos() {
-      localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
-    }
-
-    let baseDatos = cargarBaseDatos();
     let idItemEnEdicion = null;
 
     function validarAcceso(e) {
@@ -433,7 +416,7 @@
     }
 
     function abrirModalEditarRegistro(idItem) {
-      const item = baseDatos.find(i => String(i.id) === String(idItem));
+      const item = baseDatos.find(i => i.id === idItem);
       if (!item) return;
 
       idItemEnEdicion = item.id;
@@ -453,8 +436,8 @@
       document.getElementById('regConstruccion').value = item.construccion || "";
       document.getElementById('regEnvio').value = item.envio || "";
       
-      document.getElementById('regPrecioPre').value = item.precioPre ? "$" + Number(item.precioPre).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
-      document.getElementById('regPrecioVenta').value = item.precioVenta ? "$" + Number(item.precioVenta).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
+      document.getElementById('regPrecioPre').value = item.precioPre ? "$" + item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
+      document.getElementById('regPrecioVenta').value = item.precioVenta ? "$" + item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
       
       calcularUtilidadModal();
 
@@ -577,7 +560,7 @@
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       };
 
-      const indexExistente = baseDatos.findIndex(i => String(i.id) === String(idCapturado));
+      const indexExistente = baseDatos.findIndex(i => i.id === idCapturado);
       if (indexExistente > -1) {
         baseDatos.splice(indexExistente, 1);
         baseDatos.unshift(datosObjeto);
@@ -587,7 +570,6 @@
         alert("¡Registro guardado con éxito!");
       }
 
-      guardarBaseDatos();
       actualizarSelectoresFiltros();
       aplicarFiltros();
       cerrarModalNuevoRegistro();
@@ -595,8 +577,7 @@
 
     function eliminarRegistro(idItem) {
       if (confirm(`¿Está seguro de eliminar el registro ID: ${idItem}?`)) {
-        baseDatos = baseDatos.filter(i => String(i.id) !== String(idItem));
-        guardarBaseDatos();
+        baseDatos = baseDatos.filter(i => i.id !== idItem);
         actualizarSelectoresFiltros();
         aplicarFiltros();
         alert("¡Registro eliminado correctamente!");
@@ -606,8 +587,7 @@
     function eliminarRegistroDesdeModal() {
       if (idItemEnEdicion) {
         if (confirm(`¿Está seguro de eliminar el registro ID: ${idItemEnEdicion}?`)) {
-          baseDatos = baseDatos.filter(i => String(i.id) !== String(idItemEnEdicion));
-          guardarBaseDatos();
+          baseDatos = baseDatos.filter(i => i.id !== idItemEnEdicion);
           actualizarSelectoresFiltros();
           aplicarFiltros();
           cerrarModalNuevoRegistro();
@@ -632,12 +612,14 @@
       const responsableF = document.getElementById('filtroResponsable').value;
       const etapaF = document.getElementById('filtroEtapa').value;
 
+      // 1. Estados (todos los disponibles en base de datos)
       const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
       const selEstado = document.getElementById('filtroEstado');
       selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
       estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
       if (estados.includes(estadoF)) selEstado.value = estadoF;
 
+      // 2. Municipios filtrados por Estado
       let baseMun = baseDatos;
       if (selEstado.value) baseMun = baseMun.filter(i => i.estado === selEstado.value);
       const municipios = [...new Set(baseMun.map(i => i.municipio))].sort();
@@ -646,6 +628,7 @@
       municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
       if (municipios.includes(municipioF)) selMunicipio.value = municipioF;
 
+      // 3. Colonias filtradas por Estado y Municipio
       let baseCol = baseDatos;
       if (selEstado.value) baseCol = baseCol.filter(i => i.estado === selEstado.value);
       if (selMunicipio.value) baseCol = baseCol.filter(i => i.municipio === selMunicipio.value);
@@ -653,8 +636,9 @@
       const selColonia = document.getElementById('filtroColonia');
       selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
       colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
-      if (colonias.includes(coloniaF)) selColonia.value = coloniaF;
+      if (colonias.includes(coloniaF)) selColonia.value = colActualColonia = colActual = coloniaF;
 
+      // 4. Responsables filtrados por ubicación actual (Estado, Municipio, Colonia)
       let baseResp = baseDatos;
       if (selEstado.value) baseResp = baseResp.filter(i => i.estado === selEstado.value);
       if (selMunicipio.value) baseResp = baseResp.filter(i => i.municipio === selMunicipio.value);
@@ -665,6 +649,7 @@
       responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
       if (responsables.includes(responsableF)) selResp.value = responsableF;
 
+      // 5. Etapas legales filtradas por ubicación y responsable actual
       let baseEtp = baseResp;
       if (selResp.value) baseEtp = baseEtp.filter(i => i.responsable === selResp.value);
       const etapas = [...new Set(baseEtp.map(i => i.etapa))].sort();
@@ -681,4 +666,200 @@
       document.getElementById('filtroResponsable').value = "";
       document.getElementById('filtroEtapa').value = "";
       document.getElementById('inputBuscador').value = "";
-      actual
+      actualizarSelectoresFiltros();
+      aplicarFiltros();
+    }
+
+    function aplicarFiltros() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const coloniaF = document.getElementById('filtroColonia').value;
+      const responsableF = document.getElementById('filtroResponsable').value;
+      const etapaF = document.getElementById('filtroEtapa').value;
+      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
+
+      const resultados = baseDatos.filter(item => {
+        const matchEdo = !estadoF || item.estado === estadoF;
+        const matchMun = !municipioF || item.municipio === municipioF;
+        const matchCol = !coloniaF || item.colonia === coloniaF;
+        const matchResp = !responsableF || item.responsable === responsableF;
+        const matchEtp = !etapaF || item.etapa === etapaF;
+        const matchTexto = !textoBusqueda || 
+          item.id.toLowerCase().includes(textoBusqueda) ||
+          (item.idEnlace && item.idEnlace.toLowerCase().includes(textoBusqueda)) ||
+          item.cartera.toLowerCase().includes(textoBusqueda) ||
+          item.credito.toLowerCase().includes(textoBusqueda) ||
+          item.colonia.toLowerCase().includes(textoBusqueda) ||
+          item.municipio.toLowerCase().includes(textoBusqueda) ||
+          item.estado.toLowerCase().includes(textoBusqueda) ||
+          item.responsable.toLowerCase().includes(textoBusqueda);
+        return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
+      });
+
+      document.getElementById('kpiTotalRegistros').innerText = resultados.length;
+
+      if (resultados.length > 0) {
+        let conteoTipos = {};
+        resultados.forEach(i => {
+          let t = i.tipoPropiedad || "PROPIEDAD";
+          conteoTipos[t] = (conteoTipos[t] || 0) + 1;
+        });
+        let maxTipo = Object.keys(conteoTipos)[0];
+        Object.keys(conteoTipos).forEach(t => { if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t; });
+        document.getElementById('kpiTipoPredominante').innerText = maxTipo;
+        document.getElementById('kpiTipoDetalle').innerText = `${conteoTipos[maxTipo]} de los registros`;
+      } else {
+        document.getElementById('kpiTipoPredominante').innerText = "N/A";
+        document.getElementById('kpiTipoDetalle').innerText = "0 registros";
+      }
+
+      const sumaVenta = resultados.reduce((acc, i) => acc + i.precioVenta, 0);
+      const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
+      document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      if (resultados.length > 0) {
+        let conteoCar = {};
+        resultados.forEach(i => conteoCar[i.cartera] = (conteoCar[i.cartera] || 0) + 1);
+        let maxCar = Object.keys(conteoCar)[0];
+        Object.keys(conteoCar).forEach(c => { if (conteoCar[c] > conteoCar[maxCar]) maxCar = c; });
+        document.getElementById('kpiCarteraPrincipal').innerText = maxCar;
+      } else {
+        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
+      }
+
+      const tbody = document.getElementById('tablaRegistros');
+      tbody.innerHTML = '';
+      resultados.forEach(item => {
+        const margenPesos = item.precioVenta - item.precioPre;
+        const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-6 py-4">
+              <div class="font-bold text-xs text-white">${item.id}</div>
+              <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.idEnlace || 'S/N'}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-bold text-xs text-white">${item.cartera}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${item.credito}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-bold text-[11px] text-white uppercase leading-tight">${item.direccion || 'S/D'}</div>
+              <div class="text-[11px] text-blue-400 font-semibold mt-0.5 uppercase">${item.colonia || 'S/D'}</div>
+            </td>
+            <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
+            <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
+            <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
+            <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <button onclick="abrirModalEditarRegistro('${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
+                  <i class="fa-solid fa-pen-to-square text-xs"></i>
+                </button>
+                <button onclick="eliminarRegistro('${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
+      document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
+    }
+
+    function exportarExcel() {
+      const datosExportar = baseDatos.map(i => {
+        const utilPesos = i.precioVenta - i.precioPre;
+        const utilPorc = i.precioPre > 0 ? ((utilPesos / i.precioPre) * 100).toFixed(2) + "%" : "0.00%";
+        return {
+          "ID": i.id,
+          "ID ENLACE": i.idEnlace,
+          "NÚMERO DE CRÉDITO": i.credito,
+          "CARTERA": i.cartera,
+          "RESPONSABLE": i.responsable,
+          "TIPO DE PROPIEDAD": i.tipoPropiedad,
+          "CÓDIGO POSTAL": i.cp,
+          "ESTADO": i.estado,
+          "MUNICIPIO": i.municipio,
+          "COLONIA": i.colonia,
+          "DIRECCIÓN": i.direccion,
+          "SUPERFICIE": i.superficie,
+          "CONSTRUCCIÓN": i.construccion,
+          "SEGUIMIENTO": i.envio,
+          "PRECIO PRE-AUTO": i.precioPre,
+          "PRECIO VENTA": i.precioVenta,
+          "UTILIDAD ($)": utilPesos,
+          "UTILIDAD (%)": utilPorc,
+          "ETAPA ACTUAL": i.etapaActual,
+          "ETAPA LEGAL": i.etapa,
+          "OBSERVACIONES": i.observaciones,
+          "AVANCES": i.avances,
+          "STATUS": i.status,
+          "RECEPCIÓN": i.recepcion,
+          "ACTUALIZACIÓN": i.actualizacion
+        };
+      });
+      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace Completo");
+      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte_Completo.xlsx");
+    }
+
+    function importarExcel(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        if (jsonData.length > 0) {
+          let nuevosImportados = jsonData.map((row, index) => ({
+            id: String(row["ID"] || row["ID / ENLACE"] || `EN${1000 + index}`),
+            idEnlace: String(row["ID ENLACE"] || row["Enlace"] || "S/N"),
+            credito: String(row["NÚMERO DE CRÉDITO"] || row["CRÉDITO"] || "S/N"),
+            cartera: String(row["CARTERA"] || "GENERAL"),
+            responsable: String(row["RESPONSABLE"] || "BELMONT"),
+            tipoPropiedad: String(row["TIPO DE PROPIEDAD"] || "CASA"),
+            cp: String(row["CÓDIGO POSTAL"] || row["C.P."] || "00000"),
+            estado: String(row["ESTADO"] || "N/A"),
+            municipio: String(row["MUNICIPIO"] || "N/A"),
+            colonia: String(row["COLONIA"] || "N/A"),
+            direccion: String(row["DIRECCIÓN"] || "S/D"),
+            superficie: String(row["SUPERFICIE"] || "0m²"),
+            construccion: String(row["CONSTRUCCIÓN"] || "0m²"),
+            envio: String(row["SEGUIMIENTO"] || "S/D"),
+            precioPre: Number(row["PRECIO PRE-AUTO"] || row["PRECIO PRE-AUTH"] || 0),
+            precioVenta: Number(row["PRECIO VENTA"] || 0),
+            etapaActual: String(row["ETAPA ACTUAL"] || "S/D"),
+            etapa: String(row["ETAPA LEGAL"] || "EN PROCESO"),
+            observaciones: String(row["OBSERVACIONES"] || "S/D"),
+            avances: String(row["AVANCES"] || "S/D"),
+            status: String(row["STATUS"] || "ACTIVO"),
+            recepcion: String(row["RECEPCIÓN"] || "S/F"),
+            actualizacion: String(row["ACTUALIZACIÓN"] || "S/F"),
+            pdf: false
+          }));
+
+          nuevosImportados.forEach(nuevo => {
+            const indexExistente = baseDatos.findIndex(i => i.id === nuevo.id);
+            if (indexExistente > -1) {
+              baseDatos[indexExistente] = nuevo;
+            } else {
+              baseDatos.unshift(nuevo);
+            }
+          });
+
+          actualizarSelectoresFiltros();
+          aplicarFiltros();
+          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
