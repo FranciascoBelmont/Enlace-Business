@@ -103,7 +103,7 @@
         width: 100% !important;
         height: 100% !important;
         margin: 0 !important;
-        padding: 6mm 10mm !important;
+        padding: 5mm 8mm !important;
         background: #ffffff !important;
         color: #0f172a !important;
         box-sizing: border-box !important;
@@ -808,63 +808,36 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN (DISEÑO EJECUTIVO MAESTRO DE 1 SOLA HOJA) ==================== -->
+  <!-- ==================== ÁREA DE IMPRESIÓN (DISEÑO EXACTO AL LOGO Y FORMATO DEL PDF) ==================== -->
   <div id="printableArea" style="display: none;"></div>
 
   <script>
     const datosIniciales = [
       {
-        id: "1245",
-        idEnlace: "EN753",
-        cartera: "TERTIUS",
-        credito: "6200004513",
-        estado: "ESTADO DE MÉXICO",
-        municipio: "TLALNEPANTLA",
-        colonia: "EL SABINO",
-        cp: "54000",
-        direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA",
-        precioPre: 478439.44,
-        precioVenta: 610000.00,
-        etapa: "PRESENTACIÓN DE LA DEMANDA",
-        etapaActual: "RADICACIÓN",
+        id: "16573",
+        idEnlace: "EN11032",
+        cartera: "ZENDERE",
+        credito: "222006387",
+        estado: "SINALOA",
+        municipio: "CULIACÁN",
+        colonia: "VILLAS DEL HUMAYA",
+        cp: "80028",
+        direccion: "VILLA TRES RÍOS 3388",
+        precioPre: 343440.00,
+        precioVenta: 500000.00,
+        etapa: "",
+        etapaActual: "COFINAVIT",
         pdf: false,
-        responsable: "FRANCISCO BELMONT",
-        observaciones: "EN PROCESO",
-        avances: "RADICADO",
-        status: "ACTIVO",
-        envio: "ENVIADO",
-        superficie: "120m²",
-        construccion: "100m²",
-        tipoPropiedad: "CASA",
-        recepcion: "1 DE ENERO DE 2026",
-        actualizacion: "25 DE OCTUBRE DE 2026",
-        archivosPdf: []
-      },
-      {
-        id: "2345",
-        idEnlace: "EN09339",
-        cartera: "TERTIUS",
-        credito: "6200004514",
-        estado: "ESTADO DE MÉXICO",
-        municipio: "HUIXQUILUCAN",
-        colonia: "BOSQUE REAL",
-        cp: "52774",
-        direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29",
-        precioPre: 496905.00,
-        precioVenta: 610000.00,
-        etapa: "SIN DEMANDA",
-        etapaActual: "INTEGRACIÓN",
-        pdf: false,
-        responsable: "MIGUEL JASSO",
-        observaciones: "EN INTEGRACIÓN",
-        avances: "PENDIENTE",
-        status: "ACTIVO",
-        envio: "ENVIADO",
-        superficie: "150m²",
-        construccion: "130m²",
-        tipoPropiedad: "DEPARTAMENTO",
-        recepcion: "15 DE ENERO DE 2026",
-        actualizacion: "25 DE OCTUBRE DE 2026",
+        responsable: "REBECA VELASCO",
+        observaciones: "",
+        avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025",
+        status: "",
+        envio: "",
+        superficie: "",
+        construccion: "",
+        tipoPropiedad: "PROPIEDAD",
+        recepcion: "30 ENERO 2023",
+        actualizacion: "15 JULIO 2025",
         archivosPdf: []
       }
     ];
@@ -2049,7 +2022,7 @@
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
-    // ==================== FUNCIÓN DE IMPRESIÓN CON DISEÑO EJECUTIVO PREMIUM MAGISTRAL ==================== -->
+    // ==================== FUNCIÓN DE IMPRESIÓN CON DISEÑO IDÉNTICO AL PDF CORPORATIVO (1 SOLA HOJA) ==================== -->
     function imprimirDesdeModal() {
       const idVal = document.getElementById('regId').value.trim();
       const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
@@ -2079,117 +2052,125 @@
       const printableArea = document.getElementById('printableArea');
       printableArea.style.display = 'block';
       printableArea.innerHTML = `
-        <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; width: 100%; max-width: 195mm; margin: 0 auto; background: #ffffff; box-sizing: border-box; padding: 2px;">
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; width: 100%; max-width: 195mm; margin: 0 auto; background: #ffffff; box-sizing: border-box; padding: 4px;">
           
-          <!-- ENCABEZADO EJECUTIVO -->
-          <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: white; padding: 10px 14px; border-radius: 6px; margin-bottom: 8px;">
+          <!-- ENCABEZADO CON EL LOGOTIPO OFICIAL E IDENTIDAD DE ENLACE BUSINESS -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 10px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 38px; height: 38px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 900;">
+              <!-- LOGOTIPO VECTORIAL EXTREMADAMENTE ELEGANTE ENLACE BUSINESS -->
+              <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 900; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
                 EB
               </div>
               <div>
-                <h1 style="margin: 0; font-size: 16px; font-weight: 900; letter-spacing: 0.5px; color: #ffffff;">ENLACE BUSINESS</h1>
-                <p style="margin: 2px 0 0 0; font-size: 8.5px; font-weight: 700; color: #94a3b8; letter-spacing: 0.8px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA & LEGAL</p>
+                <h1 style="margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 0.5px; color: #0f172a; line-height: 1.1;">ENLACE BUSINESS</h1>
+                <p style="margin: 2px 0 0 0; font-size: 10px; font-weight: 700; color: #2563eb; letter-spacing: 1px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA & LEGAL</p>
               </div>
             </div>
-            <div style="text-align: right; background: rgba(255, 255, 255, 0.08); padding: 4px 10px; border-radius: 4px; font-size: 10.5px; line-height: 1.3;">
-              <div><strong>ID SISTEMA:</strong> <span style="color: #38bdf8; font-weight: 900;">${idVal || 'N/A'}</span></div>
-              <div><strong>ID ENLACE:</strong> <span style="color: #facc15; font-weight: 900;">${idEnlaceVal || 'N/A'}</span></div>
-              <div><strong>CRÉDITO:</strong> <span style="color: #e2e8f0; font-weight: 700;">${creditoVal || 'N/A'}</span></div>
+            <div style="text-align: right; font-size: 11.5px; line-height: 1.4; color: #1e293b;">
+              <div><strong>ID:</strong> <span style="font-weight: 900; color: #0f172a;">${idVal || 'N/A'}</span></div>
+              <div><strong>ID Enlace Business:</strong> <span style="font-weight: 900; color: #2563eb;">${idEnlaceVal || 'N/A'}</span></div>
+              <div><strong>Número de Crédito:</strong> <span style="font-weight: 800; color: #0f172a;">${creditoVal || 'N/A'}</span></div>
             </div>
           </div>
 
-          <!-- TARJETAS DE VALORES Y FINANZAS (EN UNA SOLA FILA DE 4 COLUMNAS) -->
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px;">
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #3b82f6; padding: 6px; border-radius: 5px; text-align: center;">
-              <div style="font-size: 8px; font-weight: 800; color: #475569; margin-bottom: 2px;">VALOR PRE-AUTO</div>
+          <!-- TARJETAS DE VALORES Y FINANZAS EN FILA -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px;">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #3b82f6; padding: 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 8.5px; font-weight: 800; color: #475569; margin-bottom: 2px;">VALOR PRE AUTORIZADO</div>
               <div style="font-size: 11.5px; font-weight: 900; color: #0f172a;">${precioPreVal}</div>
             </div>
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #f59e0b; padding: 6px; border-radius: 5px; text-align: center;">
-              <div style="font-size: 8px; font-weight: 800; color: #475569; margin-bottom: 2px;">VALOR VENTA</div>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #f59e0b; padding: 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 8.5px; font-weight: 800; color: #475569; margin-bottom: 2px;">VALOR VENTA</div>
               <div style="font-size: 11.5px; font-weight: 900; color: #d97706;">${precioVentaVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 5px; text-align: center;">
-              <div style="font-size: 8px; font-weight: 800; color: #166534; margin-bottom: 2px;">UTILIDAD ($)</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 8.5px; font-weight: 800; color: #166534; margin-bottom: 2px;">UTILIDAD ($)</div>
               <div style="font-size: 11.5px; font-weight: 900; color: #15803d;">${utilidadPesosVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 5px; text-align: center;">
-              <div style="font-size: 8px; font-weight: 800; color: #166534; margin-bottom: 2px;">UTILIDAD (%)</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 8.5px; font-weight: 800; color: #166534; margin-bottom: 2px;">UTILIDAD (%)</div>
               <div style="font-size: 11.5px; font-weight: 900; color: #15803d;">${utilidadPorcVal}</div>
             </div>
           </div>
 
-          <!-- SECCIÓN: UBICACIÓN E INFORMACIÓN GENERAL -->
-          <div style="margin-bottom: 7px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 5px; overflow: hidden;">
-            <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
+          <!-- BLOQUE DE UBICACIÓN E INFORMACIÓN GENERAL -->
+          <div style="margin-bottom: 8px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 6px; overflow: hidden;">
+            <div style="background: #1e293b; color: white; padding: 5px 10px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
               📍 UBICACIÓN E INFORMACIÓN GENERAL DEL INMUEBLE
             </div>
-            <table style="width: 100%; font-size: 10.5px; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">DIRECCIÓN:</td>
-                <td style="padding: 4px 8px; font-weight: 900; color: #1e3a8a; text-transform: uppercase; width: 78%;" colspan="3">${direccionVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Tipo de Propiedad:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase; width: 28%;">${tipoPropiedadVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Estado:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase; width: 28%;">${estadoVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">COLONIA:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${coloniaVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 15%; background: #f8fafc;">C.P.:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; width: 25%;">${cpVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Municipio o Alcaldía:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Codigo Postal:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a;">${cpVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">MUNICIPIO:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">ESTADO:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${estadoVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Colonia:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase;" colspan="3">${coloniaVal || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Dirección:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #1e3a8a; text-transform: uppercase;" colspan="3">${direccionVal || 'N/A'}</td>
               </tr>
               <tr>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">TIPO / SUP:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${tipoPropiedadVal || 'N/A'} &nbsp;|&nbsp; Sup: ${superficieVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">CONSTRUCCIÓN:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a;">${construccionVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Superficie:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a;">${superficieVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Construcción:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a;">${construccionVal || 'N/A'}</td>
               </tr>
             </table>
           </div>
 
-          <!-- SECCIÓN: ESTATUS LEGAL Y OPERATIVO -->
-          <div style="margin-bottom: 7px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 5px; overflow: hidden;">
-            <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
+          <!-- BLOQUE DE ESTATUS LEGAL Y OPERATIVO -->
+          <div style="margin-bottom: 8px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 6px; overflow: hidden;">
+            <div style="background: #1e293b; color: white; padding: 5px 10px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
               ⚖️ ESTATUS LEGAL Y SEGUIMIENTO OPERATIVO
             </div>
-            <table style="width: 100%; font-size: 10.5px; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">CARTERA:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">STATUS:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Cartera:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Status:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">ETAPA ACTUAL:</td>
-                <td style="padding: 4px 8px; font-weight: 900; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Atapa Actual:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">ETAPA LEGAL:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #0f172a; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Etapa Legal:</td>
+                <td style="padding: 5px 10px; font-weight: 900; color: #0f172a; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">OBSERVACIONES:</td>
-                <td style="padding: 4px 8px; font-weight: 700; color: #0f172a; text-transform: uppercase;" colspan="3">${observacionesVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Observaciones:</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;" colspan="3">${observacionesVal || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Avances:</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;" colspan="3">${avancesVal || 'N/A'}</td>
               </tr>
               <tr>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">AVANCES:</td>
-                <td style="padding: 4px 8px; font-weight: 700; color: #0f172a; text-transform: uppercase;" colspan="3">${avancesVal || 'N/A'}</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #334155; background: #f8fafc;">Link Mapa:</td>
+                <td style="padding: 5px 10px; font-weight: 800; color: #2563eb;" colspan="3">N/A</td>
               </tr>
             </table>
           </div>
 
           <!-- PIE DE PÁGINA Y RESPONSABLE -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #1e293b; padding-top: 5px; margin-top: 5px; font-size: 9.5px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #0f172a; padding-top: 6px; margin-top: 8px; font-size: 10px;">
             <div>
-              <div><strong>RESPONSABLE:</strong> <span style="color: #0f172a; font-weight: 900;">${responsableVal || 'N/A'}</span></div>
-              <div style="margin-top: 1px; color: #475569;"><strong>RECEPCIÓN:</strong> ${recepcionVal || 'N/A'} &nbsp;|&nbsp; <strong>ACTUALIZACIÓN:</strong> ${actualizacionVal || 'N/A'}</div>
+              <div><strong>Responsable:</strong> <span style="color: #0f172a; font-weight: 900;">${responsableVal || 'N/A'}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Recepción:</strong> <span style="color: #0f172a; font-weight: 800;">${recepcionVal || 'N/A'}</span></div>
+              <div style="margin-top: 1px; color: #475569;"><strong>Fecha Actualización:</strong> ${actualizacionVal || 'N/A'}</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: 900; color: #2563eb; font-size: 10.5px;">www.enlacebusiness.mx</div>
-              <div style="color: #64748b; font-size: 8px; font-weight: 600;">Documento Oficial Generado por Enlace Business PRO</div>
+              <div style="font-weight: 900; color: #2563eb; font-size: 11px;">www.enlacebusiness.mx</div>
             </div>
           </div>
 
@@ -2208,30 +2189,30 @@
         const utilPorc = (pre > 0) ? ((utilPesos / pre) * 100).toFixed(2) + "%" : "0.00%";
         return {
           "ID": i.id,
-          "ID ENLACE": i.idEnlace,
-          "NÚMERO DE CRÉDITO": i.credito,
-          "CARTERA": i.cartera,
-          "RESPONSABLE": i.responsable,
-          "TIPO DE PROPIEDAD": i.tipoPropiedad,
-          "CÓDIGO POSTAL": i.cp,
-          "ESTADO": i.estado,
-          "MUNICIPIO": i.municipio,
-          "COLONIA": i.colonia,
-          "DIRECCIÓN": i.direccion,
-          "SUPERFICIE": i.superficie,
-          "CONSTRUCCIÓN": i.construccion,
-          "SEGUIMIENTO": i.envio,
-          "PRECIO PRE-AUTO": pre,
-          "PRECIO VENTA": venta,
-          "UTILIDAD ($)": utilPesos,
-          "UTILIDAD (%)": utilPorc,
-          "ETAPA ACTUAL": i.etapaActual,
-          "ETAPA LEGAL": i.etapa,
-          "OBSERVACIONES": i.observaciones,
-          "AVANCES": i.avances,
-          "STATUS": i.status,
-          "RECEPCIÓN": i.recepcion,
-          "ACTUALIZACIÓN": i.actualizacion,
+          "ID Enlace Business": i.idEnlace,
+          "Número de Crédito": i.credito,
+          "Cartera": i.cartera,
+          "Responsable": i.responsable,
+          "Tipo de Propiedad": i.tipoPropiedad,
+          "Codigo Postal": i.cp,
+          "Estado": i.estado,
+          "Municipio o Alcaldía": i.municipio,
+          "Colonia": i.colonia,
+          "Dirección": i.direccion,
+          "Superficie": i.superficie,
+          "Construcción": i.construccion,
+          "Seguimiento": i.envio,
+          "Valor Pre Autorizado": pre,
+          "Valor Venta": venta,
+          "Utilidad ($)": utilPesos,
+          "Utilidad (%)": utilPorc,
+          "Atapa Actual": i.etapaActual,
+          "Etapa Legal": i.etapa,
+          "Observaciones": i.observaciones,
+          "Avances": i.avances,
+          "Status": i.status,
+          "Recepción": i.recepcion,
+          "Fecha Actualización": i.actualizacion,
           "TOTAL PDFS": i.archivosPdf ? i.archivosPdf.length : 0
         };
       });
@@ -2277,16 +2258,16 @@
             let envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "";
             if (envioVal === "S/D") envioVal = "";
 
-            const precioPreVal = Number(buscarCampo(["PRECIO PRE-AUTO", "PRECIO PRE AUTO", "PRECIO PRE-AUTH", "VALOR PRE AUTORIZADO", "VALOR PRE-AUTORIZADO", "precioPre"])) || 0;
-            const precioVentaVal = Number(buscarCampo(["PRECIO VENTA", "VALOR VENTA", "precioVenta"])) || 0;
-            const etapaActualVal = buscarCampo(["ETAPA ACTUAL", "etapaActual"]) || "";
+            const precioPreVal = Number(buscarCampo(["VALOR PRE AUTORIZADO", "VALOR PRE-AUTORIZADO", "PRECIO PRE-AUTO", "PRECIO PRE AUTO", "precioPre"])) || 0;
+            const precioVentaVal = Number(buscarCampo(["VALOR VENTA", "PRECIO VENTA", "precioVenta"])) || 0;
+            const etapaActualVal = buscarCampo(["ATAPA ACTUAL", "ETAPA ACTUAL", "etapaActual"]) || "";
             const etapaVal = buscarCampo(["ETAPA LEGAL", "ETAPA", "etapa"]) || "";
             const observacionesVal = buscarCampo(["OBSERVACIONES", "observaciones"]) || "";
             const avancesVal = buscarCampo(["AVANCES", "avances"]) || "";
             const statusVal = buscarCampo(["STATUS", "status"]) || "";
             const recepcionCruda = buscarCampo(["RECEPCIÓN", "RECEPCION", "recepcion"]);
             const recepcionVal = limpiarYFormatearFecha(recepcionCruda);
-            const actualizacionVal = buscarCampo(["ACTUALIZACIÓN", "ACTUALIZACION", "actualizacion"]) || "";
+            const actualizacionVal = buscarCampo(["FECHA ACTUALIZACIÓN", "ACTUALIZACIÓN", "actualizacion"]) || "";
 
             return {
               id: String(idVal),
