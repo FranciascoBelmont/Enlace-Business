@@ -913,6 +913,16 @@
         else if (t.estado === 'EN PROCESO') badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">EN PROCESO</span>';
         else badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-slate-700/50 text-slate-300 border border-slate-600">PENDIENTE</span>';
 
+        // ICONO DINÁMICO ANTES DEL TÍTULO SEGÚN EL ESTADO
+        let iconoEstadoTitulo = '';
+        if (t.estado === 'COMPLETADA') {
+          iconoEstadoTitulo = '<span class="text-emerald-400 font-bold mr-1.5"><i class="fa-solid fa-check"></i></span>';
+        } else if (t.estado === 'EN PROCESO') {
+          iconoEstadoTitulo = '<span class="mr-1.5">📌</span>';
+        } else {
+          iconoEstadoTitulo = '<span class="mr-1.5">⚠️</span>';
+        }
+
         let badgeInmuebleHtml = '';
         if (t.inmuebleId) {
           const inmueble = baseDatos.find(i => String(i.id) === String(t.inmuebleId));
@@ -929,7 +939,7 @@
             <div class="flex items-start justify-between gap-2 mb-1.5">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <h4 class="text-xs font-extrabold text-white uppercase">${t.titulo}</h4>
+                  <h4 class="text-xs font-extrabold text-white uppercase flex items-center">${iconoEstadoTitulo}${t.titulo}</h4>
                   ${badgePrioridad}
                   ${badgeEstado}
                 </div>
