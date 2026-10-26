@@ -306,7 +306,7 @@
             </div>
 
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Vincular con Inmueble (ID):</label>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Vincular con ID Enlace:</label>
               <select id="notaInmuebleId" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-medium text-slate-200 focus:border-emerald-500 focus:outline-none w-full">
                 <option value="">-- SIN VINCULAR (NOTA GENERAL) --</option>
               </select>
@@ -584,7 +584,7 @@
       localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
     }
 
-    // GESTIÓN DE CALENDARIO / PLANNING (MÚLTIPLES EVENTOS POR DÍA)
+    // GESTIÓN DE CALENDARIO / PLANNING (VINCULACIÓN POR ID ENLACE)
     function cargarAgenda() {
       const guardado = localStorage.getItem('enlace_business_agenda');
       if (!guardado) return {};
@@ -651,7 +651,8 @@
       const selectInm = document.getElementById('notaInmuebleId');
       selectInm.innerHTML = '<option value="">-- SIN VINCULAR (NOTA GENERAL) --</option>';
       baseDatos.forEach(i => {
-        selectInm.innerHTML += `<option value="${i.id}">ID: ${i.id} | ${i.direccion || 'S/D'} (${i.colonia || ''})</option>`;
+        let idEnlaceText = i.idEnlace ? i.idEnlace : `ID:${i.id}`;
+        selectInm.innerHTML += `<option value="${i.id}">ID ENLACE: ${idEnlaceText} | ${i.direccion || 'S/D'} (${i.colonia || ''})</option>`;
       });
 
       let hoyStr = formatearFechaYyyyMmDd(new Date());
@@ -760,7 +761,7 @@
       const inmuebleId = document.getElementById('notaInmuebleId').value;
 
       if (!texto && !inmuebleId) {
-        alert("Escriba una anotación o seleccione un inmueble para vincular.");
+        alert("Escriba una anotación o seleccione un ID Enlace para vincular.");
         return;
       }
 
@@ -802,7 +803,8 @@
       if (evt.inmuebleId) {
         const inmueble = baseDatos.find(i => String(i.id) === String(evt.inmuebleId));
         if (inmueble) {
-          document.getElementById('postitInmuebleId').innerText = `INMUEBLE ID: ${inmueble.id} (${inmueble.cartera || 'GENERAL'})`;
+          let idEnlaceText = inmueble.idEnlace ? inmueble.idEnlace : `ID: ${inmueble.id}`;
+          document.getElementById('postitInmuebleId').innerText = `ID ENLACE: ${idEnlaceText} (${inmueble.cartera || 'GENERAL'})`;
           document.getElementById('postitInmuebleDir').innerText = `${inmueble.direccion || 'S/D'}, ${inmueble.colonia || ''}`;
           seccionInm.classList.remove('hidden');
           
