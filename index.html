@@ -106,7 +106,10 @@
           </div>
         </div>
         <div class="flex items-center space-x-3">
-          <input type="text" id="inputBuscador" oninput="aplicarFiltros()" placeholder="BUSCAR EN BASE DE DATOS..." class="input-pro w-64 hidden md:block py-2 text-xs">
+          <input type="text" id="inputBuscador" oninput="modoDuplicadosActivo = false; aplicarFiltros();" placeholder="BUSCAR EN BASE DE DATOS..." class="input-pro w-64 hidden md:block py-2 text-xs">
+          <button onclick="filtrarRegistrosDuplicados()" class="flex items-center rounded-xl border border-amber-500/40 bg-amber-500/10 px-3.5 py-2 text-xs font-semibold text-amber-400 transition hover:bg-amber-500 hover:text-white shadow-md">
+            <i class="fa-solid fa-clone mr-1.5"></i>Registros Duplicados
+          </button>
           <button onclick="abrirModalNuevoRegistro()" class="flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 shadow-md">
             <i class="fa-solid fa-plus mr-1.5"></i>Nuevo Registro
           </button>
@@ -354,7 +357,7 @@
           </div>
         </div>
 
-        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL (BOTONES MOVIDOS A LA DERECHA) -->
+        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL -->
         <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-blue-500/20">
           <div class="flex items-center gap-6">
             <div class="flex items-center gap-2">
@@ -406,6 +409,7 @@
 
     let baseDatos = cargarBaseDatos();
     let idItemEnEdicion = null;
+    let modoDuplicadosActivo = false;
 
     function validarAcceso(e) {
       e.preventDefault();
@@ -642,6 +646,7 @@
     }
 
     function alCambiarFiltro() {
+      modoDuplicadosActivo = false;
       actualizarSelectoresFiltros();
       aplicarFiltros();
     }
@@ -702,7 +707,14 @@
       document.getElementById('filtroResponsable').value = "";
       document.getElementById('filtroEtapa').value = "";
       document.getElementById('inputBuscador').value = "";
+      modoDuplicadosActivo = false;
       actualizarSelectoresFiltros();
+      aplicarFiltros();
+    }
+
+    function filtrarRegistrosDuplicados() {
+      modoDuplicadosActivo = true;
+      document.getElementById('inputBuscador').value = "";
       aplicarFiltros();
     }
 
@@ -714,7 +726,7 @@
       const etapaF = document.getElementById('filtroEtapa').value;
       const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
 
-      const resultados = baseDatos.filter(item => {
+      let resultados = baseDatos.filter(item => {
         const matchEdo = !estadoF || item.estado === estadoF;
         const matchMun = !municipioF || item.municipio === municipioF;
         const matchCol = !coloniaF || item.colonia === coloniaF;
@@ -731,6 +743,22 @@
           String(item.responsable || '').toLowerCase().includes(textoBusqueda);
         return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
       });
+
+      // FILTRADO EXCLUSIVO DE DIRECCIONES DUPLICADAS EN TODA LA BASE
+      if (modoDuplicadosActivo) {
+        let conteoDirecciones = {};
+        baseDatos.forEach(item => {
+          let dir = String(item.direccion || '').trim().toUpperCase();
+          if (dir && dir !== 'S/D' && dir !== '') {
+            conteoDirecciones[dir] = (conteoDirecciones[dir] || 0) + 1;
+          }
+        });
+
+        resultados = baseDatos.filter(item => {
+          let dir = String(item.direccion || '').trim().toUpperCase();
+          return dir && dir !== 'S/D' && dir !== '' && conteoDirecciones[dir] > 1;
+        });
+      }
 
       document.getElementById('kpiTotalRegistros').innerText = resultados.length;
 
