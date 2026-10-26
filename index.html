@@ -359,17 +359,31 @@
 
         <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL -->
         <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-blue-500/20">
-          <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2">
-              <label class="label-inline">RECEPCIÓN:</label>
-              <input type="text" id="regRecepcion" onchange="formatearFechaTexto(this)" onblur="formatearFechaTexto(this)" class="input-pro w-52 text-xs text-center" tabindex="22">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-6">
+              <div class="flex items-center gap-2">
+                <label class="label-inline">RECEPCIÓN:</label>
+                <input type="text" id="regRecepcion" onchange="formatearFechaTexto(this)" onblur="formatearFechaTexto(this)" class="input-pro w-52 text-xs text-center" tabindex="22">
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="label-inline text-blue-400">ACTUALIZACIÓN:</label>
+                <input type="text" id="regActualizacion" readonly class="input-pro w-52 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <label class="label-inline text-blue-400">ACTUALIZACIÓN:</label>
-              <input type="text" id="regActualizacion" readonly class="input-pro w-52 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
+            <!-- SECCIÓN NUEVA: BOTÓN Y LISTA DE ARCHIVOS PDF (MÁXIMO 5) -->
+            <div class="flex flex-col gap-1.5 pt-1">
+              <div class="flex items-center gap-2">
+                <label class="flex items-center rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-[10px] font-bold text-rose-400 hover:bg-rose-500 hover:text-white transition cursor-pointer shadow-md">
+                  <i class="fa-solid fa-file-pdf mr-1.5 text-xs"></i>Subir Archivos PDF (Máx. 5)
+                  <input type="file" id="inputPdfModal" accept=".pdf" multiple onchange="manejarSubidaPdf(event)" class="hidden">
+                </label>
+                <span id="contadorPdfLabel" class="text-[10px] text-slate-400 font-semibold">0 / 5 archivos</span>
+              </div>
+              <div id="listaPdfsModal" class="flex flex-wrap gap-1.5 max-w-xl"></div>
             </div>
           </div>
-          <div class="flex items-center gap-3 ml-auto">
+
+          <div class="flex items-center gap-3 ml-auto self-end">
             <button type="button" id="btnImprimirModal" onclick="imprimirDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR FICHA</button>
             <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
@@ -387,8 +401,8 @@
 
   <script>
     const datosIniciales = [
-      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" },
-      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
+      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026", archivosPdf: [] },
+      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026", archivosPdf: [] }
     ];
 
     function cargarBaseDatos() {
@@ -410,6 +424,7 @@
     let baseDatos = cargarBaseDatos();
     let idItemEnEdicion = null;
     let modoDuplicadosActivo = false;
+    let temporalesArchivosPdf = []; // Almacena temporalmente los archivos PDF del registro en edición
 
     function validarAcceso(e) {
       e.preventDefault();
@@ -445,6 +460,8 @@
     function abrirModalNuevoRegistro() {
       document.getElementById('formNuevo').reset();
       idItemEnEdicion = null;
+      temporalesArchivosPdf = [];
+      actualizarVistaPdfsModal();
       document.getElementById('regId').value = "";
       document.getElementById('regId').readOnly = false;
       document.getElementById('regRecepcion').value = "";
@@ -462,6 +479,9 @@
       if (!item) return;
 
       idItemEnEdicion = item.id;
+      temporalesArchivosPdf = item.archivosPdf ? [...item.archivosPdf] : [];
+      actualizarVistaPdfsModal();
+
       document.getElementById('regId').value = item.id;
       document.getElementById('regId').readOnly = true;
       document.getElementById('regIdEnlace').value = item.idEnlace || "";
@@ -500,6 +520,54 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
+    // Funciones para manejo de PDFs en el Modal
+    function manejarSubidaPdf(e) {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+
+      if (temporalesArchivosPdf.length + files.length > 5) {
+        alert("⚠️ Solo se permite un máximo de 5 archivos PDF por registro.");
+        e.target.value = "";
+        return;
+      }
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          temporalesArchivosPdf.push({
+            nombre: file.name,
+            data: evt.target.result // Base64 para guardarlo en localStorage
+          });
+          actualizarVistaPdfsModal();
+        };
+        reader.readAsDataURL(file);
+      });
+      e.target.value = "";
+    }
+
+    function eliminarPdfTemporal(index) {
+      temporalesArchivosPdf.splice(index, 1);
+      actualizarVistaPdfsModal();
+    }
+
+    function actualizarVistaPdfsModal() {
+      const contenedor = document.getElementById('listaPdfsModal');
+      const labelContador = document.getElementById('contadorPdfLabel');
+      contenedor.innerHTML = '';
+      labelContador.innerText = `${temporalesArchivosPdf.length} / 5 archivos`;
+
+      temporalesArchivosPdf.forEach((pdf, index) => {
+        contenedor.innerHTML += `
+          <div class="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[10px] text-slate-300">
+            <i class="fa-solid fa-file-pdf text-rose-400"></i>
+            <span class="truncate max-w-[120px]" title="${pdf.nombre}">${pdf.nombre}</span>
+            <a href="${pdf.data}" target="_blank" title="Ver PDF" class="text-blue-400 hover:text-blue-300 ml-1"><i class="fa-solid fa-eye"></i></a>
+            <button type="button" onclick="eliminarPdfTemporal(${index})" title="Eliminar" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        `;
+      });
+    }
+
     function formatearFechaTexto(input) {
       let val = input.value.trim();
       if (!val) return;
@@ -518,14 +586,11 @@
       }
     }
 
-    // Función auxiliar para convertir números de serie de Excel o fechas a texto formateado en español
     function limpiarYFormatearFecha(valor) {
       if (!valor) return "";
       let valStr = String(valor).trim();
-      // Si es un número puro de Excel (ej: 45329)
       if (!isNaN(valStr) && Number(valStr) > 1000 && Number(valStr) < 60000) {
         let serial = Number(valStr);
-        // Corrección del error de salto de bisiesto de 1900 en Excel
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let dateInfo = new Date(utc_value * 1000);
@@ -614,7 +679,8 @@
         tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "PROPIEDAD",
         recepcion: document.getElementById('regRecepcion').value.trim() || "",
         actualizacion: document.getElementById('regActualizacion').value.trim() || "",
-        pdf: false,
+        archivosPdf: temporalesArchivosPdf,
+        pdf: temporalesArchivosPdf.length > 0,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       };
 
@@ -818,6 +884,11 @@
         const precioVenta = Number(item.precioVenta) || 0;
         const margenPesos = precioVenta - precioPre;
         const margenPorc = (precioPre > 0) ? ((margenPesos / precioPre) * 100).toFixed(2) : "0.00";
+        
+        let badgePdf = '<span class="text-slate-500">Sin PDF</span>';
+        if (item.archivosPdf && item.archivosPdf.length > 0) {
+          badgePdf = `<span class="inline-flex items-center rounded-lg bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-400 border border-rose-500/30"><i class="fa-solid fa-file-pdf mr-1"></i>${item.archivosPdf.length} PDF</span>`;
+        }
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -837,7 +908,7 @@
             <td class="px-6 py-4 font-bold text-amber-400">$${precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
             <td class="px-6 py-4 text-slate-300">${item.etapaActual || item.etapa || 'S/D'}</td>
-            <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
+            <td class="px-6 py-4 text-center">${badgePdf}</td>
             <td class="px-6 py-4 text-slate-200">${item.responsable || 'S/N'}</td>
             <td class="px-6 py-4 text-center">
               <div class="flex items-center justify-center space-x-2">
@@ -864,6 +935,15 @@
       const precioVenta = Number(item.precioVenta) || 0;
       const utilPesos = precioVenta - precioPre;
       const utilPorc = (precioPre > 0) ? ((utilPesos / precioPre) * 100).toFixed(2) : "0.00";
+
+      let listaPdfsHtml = '';
+      if (item.archivosPdf && item.archivosPdf.length > 0) {
+        listaPdfsHtml = `<div style="margin-top: 15px;"><strong>Documentos PDF Adjuntos:</strong><ul>`;
+        item.archivosPdf.forEach(p => {
+          listaPdfsHtml += `<li><a href="${p.data}" target="_blank">${p.nombre}</a></li>`;
+        });
+        listaPdfsHtml += `</ul></div>`;
+      }
 
       const htmlFicha = `
         <div style="font-family: Arial, Helvetica, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; font-size: 13px; color: #000; line-height: 1.5;">
@@ -936,9 +1016,7 @@
             <strong>Status:</strong> ${item.status || ''}
           </div>
 
-          <div style="margin-bottom: 25px;">
-            <strong>Link Mapa:</strong>
-          </div>
+          ${listaPdfsHtml}
 
           <div style="margin-bottom: 5px; font-size: 14px;">
             <strong>Utilidad $:</strong> <strong>$${utilPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
@@ -1016,7 +1094,8 @@
           "AVANCES": i.avances,
           "STATUS": i.status,
           "RECEPCIÓN": i.recepcion,
-          "ACTUALIZACIÓN": i.actualizacion
+          "ACTUALIZACIÓN": i.actualizacion,
+          "TOTAL PDFS": i.archivosPdf ? i.archivosPdf.length : 0
         };
       });
       const worksheet = XLSX.utils.json_to_sheet(datosExportar);
@@ -1067,10 +1146,8 @@
             const avancesVal = buscarCampo(["AVANCES", "avances"]) || "";
             const statusVal = buscarCampo(["STATUS", "status"]) || "";
             
-            // CORRECCIÓN APLICADA AQUÍ: Limpieza y formato correcto de la fecha de recepción
             const recepcionCruda = buscarCampo(["RECEPCIÓN", "RECEPCION", "recepcion"]);
             const recepcionVal = limpiarYFormatearFecha(recepcionCruda);
-            
             const actualizacionVal = buscarCampo(["ACTUALIZACIÓN", "ACTUALIZACION", "actualizacion"]) || "";
 
             return {
@@ -1097,6 +1174,7 @@
               status: String(statusVal),
               recepcion: String(recepcionVal),
               actualizacion: String(actualizacionVal),
+              archivosPdf: [],
               pdf: false
             };
           });
@@ -1104,7 +1182,7 @@
           nuevosImportados.forEach(nuevo => {
             const indexExistente = baseDatos.findIndex(i => String(i.id) === String(nuevo.id));
             if (indexExistente > -1) {
-              baseDatos[indexExistente] = nuevo;
+              baseDatos[indexExistente] = { ...nuevo, archivosPdf: baseDatos[indexExistente].archivosPdf || [], pdf: (baseDatos[indexExistente].archivosPdf || []).length > 0 };
             } else {
               baseDatos.unshift(nuevo);
             }
