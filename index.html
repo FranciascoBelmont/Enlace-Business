@@ -40,6 +40,23 @@
       color: #94a3b8;
       white-space: nowrap;
     }
+
+    /* ESTILOS EXCLUSIVOS DE IMPRESIÓN ENLACE BUSINESS */
+    @media print {
+      body * { visibility: hidden !important; }
+      #printableArea, #printableArea * { visibility: visible !important; }
+      #printableArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      @page { margin: 10mm; size: A4 portrait; }
+    }
   </style>
 </head>
 <body class="h-full text-slate-100 bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
@@ -172,7 +189,7 @@
                 <th class="px-6 py-3.5">Precio Venta</th>
                 <th class="px-6 py-3.5">Margen</th>
                 <th class="px-6 py-3.5">Etapa Legal</th>
-                <th class="px-6 py-3.5 text-center">PDF</th>
+                <th class="px-6 py-3.5 text-center">Ficha / PDF</th>
                 <th class="px-6 py-3.5">Responsable</th>
                 <th class="px-6 py-3.5 text-center">Acciones</th>
               </tr>
@@ -350,6 +367,7 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
+            <button type="button" id="btnImprimirModal" onclick="imprimirDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR FICHA</button>
             <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
             <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
@@ -361,12 +379,34 @@
     </div>
   </div>
 
+  <!-- ==================== ÁREA DE IMPRESIÓN EXCLUSIVA (FICHA TÉCNICA) ==================== -->
+  <div id="printableArea" class="hidden"></div>
+
   <script>
-    let baseDatos = [
-      { id: "1245", idEnlace: "EN753", cartera: "TERTIUS", credito: "6200004513", estado: "ESTADO DE MÉXICO", municipio: "TLALNEPANTLA", colonia: "EL SABINO", cp: "54000", direccion: "JOSÉ MARÍA PINO SUÁREZ, ESQUINA RÍO CÓRDOBA", precioPre: 478439.44, precioVenta: 610000.00, etapa: "PRESENTACIÓN DE LA DEMANDA", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "EN PROCESO", avances: "RADICADO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "100m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" },
-      { id: "2345", idEnlace: "EN09339", cartera: "TERTIUS", credito: "6200004514", estado: "ESTADO DE MÉXICO", municipio: "HUIXQUILUCAN", colonia: "BOSQUE REAL", cp: "52774", direccion: "PRIVADA ISLA REAL, LOTE 1/32, MANZANA X DEL CONJUNTO CONDOMINAL ISLA REAL LOTE 29", precioPre: 496905.00, precioVenta: 610000.00, etapa: "SIN DEMANDA", etapaActual: "INTEGRACIÓN", pdf: false, responsable: "MIGUEL JASSO", observaciones: "EN INTEGRACIÓN", avances: "PENDIENTE", status: "ACTIVO", envio: "ENVIADO", superficie: "150m²", construccion: "130m²", tipoPropiedad: "DEPARTAMENTO", recepcion: "15 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
+    // DATOS INICIALES DE EJEMPLO
+    const datosIniciales = [
+      { id: "16573", idEnlace: "EN11032", cartera: "ZENDERE", credito: "222006387", estado: "SINALOA", municipio: "CULIACÁN", colonia: "VILLAS DEL HUMAYA", cp: "80028", direccion: "VILLA TRES RÍOS 3388", precioPre: 343440.00, precioVenta: 500000.00, etapa: "", etapaActual: "COFINAVIT", pdf: false, responsable: "REBECA VELASCO", observaciones: "", avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025", status: "", envio: "ENVIADO", superficie: "", construccion: "", tipoPropiedad: "PROPIEDAD", recepcion: "30 ENERO 2023", actualizacion: "15 JULIO 2025" },
+      { id: "655", idEnlace: "EN20369", cartera: "TERTIUS", credito: "S/N", estado: "QUINTANA ROO", municipio: "BENITO JUÁREZ", colonia: "FRACCIONAMIENTO CASAS DEL MAR", cp: "77500", direccion: "MAR EGEO 2, CASA 2", precioPre: 303186.79, precioVenta: 410233.00, etapa: "EN PROCESO", etapaActual: "RADICACIÓN", pdf: false, responsable: "FRANCISCO BELMONT", observaciones: "SIN NOVEDAD", avances: "EN PROCESO", status: "ACTIVO", envio: "ENVIADO", superficie: "120m²", construccion: "90m²", tipoPropiedad: "CASA", recepcion: "1 DE ENERO DE 2026", actualizacion: "25 DE OCTUBRE DE 2026" }
     ];
 
+    // SISTEMA DE PERSISTENCIA CON LOCALSTORAGE
+    function cargarBaseDatos() {
+      const guardado = localStorage.getItem('enlace_business_db');
+      if (guardado) {
+        try {
+          return JSON.parse(guardado);
+        } catch(e) {
+          return datosIniciales;
+        }
+      }
+      return datosIniciales;
+    }
+
+    function guardarBaseDatos() {
+      localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
+    }
+
+    let baseDatos = cargarBaseDatos();
     let idItemEnEdicion = null;
 
     function validarAcceso(e) {
@@ -543,19 +583,19 @@
         colonia: document.getElementById('regColonia').value.trim() || "N/A",
         cp: document.getElementById('regCp').value.trim() || "00000",
         direccion: document.getElementById('regDireccion').value.trim() || "S/D",
-        observaciones: document.getElementById('regObservaciones').value.trim() || "S/D",
-        avances: document.getElementById('regAvances').value.trim() || "S/D",
-        status: document.getElementById('regStatus').value.trim() || "S/D",
+        observaciones: document.getElementById('regObservaciones').value.trim() || "",
+        avances: document.getElementById('regAvances').value.trim() || "",
+        status: document.getElementById('regStatus').value.trim() || "",
         precioPre: obtenerValorNumerico('regPrecioPre'),
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
-        etapa: document.getElementById('regEtapa').value.trim() || "EN PROCESO",
-        etapaActual: document.getElementById('regEtapaActual').value.trim() || "S/D",
+        etapa: document.getElementById('regEtapa').value.trim() || "",
+        etapaActual: document.getElementById('regEtapaActual').value.trim() || "",
         envio: document.getElementById('regEnvio').value.trim() || "S/D",
-        superficie: document.getElementById('regSuperficie').value.trim() || "0m²",
-        construccion: document.getElementById('regConstruccion').value.trim() || "0m²",
-        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "CASA",
-        recepcion: document.getElementById('regRecepcion').value.trim() || "S/F",
-        actualizacion: document.getElementById('regActualizacion').value.trim() || "S/F",
+        superficie: document.getElementById('regSuperficie').value.trim() || "",
+        construccion: document.getElementById('regConstruccion').value.trim() || "",
+        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "PROPIEDAD",
+        recepcion: document.getElementById('regRecepcion').value.trim() || "",
+        actualizacion: document.getElementById('regActualizacion').value.trim() || "",
         pdf: false,
         responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
       };
@@ -570,6 +610,7 @@
         alert("¡Registro guardado con éxito!");
       }
 
+      guardarBaseDatos();
       actualizarSelectoresFiltros();
       aplicarFiltros();
       cerrarModalNuevoRegistro();
@@ -578,6 +619,7 @@
     function eliminarRegistro(idItem) {
       if (confirm(`¿Está seguro de eliminar el registro ID: ${idItem}?`)) {
         baseDatos = baseDatos.filter(i => i.id !== idItem);
+        guardarBaseDatos();
         actualizarSelectoresFiltros();
         aplicarFiltros();
         alert("¡Registro eliminado correctamente!");
@@ -588,6 +630,7 @@
       if (idItemEnEdicion) {
         if (confirm(`¿Está seguro de eliminar el registro ID: ${idItemEnEdicion}?`)) {
           baseDatos = baseDatos.filter(i => i.id !== idItemEnEdicion);
+          guardarBaseDatos();
           actualizarSelectoresFiltros();
           aplicarFiltros();
           cerrarModalNuevoRegistro();
@@ -612,47 +655,42 @@
       const responsableF = document.getElementById('filtroResponsable').value;
       const etapaF = document.getElementById('filtroEtapa').value;
 
-      // 1. Estados (todos los disponibles en base de datos)
-      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
+      const estados = [...new Set(baseDatos.map(item => item.estado))].filter(Boolean).sort();
       const selEstado = document.getElementById('filtroEstado');
       selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
       estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
       if (estados.includes(estadoF)) selEstado.value = estadoF;
 
-      // 2. Municipios filtrados por Estado
       let baseMun = baseDatos;
       if (selEstado.value) baseMun = baseMun.filter(i => i.estado === selEstado.value);
-      const municipios = [...new Set(baseMun.map(i => i.municipio))].sort();
+      const municipios = [...new Set(baseMun.map(i => i.municipio))].filter(Boolean).sort();
       const selMunicipio = document.getElementById('filtroMunicipio');
       selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
       municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
       if (municipios.includes(municipioF)) selMunicipio.value = municipioF;
 
-      // 3. Colonias filtradas por Estado y Municipio
       let baseCol = baseDatos;
       if (selEstado.value) baseCol = baseCol.filter(i => i.estado === selEstado.value);
       if (selMunicipio.value) baseCol = baseCol.filter(i => i.municipio === selMunicipio.value);
-      const colonias = [...new Set(baseCol.map(i => i.colonia))].sort();
+      const colonias = [...new Set(baseCol.map(i => i.colonia))].filter(Boolean).sort();
       const selColonia = document.getElementById('filtroColonia');
       selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
       colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
-      if (colonias.includes(coloniaF)) selColonia.value = colActualColonia = colActual = coloniaF;
+      if (colonias.includes(coloniaF)) selColonia.value = coloniaF;
 
-      // 4. Responsables filtrados por ubicación actual (Estado, Municipio, Colonia)
       let baseResp = baseDatos;
       if (selEstado.value) baseResp = baseResp.filter(i => i.estado === selEstado.value);
       if (selMunicipio.value) baseResp = baseResp.filter(i => i.municipio === selMunicipio.value);
       if (selColonia.value) baseResp = baseResp.filter(i => i.colonia === selColonia.value);
-      const responsables = [...new Set(baseResp.map(i => i.responsable))].sort();
+      const responsables = [...new Set(baseResp.map(i => i.responsable))].filter(Boolean).sort();
       const selResp = document.getElementById('filtroResponsable');
       selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
       responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
       if (responsables.includes(responsableF)) selResp.value = responsableF;
 
-      // 5. Etapas legales filtradas por ubicación y responsable actual
       let baseEtp = baseResp;
       if (selResp.value) baseEtp = baseEtp.filter(i => i.responsable === selResp.value);
-      const etapas = [...new Set(baseEtp.map(i => i.etapa))].sort();
+      const etapas = [...new Set(baseEtp.map(i => i.etapa))].filter(Boolean).sort();
       const selEtapa = document.getElementById('filtroEtapa');
       selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
       etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
@@ -713,7 +751,7 @@
         document.getElementById('kpiTipoDetalle').innerText = "0 registros";
       }
 
-      const sumaVenta = resultados.reduce((acc, i) => acc + i.precioVenta, 0);
+      const sumaVenta = resultados.reduce((acc, i) => acc + (i.precioVenta || 0), 0);
       const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
       document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
@@ -730,8 +768,8 @@
       const tbody = document.getElementById('tablaRegistros');
       tbody.innerHTML = '';
       resultados.forEach(item => {
-        const margenPesos = item.precioVenta - item.precioPre;
-        const margenPorc = item.precioPre > 0 ? ((margenPesos / item.precioPre) * 100).toFixed(2) : 0;
+        const margenPesos = (item.precioVenta || 0) - (item.precioPre || 0);
+        const margenPorc = (item.precioPre && item.precioPre > 0) ? ((margenPesos / item.precioPre) * 100).toFixed(2) : "0.00";
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="px-6 py-4">
@@ -746,11 +784,15 @@
               <div class="font-bold text-[11px] text-white uppercase leading-tight">${item.direccion || 'S/D'}</div>
               <div class="text-[11px] text-blue-400 font-semibold mt-0.5 uppercase">${item.colonia || 'S/D'}</div>
             </td>
-            <td class="px-6 py-4 text-slate-300">$${item.precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-            <td class="px-6 py-4 font-bold text-amber-400">$${item.precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 text-slate-300">$${(item.precioPre || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+            <td class="px-6 py-4 font-bold text-amber-400">$${(item.precioVenta || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
-            <td class="px-6 py-4 text-slate-300">${item.etapa}</td>
-            <td class="px-6 py-4 text-center text-slate-500">Sin PDF</td>
+            <td class="px-6 py-4 text-slate-300">${item.etapa || item.etapaActual || 'S/D'}</td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="imprimirFichaTecnica('${item.id}')" title="Imprimir Ficha Enlace" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-sky-500/40 bg-sky-500/10 text-sky-400 hover:bg-sky-500 hover:text-white transition font-semibold text-[11px]">
+                <i class="fa-solid fa-print"></i> Ficha
+              </button>
+            </td>
             <td class="px-6 py-4 text-slate-200">${item.responsable}</td>
             <td class="px-6 py-4 text-center">
               <div class="flex items-center justify-center space-x-2">
@@ -769,10 +811,148 @@
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
+    // FUNCIÓN DE IMPRESIÓN CON FORMATO FIEL A LA IMAGEN PROPORCIONADA
+    function imprimirFichaTecnica(idItem) {
+      const item = baseDatos.find(i => i.id === idItem);
+      if (!item) return;
+
+      const utilPesos = (item.precioVenta || 0) - (item.precioPre || 0);
+      const utilPorc = (item.precioPre && item.precioPre > 0) ? ((utilPesos / item.precioPre) * 100).toFixed(2) : "0.00";
+
+      const htmlFicha = `
+        <div style="font-family: Arial, Helvetica, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; font-size: 13px; color: #000; line-height: 1.5;">
+          
+          <!-- Encabezado con Logo y Datos ID -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+            <div>
+              <!-- LOGO ENLACE BUSINESS -->
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; border: 3px solid #0056b3; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <i class="fa-solid fa-power-off" style="font-size: 26px; color: #0056b3;"></i>
+                </div>
+                <div>
+                  <div style="font-size: 24px; font-weight: 900; color: #0b2545; tracking-weight: -1px; line-height: 1;">ENLACE</div>
+                  <div style="font-size: 13px; font-weight: 700; color: #d97706; tracking-weight: 2px; text-align: center;">BUSINESS</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align: right; font-size: 13px; font-weight: 500;">
+              <div><strong>ID:</strong> ${item.id}</div>
+              <div><strong>ID Enlace Business:</strong> ${item.idEnlace || 'S/N'}</div>
+              <div><strong>Número de Crédito:</strong> ${item.credito || 'S/N'}</div>
+            </div>
+          </div>
+
+          <!-- Bloque Precios y Etapas -->
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <div style="width: 48%;">
+              <div><strong>Valor Pre Autorizado:</strong> $${(item.precioPre || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
+              <div><strong>Valor Venta:</strong> $${(item.precioVenta || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
+            </div>
+            <div style="width: 48%;">
+              <div><strong>Etapa Legal:</strong> ${item.etapa || ''}</div>
+              <div><strong>Etapa Actual:</strong> ${item.etapaActual || ''}</div>
+            </div>
+          </div>
+
+          <!-- Tipo Propiedad -->
+          <div style="margin-bottom: 15px;">
+            <strong>Tipo de Propiedad:</strong> ${item.tipoPropiedad || 'PROPIEDAD'}
+          </div>
+
+          <!-- Ubicación Grid -->
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <div style="width: 55%;">
+              <div><strong>Estado:</strong> ${item.estado || ''}</div>
+              <div><strong>Municipio o Alcaldía:</strong> ${item.municipio || ''}</div>
+              <div><strong>Colonia:</strong> ${item.colonia || ''}</div>
+            </div>
+            <div style="width: 40%;">
+              <div><strong>Codigo Postal:</strong> ${item.cp || ''}</div>
+              <div><strong>Superficie:</strong> ${item.superficie || ''}</div>
+              <div><strong>Construcción:</strong> ${item.construccion || ''}</div>
+            </div>
+          </div>
+
+          <!-- Dirección Resaltada -->
+          <div style="background-color: #ffe4e6; border-top: 1px solid #fecdd3; border-bottom: 1px solid #fecdd3; padding: 6px 10px; margin-bottom: 25px; font-weight: bold; color: #991b1b;">
+            Dirección: ${item.direccion || ''}
+          </div>
+
+          <!-- Cartera, Observaciones, Avances y Status -->
+          <div style="margin-bottom: 15px;">
+            <strong>Cartera:</strong> ${item.cartera || ''}
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <strong>Observaciones:</strong> ${item.observaciones || ''}
+          </div>
+
+          <div style="margin-bottom: 15px; margin-left: 40px;">
+            <strong>Avances:</strong> ${item.avances || ''}
+          </div>
+
+          <div style="margin-bottom: 25px; margin-left: 40px;">
+            <strong>Status:</strong> ${item.status || ''}
+          </div>
+
+          <div style="margin-bottom: 25px;">
+            <strong>Link Mapa:</strong>
+          </div>
+
+          <!-- Rentabilidad en Negrita -->
+          <div style="margin-bottom: 5px; font-size: 14px;">
+            <strong>Utilidad $:</strong> <strong>$${utilPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+          </div>
+          <div style="margin-bottom: 25px; font-size: 14px;">
+            <strong>Utilidad %:</strong> <strong>${utilPorc}%</strong>
+          </div>
+
+          <!-- Pie con Fechas y Responsables -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; margin-bottom: 30px;">
+            <div>
+              <div><strong>Fecha Actualización:</strong> ${item.actualizacion || ''}</div>
+              <div style="margin-top: 5px;"><strong>Responsable:</strong> ${item.responsable || ''}</div>
+            </div>
+            <div>
+              <strong>Recepción:</strong> ${item.recepcion || ''}
+            </div>
+          </div>
+
+          <!-- Franja Inferior Azul Corporativa Enlace -->
+          <div style="margin-top: 50px; background-color: #031b4e; color: #ffffff; padding: 8px 20px; text-align: right; font-size: 11px; font-weight: bold; border-top-left-radius: 12px;">
+            www.enlacebusiness.mx
+          </div>
+
+        </div>
+      `;
+
+      const printableArea = document.getElementById('printableArea');
+      printableArea.innerHTML = htmlFicha;
+      printableArea.classList.remove('hidden');
+
+      window.print();
+
+      setTimeout(() => {
+        printableArea.classList.add('hidden');
+        printableArea.innerHTML = '';
+      }, 500);
+    }
+
+    function imprimirDesdeModal() {
+      const idActual = document.getElementById('regId').value.trim();
+      if (!idActual) {
+        alert("Primero ingrese o guarde un registro para poder imprimir.");
+        return;
+      }
+      imprimirFichaTecnica(idActual);
+    }
+
     function exportarExcel() {
       const datosExportar = baseDatos.map(i => {
-        const utilPesos = i.precioVenta - i.precioPre;
-        const utilPorc = i.precioPre > 0 ? ((utilPesos / i.precioPre) * 100).toFixed(2) + "%" : "0.00%";
+        const utilPesos = (i.precioVenta || 0) - (i.precioPre || 0);
+        const utilPorc = (i.precioPre && i.precioPre > 0) ? ((utilPesos / i.precioPre) * 100).toFixed(2) + "%" : "0.00%";
         return {
           "ID": i.id,
           "ID ENLACE": i.idEnlace,
@@ -823,7 +1003,7 @@
             credito: String(row["NÚMERO DE CRÉDITO"] || row["CRÉDITO"] || "S/N"),
             cartera: String(row["CARTERA"] || "GENERAL"),
             responsable: String(row["RESPONSABLE"] || "BELMONT"),
-            tipoPropiedad: String(row["TIPO DE PROPIEDAD"] || "CASA"),
+            tipoPropiedad: String(row["TIPO DE PROPIEDAD"] || "PROPIEDAD"),
             cp: String(row["CÓDIGO POSTAL"] || row["C.P."] || "00000"),
             estado: String(row["ESTADO"] || "N/A"),
             municipio: String(row["MUNICIPIO"] || "N/A"),
@@ -834,13 +1014,13 @@
             envio: String(row["SEGUIMIENTO"] || "S/D"),
             precioPre: Number(row["PRECIO PRE-AUTO"] || row["PRECIO PRE-AUTH"] || 0),
             precioVenta: Number(row["PRECIO VENTA"] || 0),
-            etapaActual: String(row["ETAPA ACTUAL"] || "S/D"),
-            etapa: String(row["ETAPA LEGAL"] || "EN PROCESO"),
-            observaciones: String(row["OBSERVACIONES"] || "S/D"),
-            avances: String(row["AVANCES"] || "S/D"),
-            status: String(row["STATUS"] || "ACTIVO"),
-            recepcion: String(row["RECEPCIÓN"] || "S/F"),
-            actualizacion: String(row["ACTUALIZACIÓN"] || "S/F"),
+            etapaActual: String(row["ETAPA ACTUAL"] || ""),
+            etapa: String(row["ETAPA LEGAL"] || ""),
+            observaciones: String(row["OBSERVACIONES"] || ""),
+            avances: String(row["AVANCES"] || ""),
+            status: String(row["STATUS"] || ""),
+            recepcion: String(row["RECEPCIÓN"] || ""),
+            actualizacion: String(row["ACTUALIZACIÓN"] || ""),
             pdf: false
           }));
 
@@ -853,6 +1033,7 @@
             }
           });
 
+          guardarBaseDatos();
           actualizarSelectoresFiltros();
           aplicarFiltros();
           alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
