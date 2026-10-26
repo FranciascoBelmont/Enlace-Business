@@ -265,7 +265,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE SEGUIMIENTO / DASHBOARD MAESTRO (NUEVO) ==================== -->
+  <!-- ==================== MODAL DE SEGUIMIENTO / DASHBOARD MAESTRO ==================== -->
   <div id="modalSeguimiento" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-7xl rounded-2xl modal-box p-6 sm:p-10 relative">
       
@@ -340,7 +340,7 @@
           </div>
 
           <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 text-right">
-            <span>Gestionado desde Planning y Tareas</span>
+            <span>Haz clic en cualquier tarjeta para ir directamente a su módulo</span>
           </div>
         </div>
 
@@ -778,7 +778,7 @@
 
           <div class="flex items-center gap-3 ml-auto self-end">
             <button type="button" id="btnImprimirModal" onclick="imprimirDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR FICHA</button>
-            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
+            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 hover:text-red-400 transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
             <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
           </div>
@@ -908,8 +908,31 @@
       document.getElementById('modalSeguimiento').classList.add('hidden');
     }
 
+    function redirigirDesdeSeguimiento(tipo, identificador, fechaExtra) {
+      cerrarModalSeguimiento();
+      if (tipo === 'TAREA') {
+        abrirModalTareas();
+        // Opcional: Buscar y resaltar o editar la tarea si se desea
+        setTimeout(() => {
+          editarTarea(identificador);
+        }, 150);
+      } else if (tipo === 'AGENDA') {
+        abrirModalPlanning();
+        if (fechaExtra) {
+          // Cambiar el mes del planning a la fecha del evento si es necesario y seleccionar día
+          let partes = fechaExtra.split('-');
+          if (partes.length === 3) {
+            fechaActualPlanning = new Date(partes[0], partes[1] - 1, 1);
+          }
+          seleccionarDiaPlanning(fechaExtra);
+          setTimeout(() => {
+            abrirPostit(fechaExtra, identificador);
+          }, 150);
+        }
+      }
+    }
+
     function renderizarDashboardSeguimiento() {
-      // 1. Filtrar inmuebles que tengan tareas o eventos en calendario vinculados
       let inmueblesConSeguimiento = baseDatos.filter(item => {
         let enTareas = tareasData.some(t => String(t.inmuebleId) === String(item.id));
         let enAgenda = false;
@@ -920,7 +943,6 @@
         return enTareas || enAgenda;
       });
 
-      // KPIs
       document.getElementById('dashKpiInmueblesSeg').innerText = inmueblesConSeguimiento.length;
       
       let totalTareas = tareasData.length;
@@ -961,7 +983,7 @@
         });
       }
 
-      // Renderizar Tareas y Eventos Recientes
+      // Renderizar Tareas y Eventos Recientes con Redirección al hacer Clic en la Caja
       const contAct = document.getElementById('dashListaActividades');
       contAct.innerHTML = '';
       
@@ -969,11 +991,12 @@
       tareasData.forEach(t => {
         listaGlobalActividades.push({
           tipo: 'TAREA',
+          id: t.id,
           titulo: t.titulo,
           estado: t.estado,
           prioridad: t.prioridad,
           fecha: t.creacion || 'S/D',
-          inmuebleId: t.inmuebleId
+          fechaExtra: ''
         });
       });
 
@@ -982,11 +1005,12 @@
         evs.forEach(e => {
           listaGlobalActividades.push({
             tipo: 'AGENDA',
+            id: e.id,
             titulo: e.texto || 'EVENTO DE CALENDARIO',
             estado: 'PLANNING',
             prioridad: 'MEDIA',
             fecha: f,
-            inmuebleId: e.inmuebleId
+            fechaExtra: f
           });
         });
       });
@@ -996,18 +1020,20 @@
       if (listaGlobalActividades.length === 0) {
         contAct.innerHTML = '<p class="text-xs text-slate-500 italic py-4 text-center">No hay tareas o eventos registrados.</p>';
       } else {
-        listaGlobalActividades.slice(0, 8).forEach(act => {
+        listaGlobalActividades.forEach(act => {
           let iconoBadge = act.tipo === 'TAREA' ? '<span class="text-cyan-400">📋 Tarea</span>' : '<span class="text-emerald-400">📅 Planning</span>';
+          let badgeEstadoColor = act.tipo === 'TAREA' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+          
           contAct.innerHTML += `
-            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3 flex items-center justify-between text-xs">
+            <div onclick="redirigirDesdeSeguimiento('${act.tipo}', '${act.id}', '${act.fechaExtra}')" class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between text-xs cursor-pointer hover:border-indigo-500 hover:bg-slate-900 transition shadow group">
               <div>
-                <div class="flex items-center gap-2 mb-0.5">
+                <div class="flex items-center gap-2 mb-1">
                   ${iconoBadge}
-                  <span class="font-extrabold text-white uppercase truncate max-w-[200px]">${act.titulo}</span>
+                  <span class="font-extrabold text-white uppercase truncate max-w-[220px] group-hover:text-indigo-300 transition">${act.titulo}</span>
                 </div>
                 <span class="text-[10px] text-slate-400">Fecha / Registro: ${act.fecha}</span>
               </div>
-              <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-300 border border-slate-700">${act.estado}</span>
+              <span class="px-2 py-0.5 rounded text-[9px] font-bold border ${badgeEstadoColor}">${act.estado}</span>
             </div>
           `;
         });
