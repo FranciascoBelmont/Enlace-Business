@@ -520,8 +520,8 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // FUNCIÓN ROBUSTA PARA ABRIR PDF MEDIANTE BLOB
-    function abrirPdfSeguro(base64Data, nombreArchivo) {
+    // DESCARGA DIRECTA Y SEGURA DEL PDF AL HACER CLIC EN EL OJO
+    function descargarPdfSeguro(base64Data, nombreArchivo) {
       try {
         let arr = base64Data.split(',');
         let mime = arr[0].match(/:(.*?);/)[1];
@@ -533,12 +533,16 @@
         }
         let blob = new Blob([u8arr], {type: mime});
         let blobUrl = URL.createObjectURL(blob);
-        let win = window.open(blobUrl, '_blank');
-        if (!win) {
-          alert("⚠️ El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio.");
-        }
+        
+        let a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = nombreArchivo || "documento.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
       } catch (e) {
-        alert("No se pudo abrir el archivo PDF.");
+        alert("No se pudo descargar el archivo PDF.");
       }
     }
 
@@ -578,7 +582,6 @@
       labelContador.innerText = `${temporalesArchivosPdf.length} / 5 archivos`;
 
       temporalesArchivosPdf.forEach((pdf, index) => {
-        // Escapamos las comillas simples y dobles de manera segura para evitar errores de sintaxis en el HTML inline
         let nombreEscapado = pdf.nombre.replace(/"/g, '&quot;');
         let base64Escapado = pdf.data;
 
@@ -586,7 +589,7 @@
           <div class="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[10px] text-slate-300">
             <i class="fa-solid fa-file-pdf text-rose-400"></i>
             <span class="truncate max-w-[120px]" title="${nombreEscapado}">${nombreEscapado}</span>
-            <button type="button" onclick="abrirPdfSeguro('${base64Escapado}', '${nombreEscapado}')" title="Ver PDF" class="text-blue-400 hover:text-blue-300 ml-1 cursor-pointer"><i class="fa-solid fa-eye"></i></button>
+            <button type="button" onclick="descargarPdfSeguro('${base64Escapado}', '${nombreEscapado}')" title="Descargar PDF" class="text-blue-400 hover:text-blue-300 ml-1 cursor-pointer"><i class="fa-solid fa-download"></i></button>
             <button type="button" onclick="eliminarPdfTemporal(${index})" title="Eliminar" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-xmark"></i></button>
           </div>
         `;
