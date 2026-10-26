@@ -48,7 +48,6 @@
       color: #94a3b8;
       white-space: nowrap;
     }
-
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -56,7 +55,6 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -68,7 +66,6 @@
       background: rgba(16, 185, 129, 0.3);
       border-radius: 4px;
     }
-
     .postit-card {
       background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
       color: #1e293b;
@@ -76,8 +73,6 @@
       border: 1px solid #eab308;
       transform: rotate(-0.5deg);
     }
-
-    /* ==================== REGLAS ABSOLUTAS DE IMPRESIÓN (1 SOLA HOJA CARTA) ==================== */
     @media print {
       body * {
         visibility: hidden !important;
@@ -167,11 +162,11 @@
     </header>
 
     <main class="flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      <!-- Tarjetas KPI Centradas -->
+      <!-- Tarjetas KPI -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">TOTAL REGISTROS</span>
-          <p id="kpiTotalRegistros" style="font-size: 1.15rem; font-weight: 800;" class="mt-2 text-white truncate">0</p>
+          <p id="kpiTotalRegistros" class="mt-2 text-2xl font-extrabold text-white">0</p>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg text-center">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">TIPO PROPIEDAD PREDOMINANTE</span>
@@ -188,7 +183,7 @@
         </div>
       </div>
 
-      <!-- Barra de Filtros Estructurada -->
+      <!-- Barra de Filtros -->
       <div class="flex flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
         <div class="flex flex-wrap items-center gap-2.5 w-full">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
@@ -269,7 +264,8 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE SEGUIMIENTO ==================== -->
+  <!-- ==================== MODALES ==================== -->
+  <!-- MODAL SEGUIMIENTO -->
   <div id="modalSeguimiento" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-7xl rounded-2xl modal-box p-6 sm:p-10 relative">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-5 mb-6">
@@ -330,7 +326,7 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL DE TAREAS ==================== -->
+  <!-- MODAL TAREAS -->
   <div id="modalTareas" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-8 sm:p-10 relative">
       <div class="flex items-center justify-between border-b border-cyan-500/20 pb-5 mb-6">
@@ -421,7 +417,7 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL DE PLANNING ==================== -->
+  <!-- MODAL PLANNING -->
   <div id="modalPlanning" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
       <div class="flex items-center justify-between border-b border-emerald-500/20 pb-4 mb-5">
@@ -489,7 +485,7 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL POST-IT ==================== -->
+  <!-- MODAL POST-IT -->
   <div id="modalPostit" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
     <div class="w-full max-w-md rounded-2xl postit-card p-6 relative">
       <button onclick="cerrarPostit()" class="absolute top-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-yellow-400 text-slate-900 font-bold hover:bg-yellow-500 transition shadow">
@@ -503,28 +499,16 @@
         <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900/80 block mb-1">Descripción del Evento:</span>
         <textarea id="postitTextoEdit" rows="3" class="w-full rounded-xl bg-yellow-200/90 border border-yellow-400 p-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none uppercase"></textarea>
       </div>
-      <div id="postitSeccionInmueble" class="hidden mb-4 pt-2 border-t border-amber-600/30">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900/80 block mb-1">Inmueble Vinculado:</span>
-        <div class="bg-yellow-200/80 p-2 rounded-xl border border-yellow-400 text-xs font-semibold text-slate-900 space-y-0.5">
-          <div id="postitInmuebleId" class="text-blue-900 font-extrabold"></div>
-          <div id="postitInmuebleDir" class="truncate"></div>
-        </div>
-      </div>
       <div class="flex items-center justify-between gap-2 pt-2 border-t border-amber-600/30">
         <button onclick="eliminarEventoActual()" class="rounded-xl bg-red-600 px-3 py-2 text-[11px] font-extrabold text-white hover:bg-red-500 shadow transition">
           <i class="fa-solid fa-trash-can mr-1"></i>Eliminar
         </button>
-        <div class="flex items-center gap-2">
-          <button id="postitBtnIrInmueble" class="hidden rounded-xl bg-blue-600 px-3 py-2 text-[11px] font-extrabold text-white hover:bg-blue-500 shadow transition">
-            <i class="fa-solid fa-building mr-1"></i>Expediente
-          </button>
-          <button onclick="guardarCambiosPostit()" class="rounded-xl bg-slate-900 px-4 py-2 text-[11px] font-extrabold text-white hover:bg-slate-800 transition">Guardar Cambios</button>
-        </div>
+        <button onclick="guardarCambiosPostit()" class="rounded-xl bg-slate-900 px-4 py-2 text-[11px] font-extrabold text-white hover:bg-slate-800 transition">Guardar Cambios</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== MODAL CAPTURA / EDICIÓN ==================== -->
+  <!-- MODAL NUEVO / EDITAR REGISTRO -->
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-5">
@@ -532,15 +516,9 @@
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
             <i class="fa-solid fa-file-invoice-dollar text-base"></i>
           </div>
-          <div class="flex items-center gap-3">
-            <div>
-              <h2 id="modalTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
-              <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura y Edición de Inmuebles</p>
-            </div>
-            <div id="indicadorSeguimientoActivo" class="hidden items-center gap-1.5 bg-amber-500/15 border border-amber-500/40 px-3 py-1.5 rounded-xl text-amber-400 text-xs font-extrabold shadow-md animate-pulse">
-              <span>⚠️</span>
-              <span>SEGUIMIENTO ACTIVO</span>
-            </div>
+          <div>
+            <h2 id="modalTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
+            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura y Edición de Inmuebles</p>
           </div>
         </div>
         <button onclick="cerrarModalNuevoRegistro()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
@@ -553,38 +531,38 @@
           <div class="space-y-3">
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">ID:</label>
-              <input type="text" id="regId" required class="input-pro w-32 font-bold" tabindex="1">
+              <input type="text" id="regId" required class="input-pro w-32 font-bold">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">ID ENLACE:</label>
-              <input type="text" id="regIdEnlace" class="input-pro w-44" tabindex="2">
+              <input type="text" id="regIdEnlace" class="input-pro w-44">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">NÚMERO DE CRÉDITO:</label>
-              <input type="text" id="regCredito" class="input-pro flex-1" tabindex="3">
+              <input type="text" id="regCredito" class="input-pro flex-1">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">CARTERA:</label>
-              <input type="text" id="regCartera" class="input-pro flex-1" tabindex="4">
+              <input type="text" id="regCartera" class="input-pro flex-1">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">RESPONSABLE:</label>
-              <input type="text" id="regResponsable" class="input-pro flex-1" tabindex="5">
+              <input type="text" id="regResponsable" class="input-pro flex-1">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">TIPO DE PROPIEDAD:</label>
-              <input type="text" id="regTipoPropiedad" class="input-pro flex-1" tabindex="6">
+              <input type="text" id="regTipoPropiedad" class="input-pro flex-1">
             </div>
           </div>
 
           <div class="space-y-3">
             <div class="flex items-center justify-end gap-3">
               <label class="label-inline text-blue-400">VALOR PRE AUTORIZADO:</label>
-              <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-right" placeholder="$0.00" tabindex="13">
+              <input type="text" id="regPrecioPre" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-right" placeholder="$0.00">
             </div>
             <div class="flex items-center justify-end gap-3">
               <label class="label-inline text-amber-400">VALOR VENTA:</label>
-              <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-amber-400 text-right" placeholder="$0.00" tabindex="14">
+              <input type="text" id="regPrecioVenta" oninput="formatearMonedaInput(this); calcularUtilidadModal();" class="input-pro w-44 font-bold text-amber-400 text-right" placeholder="$0.00">
             </div>
             <div class="flex items-center justify-end gap-3">
               <label class="label-inline text-emerald-400">UTILIDAD ($):</label>
@@ -595,12 +573,12 @@
               <input type="text" id="regUtilidadPorc" readonly class="input-pro w-44 bg-emerald-950/30 border-emerald-500/40 text-emerald-400 font-extrabold text-right" value="0.00%">
             </div>
             <div class="flex items-center gap-3 pt-1">
-              <label class="label-inline w-32">ATAPA ACTUAL:</label>
-              <input type="text" id="regEtapaActual" class="input-pro flex-1 py-1.5" tabindex="15">
+              <label class="label-inline w-32">ETAPA ACTUAL:</label>
+              <input type="text" id="regEtapaActual" class="input-pro flex-1 py-1.5">
             </div>
             <div class="flex items-center gap-3">
               <label class="label-inline w-32">ETAPA LEGAL:</label>
-              <input type="text" id="regEtapa" class="input-pro flex-1 py-1.5" tabindex="16">
+              <input type="text" id="regEtapa" class="input-pro flex-1 py-1.5">
             </div>
           </div>
         </div>
@@ -609,37 +587,37 @@
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2">
               <label class="label-inline">CÓDIGO POSTAL:</label>
-              <input type="text" id="regCp" class="input-pro w-28 text-center" tabindex="7">
+              <input type="text" id="regCp" class="input-pro w-28 text-center">
             </div>
             <div class="flex items-center gap-2 flex-1 min-w-[200px]">
               <label class="label-inline">ESTADO:</label>
-              <input type="text" id="regEstado" class="input-pro flex-1" tabindex="8">
+              <input type="text" id="regEstado" class="input-pro flex-1">
             </div>
             <div class="flex items-center gap-2 flex-1 min-w-[200px]">
               <label class="label-inline">MUNICIPIO O ALCALDÍA:</label>
-              <input type="text" id="regMunicipio" class="input-pro flex-1" tabindex="9">
+              <input type="text" id="regMunicipio" class="input-pro flex-1">
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2 flex-1 min-w-[250px]">
               <label class="label-inline">COLONIA:</label>
-              <input type="text" id="regColonia" class="input-pro flex-1" tabindex="10">
+              <input type="text" id="regColonia" class="input-pro flex-1">
             </div>
             <div class="flex items-center gap-2 flex-1 min-w-[300px]">
               <label class="label-inline text-blue-400">DIRECCIÓN:</label>
-              <input type="text" id="regDireccion" class="input-pro flex-1 border-blue-500/50" tabindex="11">
+              <input type="text" id="regDireccion" class="input-pro flex-1 border-blue-500/50">
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2">
               <label class="label-inline">SUPERFICIE:</label>
-              <input type="text" id="regSuperficie" class="input-pro w-28 text-center" tabindex="12">
+              <input type="text" id="regSuperficie" class="input-pro w-28 text-center">
             </div>
             <div class="flex items-center gap-2">
               <label class="label-inline">CONSTRUCCIÓN:</label>
-              <input type="text" id="regConstruccion" class="input-pro w-28 text-center" tabindex="17">
+              <input type="text" id="regConstruccion" class="input-pro w-28 text-center">
             </div>
           </div>
         </div>
@@ -647,15 +625,15 @@
         <div class="pt-2 border-t border-slate-800 space-y-3">
           <div class="flex items-center gap-3">
             <label class="label-inline w-32">OBSERVACIONES:</label>
-            <input type="text" id="regObservaciones" class="input-pro flex-1 py-2" tabindex="19">
+            <input type="text" id="regObservaciones" class="input-pro flex-1 py-2">
           </div>
           <div class="flex items-center gap-3">
             <label class="label-inline w-32">AVANCES:</label>
-            <input type="text" id="regAvances" class="input-pro flex-1 py-2" tabindex="20">
+            <input type="text" id="regAvances" class="input-pro flex-1 py-2">
           </div>
           <div class="flex items-center gap-3">
             <label class="label-inline w-32">STATUS:</label>
-            <input type="text" id="regStatus" class="input-pro flex-1 py-2" tabindex="21">
+            <input type="text" id="regStatus" class="input-pro flex-1 py-2">
           </div>
         </div>
 
@@ -664,28 +642,18 @@
             <div class="flex items-center gap-6">
               <div class="flex items-center gap-2">
                 <label class="label-inline">RECEPCIÓN:</label>
-                <input type="text" id="regRecepcion" onchange="formatearFechaTexto(this)" onblur="formatearFechaTexto(this)" class="input-pro w-52 text-xs text-center" tabindex="22">
+                <input type="text" id="regRecepcion" onchange="formatearFechaTexto(this)" onblur="formatearFechaTexto(this)" class="input-pro w-52 text-xs text-center">
               </div>
               <div class="flex items-center gap-2">
                 <label class="label-inline text-blue-400">FECHA ACTUALIZACIÓN:</label>
                 <input type="text" id="regActualizacion" class="input-pro w-52 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
               </div>
             </div>
-            <div class="flex flex-col gap-1.5 pt-1">
-              <div class="flex items-center gap-2">
-                <label class="flex items-center rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-[10px] font-bold text-rose-400 hover:bg-rose-500 hover:text-white transition cursor-pointer shadow-md">
-                  <i class="fa-solid fa-file-pdf mr-1.5 text-xs"></i>Subir Archivos PDF (Máx. 5)
-                  <input type="file" id="inputPdfModal" accept=".pdf" multiple onchange="manejarSubidaPdf(event)" class="hidden">
-                </label>
-                <span id="contadorPdfLabel" class="text-[10px] text-slate-400 font-semibold">0 / 5 archivos</span>
-              </div>
-              <div id="listaPdfsModal" class="flex flex-wrap gap-1.5 max-w-xl"></div>
-            </div>
           </div>
 
           <div class="flex items-center gap-3 ml-auto self-end">
             <button type="button" id="btnImprimirModal" onclick="imprimirDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR FICHA</button>
-            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 hover:text-red-400 transition">ELIMINAR</button>
+            <button type="button" id="btnEliminarModal" onclick="eliminarRegistroDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 transition">ELIMINAR</button>
             <button type="button" onclick="cerrarModalNuevoRegistro()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
             <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-blue-500 shadow-xl transition">GUARDAR CAMBIOS</button>
           </div>
@@ -694,7 +662,7 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN RIGUROSA (1 SOLA PÁGINA) ==================== -->
+  <!-- ==================== ÁREA DE IMPRESIÓN ==================== -->
   <div id="printableArea" style="display: none;"></div>
 
   <script>
@@ -713,12 +681,10 @@
         precioVenta: 500000.00,
         etapa: "",
         etapaActual: "COFINAVIT",
-        pdf: false,
         responsable: "REBECA VELASCO",
         observaciones: "",
         avances: "CARGADO EN LA PAGINA ENLACE DICIEMBRE 2025",
         status: "",
-        envio: "",
         superficie: "",
         construccion: "",
         tipoPropiedad: "PROPIEDAD",
@@ -732,36 +698,16 @@
       const guardado = localStorage.getItem('enlace_business_db');
       let datos = datosIniciales;
       if (guardado) {
-        try {
-          datos = JSON.parse(guardado);
-        } catch(e) {
-          datos = datosIniciales;
-        }
+        try { datos = JSON.parse(guardado); } catch(e) { datos = datosIniciales; }
       }
       return datos;
     }
 
-    function guardarBaseDatos() {
-      localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
-    }
-
-    function cargarAgenda() {
-      const guardado = localStorage.getItem('enlace_business_agenda');
-      return guardado ? JSON.parse(guardado) : {};
-    }
-
-    function guardarAgendaStorage() {
-      localStorage.setItem('enlace_business_agenda', JSON.stringify(agendaData));
-    }
-
-    function cargarTareas() {
-      const guardado = localStorage.getItem('enlace_business_tareas');
-      return guardado ? JSON.parse(guardado) : [];
-    }
-
-    function guardarTareasStorage() {
-      localStorage.setItem('enlace_business_tareas', JSON.stringify(tareasData));
-    }
+    function guardarBaseDatos() { localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos)); }
+    function cargarAgenda() { const g = localStorage.getItem('enlace_business_agenda'); return g ? JSON.parse(g) : {}; }
+    function guardarAgendaStorage() { localStorage.setItem('enlace_business_agenda', JSON.stringify(agendaData)); }
+    function cargarTareas() { const g = localStorage.getItem('enlace_business_tareas'); return g ? JSON.parse(g) : []; }
+    function guardarTareasStorage() { localStorage.setItem('enlace_business_tareas', JSON.stringify(tareasData)); }
 
     let baseDatos = cargarBaseDatos();
     let agendaData = cargarAgenda();
@@ -769,7 +715,6 @@
     let idItemEnEdicion = null;
     let tareaIdEnEdicion = null;
     let modoDuplicadosActivo = false;
-    let temporalesArchivosPdf = [];
 
     let fechaActualPlanning = new Date();
     let fechaSeleccionadaStr = null;
@@ -811,27 +756,7 @@
       renderizarDashboardSeguimiento();
     }
 
-    function cerrarModalSeguimiento() {
-      document.getElementById('modalSeguimiento').classList.add('hidden');
-    }
-
-    function redirigirDesdeSeguimiento(tipo, identificador, fechaExtra) {
-      cerrarModalSeguimiento();
-      if (tipo === 'TAREA') {
-        abrirModalTareas();
-        setTimeout(() => { editarTarea(identificador); }, 150);
-      } else if (tipo === 'AGENDA') {
-        abrirModalPlanning();
-        if (fechaExtra) {
-          let partes = fechaExtra.split('-');
-          if (partes.length === 3) {
-            fechaActualPlanning = new Date(partes[0], partes[1] - 1, 1);
-          }
-          seleccionarDiaPlanning(fechaExtra);
-          setTimeout(() => { abrirPostit(fechaExtra, identificador); }, 150);
-        }
-      }
-    }
+    function cerrarModalSeguimiento() { document.getElementById('modalSeguimiento').classList.add('hidden'); }
 
     function renderizarDashboardSeguimiento() {
       let inmueblesConSeguimiento = baseDatos.filter(item => {
@@ -863,7 +788,7 @@
         inmueblesConSeguimiento.forEach(item => {
           let idEnlaceText = item.idEnlace ? item.idEnlace : `ID: ${item.id}`;
           contInm.innerHTML += `
-            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between hover:border-indigo-500/40 transition shadow">
+            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between shadow">
               <div>
                 <div class="flex items-center gap-2 mb-1">
                   <span class="text-xs font-extrabold text-white">⚠️ ${idEnlaceText}</span>
@@ -880,13 +805,9 @@
       const contAct = document.getElementById('dashListaActividades');
       contAct.innerHTML = '';
       let listaGlobalActividades = [];
-      tareasData.forEach(t => {
-        listaGlobalActividades.push({ tipo: 'TAREA', id: t.id, titulo: t.titulo, estado: t.estado, fecha: t.creacion || 'S/D', fechaExtra: '' });
-      });
+      tareasData.forEach(t => { listaGlobalActividades.push({ tipo: 'TAREA', id: t.id, titulo: t.titulo, estado: t.estado, fecha: t.creacion || 'S/D' }); });
       Object.keys(agendaData).forEach(f => {
-        (agendaData[f] || []).forEach(e => {
-          listaGlobalActividades.push({ tipo: 'AGENDA', id: e.id, titulo: e.texto || 'EVENTO', estado: 'PLANNING', fecha: f, fechaExtra: f });
-        });
+        (agendaData[f] || []).forEach(e => { listaGlobalActividades.push({ tipo: 'AGENDA', id: e.id, titulo: e.texto || 'EVENTO', estado: 'PLANNING', fecha: f }); });
       });
       document.getElementById('dashContadorActividades').innerText = `${listaGlobalActividades.length} actividades`;
       if (listaGlobalActividades.length === 0) {
@@ -895,7 +816,7 @@
         listaGlobalActividades.forEach(act => {
           let iconoBadge = act.tipo === 'TAREA' ? '<span class="text-cyan-400">📋 Tarea</span>' : '<span class="text-emerald-400">📅 Planning</span>';
           contAct.innerHTML += `
-            <div onclick="redirigirDesdeSeguimiento('${act.tipo}', '${act.id}', '${act.fechaExtra}')" class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between text-xs cursor-pointer hover:border-indigo-500 transition shadow">
+            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between text-xs shadow">
               <div>
                 <div class="flex items-center gap-2 mb-1">${iconoBadge}<span class="font-extrabold text-white uppercase truncate max-w-[220px]">${act.titulo}</span></div>
                 <span class="text-[10px] text-slate-400">Fecha: ${act.fecha}</span>
@@ -1012,15 +933,8 @@
     }
 
     function cerrarModalPlanning() { document.getElementById('modalPlanning').classList.add('hidden'); }
-
-    function formatearFechaYyyyMmDd(date) {
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    }
-
-    function cambiarMes(dir) {
-      fechaActualPlanning.setMonth(fechaActualPlanning.getMonth() + dir);
-      renderizarCalendario();
-    }
+    function formatearFechaYyyyMmDd(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+    function cambiarMes(dir) { fechaActualPlanning.setMonth(fechaActualPlanning.getMonth() + dir); renderizarCalendario(); }
 
     function renderizarCalendario() {
       const anio = fechaActualPlanning.getFullYear();
@@ -1121,9 +1035,7 @@
       if (!fechaSeleccionadaStr || !eventoActivoId) return;
       let eventos = agendaData[fechaSeleccionadaStr] || [];
       const idx = eventos.findIndex(e => e.id === eventoActivoId);
-      if (idx > -1) {
-        eventos[idx].texto = document.getElementById('postitTextoEdit').value.trim();
-      }
+      if (idx > -1) { eventos[idx].texto = document.getElementById('postitTextoEdit').value.trim(); }
       guardarAgendaStorage();
       renderizarCalendario();
       renderizarListaEventosDiaDerecha(fechaSeleccionadaStr);
@@ -1148,14 +1060,11 @@
     function abrirModalNuevoRegistro() {
       document.getElementById('formNuevo').reset();
       idItemEnEdicion = null;
-      temporalesArchivosPdf = [];
-      actualizarVistaPdfsModal();
       document.getElementById('regId').value = "";
       document.getElementById('regId').readOnly = false;
       document.getElementById('regActualizacion').value = "15 JULIO 2025";
       document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
       document.getElementById('btnEliminarModal').classList.add('hidden');
-      document.getElementById('indicadorSeguimientoActivo').classList.add('hidden');
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
     }
 
@@ -1164,9 +1073,6 @@
       if (!item) return;
 
       idItemEnEdicion = item.id;
-      temporalesArchivosPdf = item.archivosPdf ? [...item.archivosPdf] : [];
-      actualizarVistaPdfsModal();
-
       document.getElementById('regId').value = item.id;
       document.getElementById('regId').readOnly = true;
       document.getElementById('regIdEnlace').value = item.idEnlace || "";
@@ -1200,59 +1106,6 @@
     }
 
     function cerrarModalNuevoRegistro() { document.getElementById('modalNuevoRegistro').classList.add('hidden'); }
-
-    function descargarPdfSeguro(base64Data, nombreArchivo) {
-      try {
-        let arr = base64Data.split(',');
-        let mime = arr[0].match(/:(.*?);/)[1];
-        let bstr = atob(arr[1]);
-        let n = bstr.length;
-        let u8arr = new Uint8Array(n);
-        while(n--) { u8arr[n] = bstr.charCodeAt(n); }
-        let blob = new Blob([u8arr], {type: mime});
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = nombreArchivo || "documento.pdf";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } catch (e) { alert("Error al descargar PDF."); }
-    }
-
-    function manejarSubidaPdf(e) {
-      const files = Array.from(e.target.files);
-      if (files.length === 0) return;
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          temporalesArchivosPdf.push({ nombre: file.name, data: evt.target.result });
-          actualizarVistaPdfsModal();
-        };
-        reader.readAsDataURL(file);
-      });
-      e.target.value = "";
-    }
-
-    function eliminarPdfTemporal(index) {
-      temporalesArchivosPdf.splice(index, 1);
-      actualizarVistaPdfsModal();
-    }
-
-    function actualizarVistaPdfsModal() {
-      const contenedor = document.getElementById('listaPdfsModal');
-      const labelContador = document.getElementById('contadorPdfLabel');
-      contenedor.innerHTML = '';
-      labelContador.innerText = `${temporalesArchivosPdf.length} / 5 archivos`;
-      temporalesArchivosPdf.forEach((pdf, index) => {
-        contenedor.innerHTML += `
-          <div class="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[10px] text-slate-300">
-            <i class="fa-solid fa-file-pdf text-rose-400"></i>
-            <span class="truncate max-w-[120px]">${pdf.nombre}</span>
-            <button type="button" onclick="eliminarPdfTemporal(${index})" class="text-red-400 ml-1"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-        `;
-      });
-    }
 
     function formatearFechaTexto(input) {
       let val = input.value.trim();
@@ -1326,7 +1179,7 @@
         tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim(),
         recepcion: document.getElementById('regRecepcion').value.trim(),
         actualizacion: document.getElementById('regActualizacion').value.trim(),
-        archivosPdf: temporalesArchivosPdf,
+        archivosPdf: [],
         responsable: document.getElementById('regResponsable').value.trim()
       };
 
@@ -1412,6 +1265,9 @@
       const txt = document.getElementById('inputBuscador').value.toLowerCase();
 
       let resultados = baseDatos.filter(item => {
+        if (modoDuplicadosActivo) {
+          return baseDatos.filter(x => String(x.idEnlace) === String(item.idEnlace) && item.idEnlace !== "").length > 1;
+        }
         return (!edo || item.estado === edo) &&
                (!mun || item.municipio === mun) &&
                (!col || item.colonia === col) &&
@@ -1423,6 +1279,25 @@
       document.getElementById('kpiTotalRegistros').innerText = resultados.length;
       const sumaVenta = resultados.reduce((acc, i) => acc + (Number(i.precioVenta) || 0), 0);
       document.getElementById('kpiPrecioPromedio').innerText = `$${(resultados.length > 0 ? sumaVenta / resultados.length : 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+      const tipos = resultados.map(i => i.tipoPropiedad).filter(Boolean);
+      let tipoPred = "N/A";
+      let tipoCount = 0;
+      if (tipos.length > 0) {
+        const conteo = tipos.reduce((acc, t) => { acc[t] = (acc[t] || 0) + 1; return acc; }, {});
+        tipoPred = Object.keys(conteo).reduce((a, b) => conteo[a] > conteo[b] ? a : b);
+        tipoCount = conteo[tipoPred];
+      }
+      document.getElementById('kpiTipoPredominante').innerText = tipoPred;
+      document.getElementById('kpiTipoDetalle').innerText = `${tipoCount} de los registros`;
+
+      const carteras = resultados.map(i => i.cartera).filter(Boolean);
+      let carteraMain = "N/A";
+      if (carteras.length > 0) {
+        const conteoCart = carteras.reduce((acc, c) => { acc[c] = (acc[c] || 0) + 1; return acc; }, {});
+        carteraMain = Object.keys(conteoCart).reduce((a, b) => conteoCart[a] > conteoCart[b] ? a : b);
+      }
+      document.getElementById('kpiCarteraPrincipal').innerText = carteraMain;
 
       const tbody = document.getElementById('tablaRegistros');
       tbody.innerHTML = '';
@@ -1452,7 +1327,6 @@
       document.getElementById('infoTotalPie').innerText = `Total: ${resultados.length}`;
     }
 
-    // ==================== IMPRESIÓN MAGISTRAL DE 1 SOLA HOJA ==================== -->
     function imprimirDesdeModal() {
       const idVal = document.getElementById('regId').value.trim();
       const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
@@ -1483,8 +1357,6 @@
       printableArea.style.display = 'block';
       printableArea.innerHTML = `
         <div style="font-family: Arial, sans-serif; color: #0f172a; width: 100%; max-width: 195mm; margin: 0 auto; background: #ffffff; box-sizing: border-box;">
-          
-          <!-- ENCABEZADO -->
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 6px; margin-bottom: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <div style="width: 42px; height: 42px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 900;">EB</div>
@@ -1500,7 +1372,6 @@
             </div>
           </div>
 
-          <!-- TARJETAS FINANCIERAS -->
           <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px;">
             <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #3b82f6; padding: 5px; border-radius: 4px; text-align: center;">
               <div style="font-size: 7.5px; font-weight: 800; color: #475569; margin-bottom: 1px;">VALOR PRE AUTORIZADO</div>
@@ -1520,7 +1391,6 @@
             </div>
           </div>
 
-          <!-- UBICACIÓN E INFORMACIÓN -->
           <div style="margin-bottom: 7px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
             <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase;">
               📍 UBICACIÓN E INFORMACIÓN GENERAL DEL INMUEBLE
@@ -1555,7 +1425,6 @@
             </table>
           </div>
 
-          <!-- ESTATUS LEGAL Y OPERATIVO -->
           <div style="margin-bottom: 7px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
             <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase;">
               ⚖️ ESTATUS LEGAL Y SEGUIMIENTO OPERATIVO
@@ -1586,7 +1455,6 @@
             </table>
           </div>
 
-          <!-- PIE DE PÁGINA -->
           <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #0f172a; padding-top: 5px; margin-top: 6px; font-size: 9px;">
             <div>
               <div><strong>Responsable:</strong> <span style="font-weight: 900;">${responsableVal || 'N/A'}</span> &nbsp;|&nbsp; <strong>Recepción:</strong> <span style="font-weight: 800;">${recepcionVal || 'N/A'}</span></div>
@@ -1596,10 +1464,8 @@
               <div style="font-weight: 900; color: #2563eb; font-size: 10px;">www.enlacebusiness.mx</div>
             </div>
           </div>
-
         </div>
       `;
-
       window.print();
       printableArea.style.display = 'none';
     }
