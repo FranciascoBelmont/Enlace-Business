@@ -204,7 +204,7 @@
 
         <!-- Fila 2: Botonera de Acción Izquierda y Derecha Alineada -->
         <div class="flex flex-wrap items-center justify-between w-full pt-1 gap-2">
-          <!-- 4 Botones Nuevos de Lado Izquierdo -->
+          <!-- Botonera de Módulos (Incluyendo Seguimiento Activo) -->
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="abrirModalPlanning()" class="flex items-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-calendar-days mr-1.5"></i>Planning
@@ -212,7 +212,7 @@
             <button onclick="abrirModalTareas()" class="flex items-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-semibold text-cyan-400 hover:bg-cyan-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-list-check mr-1.5"></i>Tareas
             </button>
-            <button onclick="alert('Módulo Seguimiento en desarrollo')" class="flex items-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-[10px] font-semibold text-indigo-400 hover:bg-indigo-500 hover:text-white transition">
+            <button onclick="abrirModalSeguimiento()" class="flex items-center rounded-xl border border-indigo-500/60 bg-indigo-500/20 px-3 py-1.5 text-[10px] font-bold text-indigo-300 hover:bg-indigo-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-chart-line mr-1.5"></i>Seguimiento
             </button>
             <button onclick="alert('Módulo Avalúos en desarrollo')" class="flex items-center rounded-xl border border-pink-500/40 bg-pink-500/10 px-3 py-1.5 text-[10px] font-semibold text-pink-400 hover:bg-pink-500 hover:text-white transition">
@@ -263,6 +263,90 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- ==================== MODAL DE SEGUIMIENTO / DASHBOARD MAESTRO (NUEVO) ==================== -->
+  <div id="modalSeguimiento" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-7xl rounded-2xl modal-box p-6 sm:p-10 relative">
+      
+      <!-- Cabecera del Dashboard -->
+      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-5 mb-6">
+        <div class="flex items-center space-x-4">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-chart-line text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO - DASHBOARD DE SEGUIMIENTO INTEGRAL</h2>
+            <p class="text-xs text-indigo-400 font-semibold">Panel Maestro de Control Cruzado (Inmuebles, Tareas y Planning)</p>
+          </div>
+        </div>
+        <button onclick="cerrarModalSeguimiento()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Tarjetas de Resumen KPI del Seguimiento -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-6">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/80 p-4 text-center shadow">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">INMUEBLES CON SEGUIMIENTO</span>
+          <p id="dashKpiInmueblesSeg" class="mt-1.5 text-xl font-extrabold text-indigo-400">0</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-center shadow">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">TAREAS TOTALES / PENDIENTES</span>
+          <p id="dashKpiTareas" class="mt-1.5 text-xl font-extrabold text-cyan-400">0 / 0</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-center shadow">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">EVENTOS CALENDARIO (PLANNING)</span>
+          <p id="dashKpiEventos" class="mt-1.5 text-xl font-extrabold text-emerald-400">0</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-center shadow">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ESTATUS GLOBAL DEL PORTAFOLIO</span>
+          <p id="dashKpiEstatus" class="mt-1.5 text-xs font-extrabold text-amber-400 truncate">ACTIVO & MONITORIZADO</p>
+        </div>
+      </div>
+
+      <!-- Contenido Principal en Dos Columnas -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Columna Izquierda: Inmuebles con Tareas o Planning Vinculados -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-xs font-extrabold text-indigo-400 uppercase tracking-wider flex items-center">
+              <i class="fa-solid fa-building mr-2"></i>Inmuebles bajo Seguimiento Operativo
+            </h3>
+            <span id="dashContadorInmuebles" class="text-xs text-slate-400 font-semibold">0 inmuebles</span>
+          </div>
+
+          <div id="dashListaInmueblesSeg" class="space-y-3 max-h-[380px] overflow-y-auto custom-scrollbar pr-2">
+            <!-- Inyectado dinámicamente -->
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+            Haz clic en <span class="text-indigo-400 font-bold">Abrir Expediente</span> para consultar o editar la propiedad.
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Tareas y Eventos Recientes de la Agenda -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-xs font-extrabold text-cyan-400 uppercase tracking-wider flex items-center">
+              <i class="fa-solid fa-list-check mr-2"></i>Agenda y Tareas Activas Globales
+            </h3>
+            <span id="dashContadorActividades" class="text-xs text-slate-400 font-semibold">0 actividades</span>
+          </div>
+
+          <div id="dashListaActividades" class="space-y-3 max-h-[380px] overflow-y-auto custom-scrollbar pr-2">
+            <!-- Inyectado dinámicamente -->
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 text-right">
+            <span>Gestionado desde Planning y Tareas</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 
   <!-- ==================== MODAL DE TAREAS EJECUTIVO ==================== -->
@@ -814,6 +898,122 @@
       limpiar();
     }
 
+    // MÓDULO DE SEGUIMIENTO (DASHBOARD MAESTRO)
+    function abrirModalSeguimiento() {
+      document.getElementById('modalSeguimiento').classList.remove('hidden');
+      renderizarDashboardSeguimiento();
+    }
+
+    function cerrarModalSeguimiento() {
+      document.getElementById('modalSeguimiento').classList.add('hidden');
+    }
+
+    function renderizarDashboardSeguimiento() {
+      // 1. Filtrar inmuebles que tengan tareas o eventos en calendario vinculados
+      let inmueblesConSeguimiento = baseDatos.filter(item => {
+        let enTareas = tareasData.some(t => String(t.inmuebleId) === String(item.id));
+        let enAgenda = false;
+        Object.keys(agendaData).forEach(f => {
+          let evs = agendaData[f] || [];
+          if (evs.some(e => String(e.inmuebleId) === String(item.id))) enAgenda = true;
+        });
+        return enTareas || enAgenda;
+      });
+
+      // KPIs
+      document.getElementById('dashKpiInmueblesSeg').innerText = inmueblesConSeguimiento.length;
+      
+      let totalTareas = tareasData.length;
+      let pendientesTareas = tareasData.filter(t => t.estado === 'PENDIENTE' || t.estado === 'EN PROCESO').length;
+      document.getElementById('dashKpiTareas').innerText = `${totalTareas} / ${pendientesTareas}`;
+
+      let totalEventosAgenda = 0;
+      Object.keys(agendaData).forEach(f => {
+        totalEventosAgenda += (agendaData[f] || []).length;
+      });
+      document.getElementById('dashKpiEventos').innerText = totalEventosAgenda;
+
+      // Renderizar Lista de Inmuebles bajo Seguimiento
+      const contInm = document.getElementById('dashListaInmueblesSeg');
+      contInm.innerHTML = '';
+      document.getElementById('dashContadorInmuebles').innerText = `${inmueblesConSeguimiento.length} inmuebles`;
+
+      if (inmueblesConSeguimiento.length === 0) {
+        contInm.innerHTML = '<p class="text-xs text-slate-500 italic py-4 text-center">No hay inmuebles vinculados a tareas o calendario actualmente.</p>';
+      } else {
+        inmueblesConSeguimiento.forEach(item => {
+          let idEnlaceText = item.idEnlace ? item.idEnlace : `ID: ${item.id}`;
+          contInm.innerHTML += `
+            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3.5 flex items-center justify-between hover:border-indigo-500/40 transition shadow">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-xs font-extrabold text-white">⚠️ ${idEnlaceText}</span>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${item.cartera || 'GENERAL'}</span>
+                </div>
+                <p class="text-[11px] text-slate-300 truncate max-w-sm">${item.direccion || 'S/D'}, ${item.colonia || ''}</p>
+                <p class="text-[10px] text-blue-400 font-bold mt-0.5">Etapa: ${item.etapaActual || item.etapa || 'S/D'}</p>
+              </div>
+              <button onclick="cerrarModalSeguimiento(); abrirModalEditarRegistro('${item.id}')" class="rounded-lg bg-indigo-600/20 px-3 py-2 text-[11px] font-bold text-indigo-300 hover:bg-indigo-600 hover:text-white transition shadow">
+                Abrir Expediente
+              </button>
+            </div>
+          `;
+        });
+      }
+
+      // Renderizar Tareas y Eventos Recientes
+      const contAct = document.getElementById('dashListaActividades');
+      contAct.innerHTML = '';
+      
+      let listaGlobalActividades = [];
+      tareasData.forEach(t => {
+        listaGlobalActividades.push({
+          tipo: 'TAREA',
+          titulo: t.titulo,
+          estado: t.estado,
+          prioridad: t.prioridad,
+          fecha: t.creacion || 'S/D',
+          inmuebleId: t.inmuebleId
+        });
+      });
+
+      Object.keys(agendaData).forEach(f => {
+        let evs = agendaData[f] || [];
+        evs.forEach(e => {
+          listaGlobalActividades.push({
+            tipo: 'AGENDA',
+            titulo: e.texto || 'EVENTO DE CALENDARIO',
+            estado: 'PLANNING',
+            prioridad: 'MEDIA',
+            fecha: f,
+            inmuebleId: e.inmuebleId
+          });
+        });
+      });
+
+      document.getElementById('dashContadorActividades').innerText = `${listaGlobalActividades.length} actividades`;
+
+      if (listaGlobalActividades.length === 0) {
+        contAct.innerHTML = '<p class="text-xs text-slate-500 italic py-4 text-center">No hay tareas o eventos registrados.</p>';
+      } else {
+        listaGlobalActividades.slice(0, 8).forEach(act => {
+          let iconoBadge = act.tipo === 'TAREA' ? '<span class="text-cyan-400">📋 Tarea</span>' : '<span class="text-emerald-400">📅 Planning</span>';
+          contAct.innerHTML += `
+            <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-3 flex items-center justify-between text-xs">
+              <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                  ${iconoBadge}
+                  <span class="font-extrabold text-white uppercase truncate max-w-[200px]">${act.titulo}</span>
+                </div>
+                <span class="text-[10px] text-slate-400">Fecha / Registro: ${act.fecha}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-slate-300 border border-slate-700">${act.estado}</span>
+            </div>
+          `;
+        });
+      }
+    }
+
     // MÓDULO DE TAREAS
     function abrirModalTareas() {
       document.getElementById('modalTareas').classList.remove('hidden');
@@ -1286,7 +1486,6 @@
       document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
       document.getElementById('btnEliminarModal').classList.add('hidden');
       
-      // Ocultar indicador de seguimiento en nuevo registro
       document.getElementById('indicadorSeguimientoActivo').classList.add('hidden');
       document.getElementById('indicadorSeguimientoActivo').classList.remove('flex');
 
@@ -1297,11 +1496,9 @@
     function verificarSeguimientoInmueble(idInmueble) {
       let tieneSeguimiento = false;
 
-      // 1. Verificar si está en Tareas
       const enTareas = tareasData.some(t => String(t.inmuebleId) === String(idInmueble));
       if (enTareas) tieneSeguimiento = true;
 
-      // 2. Verificar si está en el Calendario (Agenda)
       if (!tieneSeguimiento) {
         Object.keys(agendaData).forEach(fecha => {
           let eventos = agendaData[fecha] || [];
@@ -1358,7 +1555,6 @@
       document.getElementById('regRecepcion').value = item.recepcion || "";
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
 
-      // VERIFICAR SI TIENE TAREAS O EVENTOS DE CALENDARIO VINCULADOS
       verificarSeguimientoInmueble(item.id);
 
       document.getElementById('modalTituloTexto').innerText = `EDITAR REGISTRO ID: ${item.id}`;
