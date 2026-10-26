@@ -204,7 +204,7 @@
 
         <!-- Fila 2: Botonera de Acción Izquierda y Derecha Alineada -->
         <div class="flex flex-wrap items-center justify-between w-full pt-1 gap-2">
-          <!-- 4 Botones Nuevos de Lado Izquierdo -->
+          <!-- 4 Botones de Lado Izquierdo (Planning, Tareas, Seguimiento, Avalúos) -->
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="abrirModalPlanning()" class="flex items-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-calendar-days mr-1.5"></i>Planning
@@ -212,7 +212,7 @@
             <button onclick="abrirModalTareas()" class="flex items-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-semibold text-cyan-400 hover:bg-cyan-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-list-check mr-1.5"></i>Tareas
             </button>
-            <button onclick="alert('Módulo Seguimiento en desarrollo')" class="flex items-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-[10px] font-semibold text-indigo-400 hover:bg-indigo-500 hover:text-white transition">
+            <button onclick="abrirModalSeguimiento()" class="flex items-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-[10px] font-semibold text-indigo-400 hover:bg-indigo-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-chart-line mr-1.5"></i>Seguimiento
             </button>
             <button onclick="alert('Módulo Avalúos en desarrollo')" class="flex items-center rounded-xl border border-pink-500/40 bg-pink-500/10 px-3 py-1.5 text-[10px] font-semibold text-pink-400 hover:bg-pink-500 hover:text-white transition">
@@ -265,6 +265,77 @@
     </main>
   </div>
 
+  <!-- ==================== MÓDULO DE SEGUIMIENTO INTEGRAL (CUARTO MÓDULO) ==================== -->
+  <div id="modalSeguimiento" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-6xl rounded-2xl modal-box p-8 sm:p-10 relative">
+      
+      <!-- Cabecera Módulo Seguimiento -->
+      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-5 mb-6">
+        <div class="flex items-center space-x-4">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-chart-line text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO - CENTRO DE SEGUIMIENTO INTEGRAL</h2>
+            <p class="text-xs text-indigo-400 font-semibold">Auditoría Cruzada de Planning, Tareas, Base de Datos y Avalúos</p>
+          </div>
+        </div>
+        <button onclick="cerrarModalSeguimiento()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Tarjetas Resumen de Seguimiento -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-6">
+        <div class="rounded-2xl border border-indigo-500/30 bg-indigo-950/20 p-4 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">PROPIEDADES CON SEGUIMIENTO ACTIVO</span>
+          <p id="segKpiActivos" class="mt-1.5 text-2xl font-extrabold text-white">0</p>
+        </div>
+        <div class="rounded-2xl border border-cyan-500/30 bg-cyan-950/20 p-4 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">TAREAS PENDIENTES / EN PROCESO</span>
+          <p id="segKpiTareas" class="mt-1.5 text-2xl font-extrabold text-cyan-400">0</p>
+        </div>
+        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-4 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">EVENTOS EN PLANNING (CALENDARIO)</span>
+          <p id="segKpiEventos" class="mt-1.5 text-2xl font-extrabold text-emerald-400">0</p>
+        </div>
+      </div>
+
+      <!-- Filtro y Listado General de Seguimiento -->
+      <div class="rounded-2xl border border-slate-800 bg-slate-950 p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">FILTRAR SEGUIMIENTO:</span>
+            <select id="filtroSeguimientoEstado" onchange="renderizarTablaSeguimiento()" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-200 focus:border-indigo-500 focus:outline-none">
+              <option value="TODOS">TODOS LOS REGISTROS</option>
+              <option value="CON_SEGUIMIENTO">CON SEGUIMIENTO ACTIVO (⚠️)</option>
+              <option value="SIN_SEGUIMIENTO">SIN SEGUIMIENTO</option>
+            </select>
+          </div>
+          <span id="contadorSeguimientoTotal" class="text-xs text-indigo-400 font-semibold">0 registros auditados</span>
+        </div>
+
+        <!-- Tabla Cruzada de Seguimiento -->
+        <div class="overflow-x-auto max-h-[380px] custom-scrollbar">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900 text-slate-400 uppercase tracking-wider sticky top-0 border-b border-slate-800">
+              <tr>
+                <th class="px-4 py-3">ID / Enlace</th>
+                <th class="px-4 py-3">Ubicación & Cartera</th>
+                <th class="px-4 py-3 text-center">Estado Seguimiento</th>
+                <th class="px-4 py-3">Tareas Operativas Vinculadas</th>
+                <th class="px-4 py-3">Eventos Calendario (Planning)</th>
+                <th class="px-4 py-3 text-center">Acciones / Ir</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSeguimientoCuerpo" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ==================== MODAL DE TAREAS EJECUTIVO ==================== -->
   <div id="modalTareas" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-8 sm:p-10 relative">
@@ -285,7 +356,7 @@
         </button>
       </div>
 
-      <!-- Contenido Principal: Dos Columnas (Formulario izq / Listado der) -->
+      <!-- Contenido Principal: Dos Columnas -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <!-- Columna Izquierda: Crear / Editar Tarea -->
@@ -345,10 +416,9 @@
           </div>
         </div>
 
-        <!-- Columna Derecha: Listado de Tareas (Filtros y Tarjetas) -->
+        <!-- Columna Derecha: Listado de Tareas -->
         <div class="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-950 p-6 flex flex-col justify-between space-y-5">
           <div>
-            <!-- Filtros de Tareas -->
             <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-800">
               <div class="flex items-center gap-3">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">FILTRAR:</span>
@@ -362,10 +432,7 @@
               <span id="contadorTareasTotal" class="text-xs text-cyan-400 font-semibold">0 tareas registradas</span>
             </div>
 
-            <!-- Contenedor Scrollable de Tareas -->
-            <div id="contenedorListaTareas" class="space-y-3 max-h-[420px] overflow-y-auto custom-scrollbar pr-2">
-              <!-- Se inyecta dinámicamente -->
-            </div>
+            <div id="contenedorListaTareas" class="space-y-3 max-h-[420px] overflow-y-auto custom-scrollbar pr-2"></div>
           </div>
 
           <div class="pt-4 border-t border-slate-800 text-right">
@@ -382,7 +449,6 @@
   <div id="modalPlanning" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
-      <!-- Cabecera Modal Planning -->
       <div class="flex items-center justify-between border-b border-emerald-500/20 pb-4 mb-5">
         <div class="flex items-center space-x-3.5">
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white font-bold shadow-lg">
@@ -398,13 +464,10 @@
         </button>
       </div>
 
-      <!-- Contenido Principal: Dos Columnas (Calendario Izq / Editor Der) -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Columna Izquierda: Calendario -->
         <div class="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col justify-between">
           <div>
-            <!-- Controles Mes / Año -->
             <div class="flex items-center justify-between mb-4">
               <button onclick="cambiarMes(-1)" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-300 hover:bg-emerald-600 hover:text-white transition">
                 <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -415,12 +478,10 @@
               </button>
             </div>
 
-            <!-- Días de la Semana -->
             <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 uppercase mb-2">
               <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
             </div>
 
-            <!-- Grilla de Días -->
             <div id="grillaDias" class="grid grid-cols-7 gap-1.5"></div>
           </div>
 
@@ -430,7 +491,6 @@
           </div>
         </div>
 
-        <!-- Columna Derecha: Panel de Notas del Día Seleccionado y Lista de Registrados -->
         <div class="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 flex flex-col justify-between space-y-4">
           <div class="space-y-4">
             <div class="border-b border-emerald-500/20 pb-3">
@@ -438,12 +498,9 @@
               <h4 id="fechaSeleccionadaTitulo" class="text-sm font-extrabold text-white mt-0.5">SELECCIONA UN DÍA</h4>
             </div>
 
-            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA -->
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block mb-2">Eventos Registrados del Día:</span>
-              <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
-                <!-- Se inyecta dinámicamente -->
-              </div>
+              <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1"></div>
             </div>
 
             <div>
@@ -514,7 +571,6 @@
   <div id="modalNuevoRegistro" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-6 sm:p-8 relative">
       
-      <!-- Cabecera Modal -->
       <div class="flex items-center justify-between border-b border-blue-500/20 pb-4 mb-5">
         <div class="flex items-center space-x-3.5">
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
@@ -537,13 +593,10 @@
         </button>
       </div>
 
-      <!-- Formulario Estilo Excel Con Títulos en Línea -->
       <form id="formNuevo" onsubmit="guardarRegistroModal(event)" class="space-y-3.5">
         
-        <!-- BLOQUE SUPERIOR DE DOS COLUMNAS -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-3">
           
-          <!-- COLUMNA IZQUIERDA -->
           <div class="space-y-3">
             <div class="flex items-center gap-3">
               <label class="label-inline w-36">ID:</label>
@@ -571,7 +624,6 @@
             </div>
           </div>
 
-          <!-- COLUMNA DERECHA (Precios, Utilidades y Etapas) -->
           <div class="space-y-3">
             <div class="flex items-center justify-end gap-3">
               <label class="label-inline text-blue-400">PRECIO PRE AUTO:</label>
@@ -601,10 +653,8 @@
 
         </div>
 
-        <!-- FILAS DE UBICACIÓN COMPACTAS -->
         <div class="pt-2 border-t border-slate-800 space-y-3">
           
-          <!-- C.P., ESTADO Y MUNICIPIO -->
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2">
               <label class="label-inline">CÓDIGO POSTAL:</label>
@@ -620,7 +670,6 @@
             </div>
           </div>
 
-          <!-- COLONIA Y DIRECCIÓN -->
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2 flex-1 min-w-[250px]">
               <label class="label-inline">COLONIA:</label>
@@ -632,7 +681,6 @@
             </div>
           </div>
 
-          <!-- SUPERFICIE, CONSTRUCCIÓN Y SEGUIMIENTO -->
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="flex items-center gap-2">
               <label class="label-inline">SUPERFICIE:</label>
@@ -650,7 +698,6 @@
 
         </div>
 
-        <!-- BLOQUES ANCHOS DE TEXTO LARGO (OBSERVACIONES, AVANCES, STATUS) -->
         <div class="pt-2 border-t border-slate-800 space-y-3">
           <div class="flex items-center gap-3">
             <label class="label-inline w-32">OBSERVACIONES:</label>
@@ -666,7 +713,6 @@
           </div>
         </div>
 
-        <!-- RECEPCIÓN, ACTUALIZACIÓN Y BOTONERA FINAL -->
         <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-blue-500/20">
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-6">
@@ -679,7 +725,6 @@
                 <input type="text" id="regActualizacion" readonly class="input-pro w-52 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
               </div>
             </div>
-            <!-- SECCIÓN DE ARCHIVOS PDF (MÁXIMO 5) -->
             <div class="flex flex-col gap-1.5 pt-1">
               <div class="flex items-center gap-2">
                 <label class="flex items-center rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-[10px] font-bold text-rose-400 hover:bg-rose-500 hover:text-white transition cursor-pointer shadow-md">
@@ -705,7 +750,6 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN EXCLUSIVA (FICHA TÉCNICA) ==================== -->
   <div id="printableArea" class="hidden"></div>
 
   <script>
@@ -737,7 +781,6 @@
       localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
     }
 
-    // GESTIÓN DE CALENDARIO / PLANNING
     function cargarAgenda() {
       const guardado = localStorage.getItem('enlace_business_agenda');
       if (!guardado) return {};
@@ -756,7 +799,6 @@
       localStorage.setItem('enlace_business_agenda', JSON.stringify(agendaData));
     }
 
-    // GESTIÓN DE TAREAS OPERATIVAS
     function cargarTareas() {
       const guardado = localStorage.getItem('enlace_business_tareas');
       if (!guardado) return [];
@@ -812,6 +854,123 @@
       document.getElementById('mainApp').classList.remove('flex');
       document.getElementById('loginOverlay').classList.remove('hidden');
       limpiar();
+    }
+
+    // ==================== MÓDULO DE SEGUIMIENTO INTEGRAL (CUARTO MÓDULO) ====================
+    function abrirModalSeguimiento() {
+      document.getElementById('modalSeguimiento').classList.remove('hidden');
+      renderizarTablaSeguimiento();
+    }
+
+    function cerrarModalSeguimiento() {
+      document.getElementById('modalSeguimiento').classList.add('hidden');
+    }
+
+    function renderizarTablaSeguimiento() {
+      const filtro = document.getElementById('filtroSeguimientoEstado').value;
+      const tbody = document.getElementById('tablaSeguimientoCuerpo');
+      tbody.innerHTML = '';
+
+      let totalActivosCount = 0;
+      let totalTareasCount = tareasData.length;
+      let totalEventosCount = 0;
+
+      Object.keys(agendaData).forEach(fecha => {
+        let evs = agendaData[fecha] || [];
+        totalEventosCount += evs.length;
+      });
+
+      let filasAuditoria = baseDatos.map(item => {
+        let tareasInm = tareasData.filter(t => String(t.inmuebleId) === String(item.id));
+        let eventosInm = [];
+        Object.keys(agendaData).forEach(fecha => {
+          let evs = agendaData[fecha] || [];
+          evs.forEach(ev => {
+            if (String(ev.inmuebleId) === String(item.id)) {
+              eventosInm.push({ fecha, texto: ev.texto });
+            }
+          });
+        });
+
+        let tieneSeguimiento = (tareasInm.length > 0 || eventosInm.length > 0);
+        if (tieneSeguimiento) totalActivosCount++;
+
+        return {
+          inmueble: item,
+          tareas: tareasInm,
+          eventos: eventosInm,
+          tieneSeguimiento: tieneSeguimiento
+        };
+      });
+
+      document.getElementById('segKpiActivos').innerText = totalActivosCount;
+      document.getElementById('segKpiTareas').innerText = totalTareasCount;
+      document.getElementById('segKpiEventos').innerText = totalEventosCount;
+
+      let filtradas = filasAuditoria;
+      if (filtro === 'CON_SEGUIMIENTO') {
+        filtradas = filasAuditoria.filter(f => f.tieneSeguimiento);
+      } else if (filtro === 'SIN_SEGUIMIENTO') {
+        filtradas = filasAuditoria.filter(f => !f.tieneSeguimiento);
+      }
+
+      document.getElementById('contadorSeguimientoTotal').innerText = `${filtradas.length} registros auditados`;
+
+      if (filtradas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-500 italic">No se encontraron registros con este filtro de seguimiento.</td></tr>`;
+        return;
+      }
+
+      filtradas.forEach(row => {
+        let i = row.inmueble;
+        let idEnlaceText = i.idEnlace ? i.idEnlace : `ID: ${i.id}`;
+
+        let estadoBadge = row.tieneSeguimiento 
+          ? `<span class="inline-flex items-center gap-1 bg-amber-500/20 border border-amber-500/40 text-amber-400 px-2.5 py-1 rounded-xl text-[10px] font-extrabold shadow"><i class="fa-solid fa-triangle-exclamation"></i> SEGUIMIENTO ACTIVO</span>`
+          : `<span class="inline-flex items-center gap-1 bg-slate-800 text-slate-400 px-2.5 py-1 rounded-xl text-[10px] font-semibold">SIN SEGUIMIENTO</span>`;
+
+        let tareasHtml = '<div class="space-y-1">';
+        if (row.tareas.length > 0) {
+          row.tareas.forEach(t => {
+            let colorEst = t.estado === 'COMPLETADA' ? 'text-emerald-400' : (t.estado === 'EN PROCESO' ? 'text-cyan-400' : 'text-amber-400');
+            tareasHtml += `<div class="text-[11px] font-medium ${colorEst}">• [${t.estado}] ${t.titulo}</div>`;
+          });
+        } else {
+          tareasHtml = '<span class="text-slate-500 italic text-[11px]">Sin tareas</span>';
+        }
+        tareasHtml += '</div>';
+
+        let eventosHtml = '<div class="space-y-1">';
+        if (row.eventos.length > 0) {
+          row.eventos.forEach(ev => {
+            eventosHtml += `<div class="text-[11px] font-medium text-emerald-300">📅 (${ev.fecha}): ${ev.texto || 'Evento'}</div>`;
+          });
+        } else {
+          eventosHtml = '<span class="text-slate-500 italic text-[11px]">Sin eventos en planning</span>';
+        }
+        eventosHtml += '</div>';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="px-4 py-3.5">
+              <div class="font-bold text-white">${i.id}</div>
+              <div class="text-[11px] text-blue-400 font-semibold">${idEnlaceText}</div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="font-bold text-white uppercase">${i.direccion || 'S/D'}</div>
+              <div class="text-[11px] text-slate-400 uppercase">${i.colonia || ''} | ${i.cartera || 'GENERAL'}</div>
+            </td>
+            <td class="px-4 py-3.5 text-center">${estadoBadge}</td>
+            <td class="px-4 py-3.5">${tareasHtml}</td>
+            <td class="px-4 py-3.5">${eventosHtml}</td>
+            <td class="px-4 py-3.5 text-center">
+              <button onclick="cerrarModalSeguimiento(); abrirModalEditarRegistro('${i.id}');" class="h-8 w-8 rounded-xl bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition flex items-center justify-center mx-auto" title="Abrir Expediente">
+                <i class="fa-solid fa-building text-xs"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
     }
 
     // MÓDULO DE TAREAS
@@ -995,7 +1154,7 @@
       }
     }
 
-    // GESTIÓN DE CALENDARIO / PLANNING
+    // PLANNING / CALENDARIO
     function abrirModalPlanning() {
       document.getElementById('modalPlanning').classList.remove('hidden');
       renderizarCalendario();
@@ -1286,7 +1445,6 @@
       document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
       document.getElementById('btnEliminarModal').classList.add('hidden');
       
-      // Ocultar indicador de seguimiento en nuevo registro
       document.getElementById('indicadorSeguimientoActivo').classList.add('hidden');
       document.getElementById('indicadorSeguimientoActivo').classList.remove('flex');
 
@@ -1296,12 +1454,9 @@
 
     function verificarSeguimientoInmueble(idInmueble) {
       let tieneSeguimiento = false;
-
-      // 1. Verificar si está en Tareas
       const enTareas = tareasData.some(t => String(t.inmuebleId) === String(idInmueble));
       if (enTareas) tieneSeguimiento = true;
 
-      // 2. Verificar si está en el Calendario (Agenda)
       if (!tieneSeguimiento) {
         Object.keys(agendaData).forEach(fecha => {
           let eventos = agendaData[fecha] || [];
@@ -1358,7 +1513,6 @@
       document.getElementById('regRecepcion').value = item.recepcion || "";
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
 
-      // VERIFICAR SI TIENE TAREAS O EVENTOS DE CALENDARIO VINCULADOS
       verificarSeguimientoInmueble(item.id);
 
       document.getElementById('modalTituloTexto').innerText = `EDITAR REGISTRO ID: ${item.id}`;
@@ -1581,380 +1735,4 @@
     }
 
     function eliminarRegistro(idItem) {
-      if (confirm(`¿Está seguro de eliminar el registro ID: ${idItem}?`)) {
-        baseDatos = baseDatos.filter(i => String(i.id) !== String(idItem));
-        guardarBaseDatos();
-        actualizarSelectoresFiltros();
-        aplicarFiltros();
-        alert("¡Registro eliminado correctamente!");
-      }
-    }
-
-    function eliminarRegistroDesdeModal() {
-      if (idItemEnEdicion) {
-        if (confirm(`¿Está seguro de eliminar el registro ID: ${idItemEnEdicion}?`)) {
-          baseDatos = baseDatos.filter(i => String(i.id) !== String(idItemEnEdicion));
-          guardarBaseDatos();
-          actualizarSelectoresFiltros();
-          aplicarFiltros();
-          cerrarModalNuevoRegistro();
-          alert("¡Registro eliminado correctamente!");
-        }
-      }
-    }
-
-    function inicializarFiltros() {
-      actualizarSelectoresFiltros();
-    }
-
-    function alCambiarFiltro() {
-      modoDuplicadosActivo = false;
-      actualizarSelectoresFiltros();
-      aplicarFiltros();
-    }
-
-    function actualizarSelectoresFiltros() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const municipioF = document.getElementById('filtroMunicipio').value;
-      const coloniaF = document.getElementById('filtroColonia').value;
-      const responsableF = document.getElementById('filtroResponsable').value;
-      const etapaF = document.getElementById('filtroEtapa').value;
-
-      const estados = [...new Set(baseDatos.map(item => item.estado))].filter(Boolean).sort();
-      const selEstado = document.getElementById('filtroEstado');
-      selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
-      estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
-      if (estados.includes(estadoF)) selEstado.value = estadoF;
-
-      let baseMun = baseDatos;
-      if (selEstado.value) baseMun = baseMun.filter(i => i.estado === selEstado.value);
-      const municipios = [...new Set(baseMun.map(i => i.municipio))].filter(Boolean).sort();
-      const selMunicipio = document.getElementById('filtroMunicipio');
-      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
-      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
-      if (municipios.includes(municipioF)) selMunicipio.value = municipioF;
-
-      let baseCol = baseDatos;
-      if (selEstado.value) baseCol = baseCol.filter(i => i.estado === selEstado.value);
-      if (selMunicipio.value) baseCol = baseCol.filter(i => i.municipio === selMunicipio.value);
-      const colonias = [...new Set(baseCol.map(i => i.colonia))].filter(Boolean).sort();
-      const selColonia = document.getElementById('filtroColonia');
-      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
-      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
-      if (colonias.includes(coloniaF)) selColonia.value = coloniaF;
-
-      let baseResp = baseDatos;
-      if (selEstado.value) baseResp = baseResp.filter(i => i.estado === selEstado.value);
-      if (selMunicipio.value) baseResp = baseResp.filter(i => i.municipio === selMunicipio.value);
-      if (selColonia.value) baseResp = baseResp.filter(i => i.colonia === selColonia.value);
-      const responsables = [...new Set(baseResp.map(i => i.responsable))].filter(Boolean).sort();
-      const selResp = document.getElementById('filtroResponsable');
-      selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
-      responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
-      if (responsables.includes(responsableF)) selResp.value = responsableF;
-
-      let baseEtp = baseResp;
-      if (selResp.value) baseEtp = baseEtp.filter(i => i.responsable === selResp.value);
-      const etapas = [...new Set(baseEtp.map(i => i.etapa))].filter(Boolean).sort();
-      const selEtapa = document.getElementById('filtroEtapa');
-      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
-      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
-      if (etapas.includes(etapaF)) selEtapa.value = etapaF;
-    }
-
-    function borrarFiltros() {
-      document.getElementById('filtroEstado').value = "";
-      document.getElementById('filtroMunicipio').value = "";
-      document.getElementById('filtroColonia').value = "";
-      document.getElementById('filtroResponsable').value = "";
-      document.getElementById('filtroEtapa').value = "";
-      document.getElementById('inputBuscador').value = "";
-      modoDuplicadosActivo = false;
-      actualizarSelectoresFiltros();
-      aplicarFiltros();
-    }
-
-    function filtrarRegistrosDuplicados() {
-      modoDuplicadosActivo = true;
-      document.getElementById('inputBuscador').value = "";
-      aplicarFiltros();
-    }
-
-    function aplicarFiltros() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const municipioF = document.getElementById('filtroMunicipio').value;
-      const coloniaF = document.getElementById('filtroColonia').value;
-      const responsableF = document.getElementById('filtroResponsable').value;
-      const etapaF = document.getElementById('filtroEtapa').value;
-      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase();
-
-      let resultados = baseDatos.filter(item => {
-        const matchEdo = !estadoF || item.estado === estadoF;
-        const matchMun = !municipioF || item.municipio === municipioF;
-        const matchCol = !coloniaF || item.colonia === coloniaF;
-        const matchResp = !responsableF || item.responsable === responsableF;
-        const matchEtp = !etapaF || item.etapa === etapaF;
-        const matchTexto = !textoBusqueda || 
-          String(item.id || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.idEnlace || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.cartera || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.credito || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.colonia || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.municipio || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.estado || '').toLowerCase().includes(textoBusqueda) ||
-          String(item.responsable || '').toLowerCase().includes(textoBusqueda);
-        return matchEdo && matchMun && matchCol && matchResp && matchEtp && matchTexto;
-      });
-
-      if (modoDuplicadosActivo) {
-        let conteoDirecciones = {};
-        baseDatos.forEach(item => {
-          let dir = String(item.direccion || '').trim().toUpperCase();
-          if (dir && dir !== 'S/D' && dir !== '') {
-            conteoDirecciones[dir] = (conteoDirecciones[dir] || 0) + 1;
-          }
-        });
-
-        resultados = baseDatos.filter(item => {
-          let dir = String(item.direccion || '').trim().toUpperCase();
-          return dir && dir !== 'S/D' && dir !== '' && conteoDirecciones[dir] > 1;
-        });
-      }
-
-      let etiquetaFiltroActivo = "";
-      if (coloniaF) {
-        etiquetaFiltroActivo = ` ${coloniaF}`;
-      } else if (municipioF) {
-        etiquetaFiltroActivo = ` ${municipioF}`;
-      } else if (estadoF) {
-        etiquetaFiltroActivo = ` ${estadoF}`;
-      } else if (responsableF) {
-        etiquetaFiltroActivo = ` (${responsableF})`;
-      } else if (etapaF) {
-        etiquetaFiltroActivo = ` (${etapaF})`;
-      } else if (modoDuplicadosActivo) {
-        etiquetaFiltroActivo = ` DUPLICADOS`;
-      }
-
-      document.getElementById('kpiTotalRegistros').innerText = `${resultados.length}${etiquetaFiltroActivo}`;
-
-      if (resultados.length > 0) {
-        let conteoTipos = {};
-        resultados.forEach(i => {
-          let t = i.tipoPropiedad || "PROPIEDAD";
-          conteoTipos[t] = (conteoTipos[t] || 0) + 1;
-        });
-        let maxTipo = Object.keys(conteoTipos)[0];
-        Object.keys(conteoTipos).forEach(t => { if (conteoTipos[t] > conteoTipos[maxTipo]) maxTipo = t; });
-        document.getElementById('kpiTipoPredominante').innerText = maxTipo;
-        document.getElementById('kpiTipoDetalle').innerText = `${conteoTipos[maxTipo]} de los registros`;
-      } else {
-        document.getElementById('kpiTipoPredominante').innerText = "N/A";
-        document.getElementById('kpiTipoDetalle').innerText = "0 registros";
-      }
-
-      const sumaVenta = resultados.reduce((acc, i) => acc + (Number(i.precioVenta) || 0), 0);
-      const promedioVenta = resultados.length > 0 ? (sumaVenta / resultados.length) : 0;
-      document.getElementById('kpiPrecioPromedio').innerText = `$${promedioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-
-      if (resultados.length > 0) {
-        let conteoCar = {};
-        resultados.forEach(i => {
-          let c = (i.cartera && String(i.cartera).trim() && String(i.cartera).toLowerCase() !== 'undefined') ? String(i.cartera).trim() : "GENERAL";
-          conteoCar[c] = (conteoCar[c] || 0) + 1;
-        });
-        let maxCar = Object.keys(conteoCar)[0];
-        Object.keys(conteoCar).forEach(c => { if (conteoCar[c] > conteoCar[maxCar]) maxCar = c; });
-        document.getElementById('kpiCarteraPrincipal').innerText = maxCar;
-      } else {
-        document.getElementById('kpiCarteraPrincipal').innerText = "N/A";
-      }
-
-      const tbody = document.getElementById('tablaRegistros');
-      tbody.innerHTML = '';
-      resultados.forEach(item => {
-        const precioPre = Number(item.precioPre) || 0;
-        const precioVenta = Number(item.precioVenta) || 0;
-        const margenPesos = precioVenta - precioPre;
-        const margenPorc = (precioPre > 0) ? ((margenPesos / precioPre) * 100).toFixed(2) : "0.00";
-        
-        let totalPdfs = (item.archivosPdf && item.archivosPdf.length > 0) ? item.archivosPdf.length : 0;
-        let badgePdf = totalPdfs > 0 
-          ? `<span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-rose-500/20 text-rose-400 font-bold text-xs border border-rose-500/30">${totalPdfs}</span>`
-          : '<span class="text-slate-500">Sin PDF</span>';
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
-            <td class="px-6 py-4">
-              <div class="font-bold text-xs text-white">${item.id}</div>
-              <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.idEnlace || 'S/N'}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="font-bold text-xs text-white">${item.cartera || 'GENERAL'}</div>
-              <div class="text-[11px] text-slate-400 mt-0.5">${item.credito || 'S/N'}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="font-bold text-[11px] text-white uppercase leading-tight">${item.direccion || 'S/D'}</div>
-              <div class="text-[11px] text-blue-400 font-semibold mt-0.5 uppercase">${item.colonia || 'S/D'}</div>
-            </td>
-            <td class="px-6 py-4 text-slate-300">$${precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-            <td class="px-6 py-4 font-bold text-amber-400">$${precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-            <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
-            <td class="px-6 py-4 text-slate-300">${item.etapaActual || item.etapa || 'S/D'}</td>
-            <td class="px-6 py-4 text-center">${badgePdf}</td>
-            <td class="px-6 py-4 text-slate-200">${item.responsable || 'S/N'}</td>
-            <td class="px-6 py-4 text-center">
-              <div class="flex items-center justify-center space-x-2">
-                <button onclick="abrirModalEditarRegistro('${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
-                  <i class="fa-solid fa-pen-to-square text-xs"></i>
-                </button>
-                <button onclick="eliminarRegistro('${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
-                  <i class="fa-solid fa-trash-can text-xs"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
-      document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
-    }
-
-    function exportarExcel() {
-      const datosExportar = baseDatos.map(i => {
-        const pre = Number(i.precioPre) || 0;
-        const venta = Number(i.precioVenta) || 0;
-        const utilPesos = venta - pre;
-        const utilPorc = (pre > 0) ? ((utilPesos / pre) * 100).toFixed(2) + "%" : "0.00%";
-        return {
-          "ID": i.id,
-          "ID ENLACE": i.idEnlace,
-          "NÚMERO DE CRÉDITO": i.credito,
-          "CARTERA": i.cartera,
-          "RESPONSABLE": i.responsable,
-          "TIPO DE PROPIEDAD": i.tipoPropiedad,
-          "CÓDIGO POSTAL": i.cp,
-          "ESTADO": i.estado,
-          "MUNICIPIO": i.municipio,
-          "COLONIA": i.colonia,
-          "DIRECCIÓN": i.direccion,
-          "SUPERFICIE": i.superficie,
-          "CONSTRUCCIÓN": i.construccion,
-          "SEGUIMIENTO": i.envio,
-          "PRECIO PRE-AUTO": pre,
-          "PRECIO VENTA": venta,
-          "UTILIDAD ($)": utilPesos,
-          "UTILIDAD (%)": utilPorc,
-          "ETAPA ACTUAL": i.etapaActual,
-          "ETAPA LEGAL": i.etapa,
-          "OBSERVACIONES": i.observaciones,
-          "AVANCES": i.avances,
-          "STATUS": i.status,
-          "RECEPCIÓN": i.recepcion,
-          "ACTUALIZACIÓN": i.actualizacion,
-          "TOTAL PDFS": i.archivosPdf ? i.archivosPdf.length : 0
-        };
-      });
-      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio Enlace Completo");
-      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte_Completo.xlsx");
-    }
-
-    function importarExcel(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        if (jsonData.length > 0) {
-          let nuevosImportados = jsonData.map((row, index) => {
-            const buscarCampo = (claves) => {
-              for (let key of Object.keys(row)) {
-                if (claves.some(c => key.toLowerCase().trim() === c.toLowerCase().trim())) {
-                  return row[key];
-                }
-              }
-              return undefined;
-            };
-
-            const idVal = buscarCampo(["ID", "id", "Id", "ID / ENLACE"]) || `EN${1000 + index}`;
-            const idEnlaceVal = buscarCampo(["ID ENLACE", "ID Enlace", "ID Enlace Business", "Enlace", "idEnlace"]) || "";
-            const creditoVal = buscarCampo(["NÚMERO DE CRÉDITO", "NUMERO DE CREDITO", "CRÉDITO", "CREDITO", "credito"]) || "";
-            const carteraVal = buscarCampo(["CARTERA", "cartera"]) || "";
-            const responsableVal = buscarCampo(["RESPONSABLE", "responsable"]) || "";
-            const tipoPropiedadVal = buscarCampo(["TIPO DE PROPIEDAD", "TIPO PROPIEDAD", "tipoPropiedad"]) || "";
-            const cpVal = buscarCampo(["CÓDIGO POSTAL", "CODIGO POSTAL", "C.P.", "CP", "cp"]) || "";
-            const estadoVal = buscarCampo(["ESTADO", "estado"]) || "";
-            const municipioVal = buscarCampo(["MUNICIPIO", "MUNICIPIO O ALCALDÍA", "municipio"]) || "";
-            const coloniaVal = buscarCampo(["COLONIA", "colonia"]) || "";
-            const direccionVal = buscarCampo(["DIRECCIÓN", "DIRECCION", "direccion"]) || "";
-            const superficieVal = buscarCampo(["SUPERFICIE", "superficie"]) || "";
-            const construccionVal = buscarCampo(["CONSTRUCCIÓN", "CONSTRUCCION", "construccion"]) || "";
-            let envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "";
-            if (envioVal === "S/D") envioVal = "";
-
-            const precioPreVal = Number(buscarCampo(["PRECIO PRE-AUTO", "PRECIO PRE AUTO", "PRECIO PRE-AUTH", "VALOR PRE AUTORIZADO", "VALOR PRE-AUTORIZADO", "precioPre"])) || 0;
-            const precioVentaVal = Number(buscarCampo(["PRECIO VENTA", "VALOR VENTA", "precioVenta"])) || 0;
-            const etapaActualVal = buscarCampo(["ETAPA ACTUAL", "etapaActual"]) || "";
-            const etapaVal = buscarCampo(["ETAPA LEGAL", "ETAPA", "etapa"]) || "";
-            const observacionesVal = buscarCampo(["OBSERVACIONES", "observaciones"]) || "";
-            const avancesVal = buscarCampo(["AVANCES", "avances"]) || "";
-            const statusVal = buscarCampo(["STATUS", "status"]) || "";
-            
-            const recepcionCruda = buscarCampo(["RECEPCIÓN", "RECEPCION", "recepcion"]);
-            const recepcionVal = limpiarYFormatearFecha(recepcionCruda);
-            const actualizacionVal = buscarCampo(["ACTUALIZACIÓN", "ACTUALIZACION", "actualizacion"]) || "";
-
-            return {
-              id: String(idVal),
-              idEnlace: String(idEnlaceVal),
-              credito: String(creditoVal),
-              cartera: String(carteraVal),
-              responsable: String(responsableVal),
-              tipoPropiedad: String(tipoPropiedadVal),
-              cp: String(cpVal),
-              estado: String(estadoVal),
-              municipio: String(municipioVal),
-              colonia: String(coloniaVal),
-              direccion: String(direccionVal),
-              superficie: String(superficieVal),
-              construccion: String(construccionVal),
-              envio: String(envioVal),
-              precioPre: precioPreVal,
-              precioVenta: precioVentaVal,
-              etapaActual: String(etapaActualVal),
-              etapa: String(etapaVal),
-              observaciones: String(observacionesVal),
-              avances: String(avancesVal),
-              status: String(statusVal),
-              recepcion: String(recepcionVal),
-              actualizacion: String(actualizacionVal),
-              archivosPdf: [],
-              pdf: false
-            };
-          });
-
-          nuevosImportados.forEach(nuevo => {
-            const indexExistente = baseDatos.findIndex(i => String(i.id) === String(nuevo.id));
-            if (indexExistente > -1) {
-              baseDatos[indexExistente] = { ...nuevo, archivosPdf: baseDatos[indexExistente].archivosPdf || [], pdf: (baseDatos[indexExistente].archivosPdf || []).length > 0 };
-            } else {
-              baseDatos.unshift(nuevo);
-            }
-          });
-
-          guardarBaseDatos();
-          actualizarSelectoresFiltros();
-          aplicarFiltros();
-          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
-</body>
-</html>
+      if (confirm(`¿Está
