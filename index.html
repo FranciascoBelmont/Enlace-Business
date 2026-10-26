@@ -370,7 +370,7 @@
                 <input type="text" id="regActualizacion" readonly class="input-pro w-52 bg-blue-950/40 border-blue-500/50 text-blue-300 font-bold text-xs text-center">
               </div>
             </div>
-            <!-- SECCIÓN NUEVA: BOTÓN Y LISTA DE ARCHIVOS PDF (MÁXIMO 5) -->
+            <!-- SECCIÓN DE ARCHIVOS PDF (MÁXIMO 5) -->
             <div class="flex flex-col gap-1.5 pt-1">
               <div class="flex items-center gap-2">
                 <label class="flex items-center rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-[10px] font-bold text-rose-400 hover:bg-rose-500 hover:text-white transition cursor-pointer shadow-md">
@@ -520,6 +520,28 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
+    // FUNCIÓN ROBUSTA PARA ABRIR PDF MEDIANTE BLOB
+    function abrirPdfSeguro(base64Data, nombreArchivo) {
+      try {
+        let arr = base64Data.split(',');
+        let mime = arr[0].match(/:(.*?);/)[1];
+        let bstr = atob(arr[1]);
+        let n = bstr.length;
+        let u8arr = new Uint8Array(n);
+        while(n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        let blob = new Blob([u8arr], {type: mime});
+        let blobUrl = URL.createObjectURL(blob);
+        let win = window.open(blobUrl, '_blank');
+        if (!win) {
+          alert("⚠️ El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio.");
+        }
+      } catch (e) {
+        alert("No se pudo abrir el archivo PDF.");
+      }
+    }
+
     function manejarSubidaPdf(e) {
       const files = Array.from(e.target.files);
       if (files.length === 0) return;
@@ -556,11 +578,15 @@
       labelContador.innerText = `${temporalesArchivosPdf.length} / 5 archivos`;
 
       temporalesArchivosPdf.forEach((pdf, index) => {
+        // Escapamos las comillas simples y dobles de manera segura para evitar errores de sintaxis en el HTML inline
+        let nombreEscapado = pdf.nombre.replace(/"/g, '&quot;');
+        let base64Escapado = pdf.data;
+
         contenedor.innerHTML += `
           <div class="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[10px] text-slate-300">
             <i class="fa-solid fa-file-pdf text-rose-400"></i>
-            <span class="truncate max-w-[120px]" title="${pdf.nombre}">${pdf.nombre}</span>
-            <a href="${pdf.data}" target="_blank" title="Ver PDF" class="text-blue-400 hover:text-blue-300 ml-1"><i class="fa-solid fa-eye"></i></a>
+            <span class="truncate max-w-[120px]" title="${nombreEscapado}">${nombreEscapado}</span>
+            <button type="button" onclick="abrirPdfSeguro('${base64Escapado}', '${nombreEscapado}')" title="Ver PDF" class="text-blue-400 hover:text-blue-300 ml-1 cursor-pointer"><i class="fa-solid fa-eye"></i></button>
             <button type="button" onclick="eliminarPdfTemporal(${index})" title="Eliminar" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-xmark"></i></button>
           </div>
         `;
@@ -884,7 +910,6 @@
         const margenPesos = precioVenta - precioPre;
         const margenPorc = (precioPre > 0) ? ((margenPesos / precioPre) * 100).toFixed(2) : "0.00";
         
-        // INDICADOR NUMÉRICO LIMPIO EN LA TABLA
         let totalPdfs = (item.archivosPdf && item.archivosPdf.length > 0) ? item.archivosPdf.length : 0;
         let badgePdf = totalPdfs > 0 
           ? `<span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-rose-500/20 text-rose-400 font-bold text-xs border border-rose-500/30">${totalPdfs}</span>`
@@ -938,11 +963,7 @@
 
       let listaPdfsHtml = '';
       if (item.archivosPdf && item.archivosPdf.length > 0) {
-        listaPdfsHtml = `<div style="margin-top: 15px;"><strong>Documentos PDF Adjuntos:</strong><ul>`;
-        item.archivosPdf.forEach(p => {
-          listaPdfsHtml += `<li><a href="${p.data}" target="_blank">${p.nombre}</a></li>`;
-        });
-        listaPdfsHtml += `</ul></div>`;
+        listaPdfsHtml = `<div style="margin-top: 15px;"><strong>Documentos PDF Adjuntos (${item.archivosPdf.length}):</strong></div>`;
       }
 
       const htmlFicha = `
