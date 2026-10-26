@@ -520,7 +520,6 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // DESCARGA DIRECTA Y SEGURA DEL PDF AL HACER CLIC EN EL OJO
     function descargarPdfSeguro(base64Data, nombreArchivo) {
       try {
         let arr = base64Data.split(',');
@@ -686,14 +685,14 @@
 
       const datosObjeto = {
         id: idCapturado,
-        idEnlace: document.getElementById('regIdEnlace').value.trim() || "S/N",
-        cartera: document.getElementById('regCartera').value.trim() || "GENERAL",
-        credito: document.getElementById('regCredito').value.trim() || "S/N",
-        estado: document.getElementById('regEstado').value.trim() || "N/A",
-        municipio: document.getElementById('regMunicipio').value.trim() || "N/A",
-        colonia: document.getElementById('regColonia').value.trim() || "N/A",
-        cp: document.getElementById('regCp').value.trim() || "00000",
-        direccion: document.getElementById('regDireccion').value.trim() || "S/D",
+        idEnlace: document.getElementById('regIdEnlace').value.trim() || "",
+        cartera: document.getElementById('regCartera').value.trim() || "",
+        credito: document.getElementById('regCredito').value.trim() || "",
+        estado: document.getElementById('regEstado').value.trim() || "",
+        municipio: document.getElementById('regMunicipio').value.trim() || "",
+        colonia: document.getElementById('regColonia').value.trim() || "",
+        cp: document.getElementById('regCp').value.trim() || "",
+        direccion: document.getElementById('regDireccion').value.trim() || "",
         observaciones: document.getElementById('regObservaciones').value.trim() || "",
         avances: document.getElementById('regAvances').value.trim() || "",
         status: document.getElementById('regStatus').value.trim() || "",
@@ -701,15 +700,15 @@
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
         etapa: document.getElementById('regEtapa').value.trim() || "",
         etapaActual: document.getElementById('regEtapaActual').value.trim() || "",
-        envio: document.getElementById('regEnvio').value.trim() || "S/D",
+        envio: document.getElementById('regEnvio').value.trim() || "",
         superficie: document.getElementById('regSuperficie').value.trim() || "",
         construccion: document.getElementById('regConstruccion').value.trim() || "",
-        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "PROPIEDAD",
+        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "",
         recepcion: document.getElementById('regRecepcion').value.trim() || "",
         actualizacion: document.getElementById('regActualizacion').value.trim() || "",
         archivosPdf: temporalesArchivosPdf,
         pdf: temporalesArchivosPdf.length > 0,
-        responsable: document.getElementById('regResponsable').value.trim() || "BELMONT"
+        responsable: document.getElementById('regResponsable').value.trim() || ""
       };
 
       const indexExistente = baseDatos.findIndex(i => String(i.id) === String(idCapturado));
@@ -1149,19 +1148,19 @@
             };
 
             const idVal = buscarCampo(["ID", "id", "Id", "ID / ENLACE"]) || `EN${1000 + index}`;
-            const idEnlaceVal = buscarCampo(["ID ENLACE", "ID Enlace", "ID Enlace Business", "Enlace", "idEnlace"]) || "S/N";
-            const creditoVal = buscarCampo(["NÚMERO DE CRÉDITO", "NUMERO DE CREDITO", "CRÉDITO", "CREDITO", "credito"]) || "S/N";
-            const carteraVal = buscarCampo(["CARTERA", "cartera"]) || "GENERAL";
-            const responsableVal = buscarCampo(["RESPONSABLE", "responsable"]) || "BELMONT";
-            const tipoPropiedadVal = buscarCampo(["TIPO DE PROPIEDAD", "TIPO PROPIEDAD", "tipoPropiedad"]) || "PROPIEDAD";
-            const cpVal = buscarCampo(["CÓDIGO POSTAL", "CODIGO POSTAL", "C.P.", "CP", "cp"]) || "00000";
-            const estadoVal = buscarCampo(["ESTADO", "estado"]) || "N/A";
-            const municipioVal = buscarCampo(["MUNICIPIO", "MUNICIPIO O ALCALDÍA", "municipio"]) || "N/A";
-            const coloniaVal = buscarCampo(["COLONIA", "colonia"]) || "N/A";
-            const direccionVal = buscarCampo(["DIRECCIÓN", "DIRECCION", "direccion"]) || "S/D";
+            const idEnlaceVal = buscarCampo(["ID ENLACE", "ID Enlace", "ID Enlace Business", "Enlace", "idEnlace"]) || "";
+            const creditoVal = buscarCampo(["NÚMERO DE CRÉDITO", "NUMERO DE CREDITO", "CRÉDITO", "CREDITO", "credito"]) || "";
+            const carteraVal = buscarCampo(["CARTERA", "cartera"]) || "";
+            const responsableVal = buscarCampo(["RESPONSABLE", "responsable"]) || "";
+            const tipoPropiedadVal = buscarCampo(["TIPO DE PROPIEDAD", "TIPO PROPIEDAD", "tipoPropiedad"]) || "";
+            const cpVal = buscarCampo(["CÓDIGO POSTAL", "CODIGO POSTAL", "C.P.", "CP", "cp"]) || "";
+            const estadoVal = buscarCampo(["ESTADO", "estado"]) || "";
+            const municipioVal = buscarCampo(["MUNICIPIO", "MUNICIPIO O ALCALDÍA", "municipio"]) || "";
+            const coloniaVal = buscarCampo(["COLONIA", "colonia"]) || "";
+            const direccionVal = buscarCampo(["DIRECCIÓN", "DIRECCION", "direccion"]) || "";
             const superficieVal = buscarCampo(["SUPERFICIE", "superficie"]) || "";
             const construccionVal = buscarCampo(["CONSTRUCCIÓN", "CONSTRUCCION", "construccion"]) || "";
-            const envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "S/D";
+            const envioVal = buscarCampo(["SEGUIMIENTO", "envio"]) || "";
             const precioPreVal = Number(buscarCampo(["PRECIO PRE-AUTO", "PRECIO PRE AUTO", "PRECIO PRE-AUTH", "VALOR PRE AUTORIZADO", "VALOR PRE-AUTORIZADO", "precioPre"])) || 0;
             const precioVentaVal = Number(buscarCampo(["PRECIO VENTA", "VALOR VENTA", "precioVenta"])) || 0;
             const etapaActualVal = buscarCampo(["ETAPA ACTUAL", "etapaActual"]) || "";
@@ -1215,11 +1214,3 @@
           guardarBaseDatos();
           actualizarSelectoresFiltros();
           aplicarFiltros();
-          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
-</body>
-</html>
