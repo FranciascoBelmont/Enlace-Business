@@ -424,7 +424,7 @@
     let baseDatos = cargarBaseDatos();
     let idItemEnEdicion = null;
     let modoDuplicadosActivo = false;
-    let temporalesArchivosPdf = []; // Almacena temporalmente los archivos PDF del registro en edición
+    let temporalesArchivosPdf = [];
 
     function validarAcceso(e) {
       e.preventDefault();
@@ -520,7 +520,6 @@
       document.getElementById('modalNuevoRegistro').classList.add('hidden');
     }
 
-    // Funciones para manejo de PDFs en el Modal
     function manejarSubidaPdf(e) {
       const files = Array.from(e.target.files);
       if (files.length === 0) return;
@@ -536,7 +535,7 @@
         reader.onload = function(evt) {
           temporalesArchivosPdf.push({
             nombre: file.name,
-            data: evt.target.result // Base64 para guardarlo en localStorage
+            data: evt.target.result
           });
           actualizarVistaPdfsModal();
         };
@@ -885,10 +884,11 @@
         const margenPesos = precioVenta - precioPre;
         const margenPorc = (precioPre > 0) ? ((margenPesos / precioPre) * 100).toFixed(2) : "0.00";
         
-        let badgePdf = '<span class="text-slate-500">Sin PDF</span>';
-        if (item.archivosPdf && item.archivosPdf.length > 0) {
-          badgePdf = `<span class="inline-flex items-center rounded-lg bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-400 border border-rose-500/30"><i class="fa-solid fa-file-pdf mr-1"></i>${item.archivosPdf.length} PDF</span>`;
-        }
+        // INDICADOR NUMÉRICO LIMPIO EN LA TABLA
+        let totalPdfs = (item.archivosPdf && item.archivosPdf.length > 0) ? item.archivosPdf.length : 0;
+        let badgePdf = totalPdfs > 0 
+          ? `<span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-rose-500/20 text-rose-400 font-bold text-xs border border-rose-500/30">${totalPdfs}</span>`
+          : '<span class="text-slate-500">Sin PDF</span>';
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
