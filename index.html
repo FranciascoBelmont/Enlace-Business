@@ -87,7 +87,7 @@
       transform: rotate(0deg) scale(1.01);
     }
 
-    /* ESTILOS EXCLUSIVOS DE IMPRESIÓN (FICHA TÉCNICA VISUAL DEDICADA A 1 SOLA HOJA) */
+    /* ESTILOS EXCLUSIVOS DE IMPRESIÓN (FICHA EJECUTIVA PREMIUM DE 1 SOLA HOJA) */
     @media print {
       body * {
         display: none !important;
@@ -103,9 +103,9 @@
         width: 100% !important;
         height: 100vh !important;
         margin: 0 !important;
-        padding: 4mm 6mm !important;
+        padding: 5mm 8mm !important;
         background: #ffffff !important;
-        color: #000000 !important;
+        color: #0f172a !important;
         box-sizing: border-box !important;
         overflow: hidden !important;
       }
@@ -808,7 +808,7 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN (DISEÑO VISUAL DE 1 SOLA HOJA) ==================== -->
+  <!-- ==================== ÁREA DE IMPRESIÓN (DISEÑO EJECUTIVO PREMIUM DE 1 SOLA HOJA) ==================== -->
   <div id="printableArea" style="display: none;"></div>
 
   <script>
@@ -2049,7 +2049,7 @@
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
-    // FUNCIÓN DE IMPRESIÓN PROFESIONAL Y VISUAL DE 1 SOLA HOJA
+    // ==================== FUNCIÓN DE IMPRESIÓN CON DISEÑO EJECUTIVO PREMIUM (1 SOLA HOJA & LECTURA CÓMODA) ==================== -->
     function imprimirDesdeModal() {
       const idVal = document.getElementById('regId').value.trim();
       const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
@@ -2079,117 +2079,117 @@
       const printableArea = document.getElementById('printableArea');
       printableArea.style.display = 'block';
       printableArea.innerHTML = `
-        <div style="font-family: Arial, sans-serif; color: #1e293b; width: 100%; max-width: 200mm; margin: 0 auto; background: #fff; box-sizing: border-box;">
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #0f172a; width: 100%; max-width: 200mm; margin: 0 auto; background: #ffffff; box-sizing: border-box;">
           
-          <!-- CABECERA EJECUTIVA CON LOGOTIPO ESTILIZADO -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0f172a; padding-bottom: 8px; margin-bottom: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 900; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <!-- ENCABEZADO EJECUTIVO PREMIUM -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: 900; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                 EB
               </div>
               <div>
-                <h1 style="margin: 0; font-size: 15px; font-weight: 900; color: #0f172a; letter-spacing: 0.5px;">ENLACE BUSINESS</h1>
-                <p style="margin: 1px 0 0 0; font-size: 8px; font-weight: 700; color: #64748b; letter-spacing: 1px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA</p>
+                <h1 style="margin: 0; font-size: 18px; font-weight: 900; letter-spacing: 0.8px; color: #ffffff;">ENLACE BUSINESS</h1>
+                <p style="margin: 2px 0 0 0; font-size: 9.5px; font-weight: 700; color: #94a3b8; letter-spacing: 1px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA & LEGAL</p>
               </div>
             </div>
-            <div style="text-align: right; font-size: 10px; line-height: 1.3; background: #f1f5f9; padding: 5px 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
-              <div><strong>ID SISTEMA:</strong> <span style="color: #0f172a; font-weight: bold;">${idVal || 'N/A'}</span></div>
-              <div><strong>ID ENLACE:</strong> <span style="color: #2563eb; font-weight: bold;">${idEnlaceVal || 'N/A'}</span></div>
-              <div><strong>CRÉDITO:</strong> ${creditoVal || 'N/A'}</div>
+            <div style="text-align: right; background: rgba(255, 255, 255, 0.08); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 11px; line-height: 1.4;">
+              <div><strong>ID SISTEMA:</strong> <span style="color: #38bdf8; font-weight: 900;">${idVal || 'N/A'}</span></div>
+              <div><strong>ID ENLACE:</strong> <span style="color: #facc15; font-weight: 900;">${idEnlaceVal || 'N/A'}</span></div>
+              <div><strong>CRÉDITO:</strong> <span style="color: #e2e8f0; font-weight: 700;">${creditoVal || 'N/A'}</span></div>
             </div>
           </div>
 
-          <!-- BLOQUE DE VALORES Y UTILIDAD (DISEÑO VISUAL DE TARJETAS) -->
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px;">
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-top: 3px solid #3b82f6; padding: 6px; border-radius: 6px; text-align: center;">
-              <div style="font-size: 8px; font-weight: bold; color: #64748b; margin-bottom: 1px;">VALOR PRE-AUTO</div>
-              <div style="font-size: 11px; font-weight: 800; color: #0f172a;">${precioPreVal}</div>
+          <!-- TARJETAS DE VALORES Y FINANZAS (DISEÑO DESTACADO) -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 4px solid #3b82f6; padding: 8px 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 9px; font-weight: 800; color: #475569; margin-bottom: 3px; letter-spacing: 0.5px;">VALOR PRE-AUTO</div>
+              <div style="font-size: 12.5px; font-weight: 900; color: #0f172a;">${precioPreVal}</div>
             </div>
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-top: 3px solid #f59e0b; padding: 6px; border-radius: 6px; text-align: center;">
-              <div style="font-size: 8px; font-weight: bold; color: #64748b; margin-bottom: 1px;">VALOR VENTA</div>
-              <div style="font-size: 11px; font-weight: 800; color: #d97706;">${precioVentaVal}</div>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 4px solid #f59e0b; padding: 8px 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 9px; font-weight: 800; color: #475569; margin-bottom: 3px; letter-spacing: 0.5px;">VALOR VENTA</div>
+              <div style="font-size: 12.5px; font-weight: 900; color: #d97706;">${precioVentaVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 6px; text-align: center;">
-              <div style="font-size: 8px; font-weight: bold; color: #166534; margin-bottom: 1px;">UTILIDAD ($)</div>
-              <div style="font-size: 11px; font-weight: 900; color: #15803d;">${utilidadPesosVal}</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 4px solid #16a34a; padding: 8px 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 9px; font-weight: 800; color: #166534; margin-bottom: 3px; letter-spacing: 0.5px;">UTILIDAD ($)</div>
+              <div style="font-size: 12.5px; font-weight: 900; color: #15803d;">${utilidadPesosVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 6px; border-radius: 6px; text-align: center;">
-              <div style="font-size: 8px; font-weight: bold; color: #166534; margin-bottom: 1px;">UTILIDAD (%)</div>
-              <div style="font-size: 11px; font-weight: 900; color: #15803d;">${utilidadPorcVal}</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 4px solid #16a34a; padding: 8px 6px; border-radius: 6px; text-align: center;">
+              <div style="font-size: 9px; font-weight: 800; color: #166534; margin-bottom: 3px; letter-spacing: 0.5px;">UTILIDAD (%)</div>
+              <div style="font-size: 12.5px; font-weight: 900; color: #15803d;">${utilidadPorcVal}</div>
             </div>
           </div>
 
-          <!-- UBICACIÓN E INFORMACIÓN GENERAL -->
-          <div style="margin-bottom: 8px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;">
-            <div style="background: #0f172a; color: white; padding: 4px 8px; font-size: 9px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">
-              📍 UBICACIÓN E INFORMACIÓN GENERAL DEL INMUEBLE
+          <!-- SECCIÓN: UBICACIÓN E INFORMACIÓN GENERAL -->
+          <div style="margin-bottom: 10px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="background: #1e293b; color: white; padding: 6px 10px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+              <span>📍</span> UBICACIÓN E INFORMACIÓN GENERAL DEL INMUEBLE
             </div>
-            <table style="width: 100%; font-size: 9.5px; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569; width: 22%;">DIRECCIÓN:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #1e3a8a; text-transform: uppercase; width: 78%;" colspan="3">${direccionVal || 'N/A'}</td>
+            <table style="width: 100%; font-size: 10.5px; border-collapse: collapse;">
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">DIRECCIÓN:</td>
+                <td style="padding: 6px 10px; font-weight: 900; color: #1e3a8a; text-transform: uppercase; width: 78%;" colspan="3">${direccionVal || 'N/A'}</td>
               </tr>
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">COLONIA:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase;">${coloniaVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569; width: 15%;">C.P.:</td>
-                <td style="padding: 4px 8px; font-weight: 700; width: 25%;">${cpVal || 'N/A'}</td>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">COLONIA:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${coloniaVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; width: 15%; background: #f8fafc;">C.P.:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; width: 25%;">${cpVal || 'N/A'}</td>
               </tr>
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">MUNICIPIO:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">ESTADO:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase;">${estadoVal || 'N/A'}</td>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">MUNICIPIO:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">ESTADO:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${estadoVal || 'N/A'}</td>
               </tr>
               <tr>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">TIPO / SUP:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase;">${tipoPropiedadVal || 'N/A'} &nbsp;|&nbsp; Sup: ${superficieVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">CONSTRUCCIÓN:</td>
-                <td style="padding: 4px 8px; font-weight: 700;">${construccionVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">TIPO / SUP:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;">${tipoPropiedadVal || 'N/A'} &nbsp;|&nbsp; Sup: ${superficieVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">CONSTRUCCIÓN:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a;">${construccionVal || 'N/A'}</td>
               </tr>
             </table>
           </div>
 
-          <!-- ESTATUS LEGAL Y OPERATIVO -->
-          <div style="margin-bottom: 8px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;">
-            <div style="background: #0f172a; color: white; padding: 4px 8px; font-size: 9px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">
-              ⚖️ ESTATUS LEGAL Y SEGUIMIENTO OPERATIVO
+          <!-- SECCIÓN: ESTATUS LEGAL Y OPERATIVO -->
+          <div style="margin-bottom: 10px; background: #ffffff; border: 1px solid #94a3b8; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="background: #1e293b; color: white; padding: 6px 10px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+              <span>⚖️</span> ESTATUS LEGAL Y SEGUIMIENTO OPERATIVO
             </div>
-            <table style="width: 100%; font-size: 9.5px; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569; width: 22%;">CARTERA:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569; width: 22%;">STATUS:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
+            <table style="width: 100%; font-size: 10.5px; border-collapse: collapse;">
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">CARTERA:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">STATUS:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
               </tr>
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">ETAPA ACTUAL:</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">ETAPA ACTUAL:</td>
+                <td style="padding: 6px 10px; font-weight: 900; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
               </tr>
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">ETAPA LEGAL:</td>
-                <td style="padding: 4px 8px; font-weight: 700; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">ETAPA LEGAL:</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #0f172a; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
               </tr>
-              <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">OBSERVACIONES:</td>
-                <td style="padding: 4px 8px; font-weight: 600; text-transform: uppercase;" colspan="3">${observacionesVal || 'N/A'}</td>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">OBSERVACIONES:</td>
+                <td style="padding: 6px 10px; font-weight: 700; color: #0f172a; text-transform: uppercase;" colspan="3">${observacionesVal || 'N/A'}</td>
               </tr>
               <tr>
-                <td style="padding: 4px 8px; font-weight: bold; color: #475569;">AVANCES:</td>
-                <td style="padding: 4px 8px; font-weight: 600; text-transform: uppercase;" colspan="3">${avancesVal || 'N/A'}</td>
+                <td style="padding: 6px 10px; font-weight: 800; color: #334155; background: #f8fafc;">AVANCES:</td>
+                <td style="padding: 6px 10px; font-weight: 700; color: #0f172a; text-transform: uppercase;" colspan="3">${avancesVal || 'N/A'}</td>
               </tr>
             </table>
           </div>
 
           <!-- PIE DE PÁGINA Y RESPONSABLE -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #0f172a; padding-top: 6px; margin-top: 8px; font-size: 8.5px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #1e293b; padding-top: 8px; margin-top: 10px; font-size: 9.5px;">
             <div>
-              <div><strong>RESPONSABLE:</strong> ${responsableVal || 'N/A'}</div>
-              <div><strong>RECEPCIÓN:</strong> ${recepcionVal || 'N/A'} &nbsp;|&nbsp; <strong>ACTUALIZACIÓN:</strong> ${actualizacionVal || 'N/A'}</div>
+              <div><strong>RESPONSABLE:</strong> <span style="color: #0f172a; font-weight: 800;">${responsableVal || 'N/A'}</span></div>
+              <div style="margin-top: 2px; color: #475569;"><strong>RECEPCIÓN:</strong> ${recepcionVal || 'N/A'} &nbsp;|&nbsp; <strong>ACTUALIZACIÓN:</strong> ${actualizacionVal || 'N/A'}</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: bold; color: #2563eb; font-size: 9.5px;">www.enlacebusiness.mx</div>
-              <div style="color: #64748b; font-size: 7.5px;">Documento Oficial Generado por Enlace Business PRO</div>
+              <div style="font-weight: 900; color: #2563eb; font-size: 11px;">www.enlacebusiness.mx</div>
+              <div style="color: #64748b; font-size: 8.5px; font-weight: 600;">Documento Oficial Generado por Enlace Business PRO</div>
             </div>
           </div>
 
