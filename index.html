@@ -589,7 +589,6 @@
       const guardado = localStorage.getItem('enlace_business_agenda');
       if (!guardado) return {};
       let parsed = JSON.parse(guardado);
-      // Migración automática por si había formato viejo de string único
       Object.keys(parsed).forEach(k => {
         if (typeof parsed[k] === 'string') {
           parsed[k] = [{ id: 'evt_' + Date.now(), texto: parsed[k], inmuebleId: '' }];
@@ -597,7 +596,7 @@
           parsed[k] = [{ id: 'evt_' + Date.now(), texto: parsed[k].texto, inmuebleId: parsed[k].inmuebleId || '' }];
         }
       });
-      return parsed; // Estructura: { "YYYY-MM-DD": [ { id, texto, inmuebleId }, ... ] }
+      return parsed;
     }
 
     function guardarAgendaStorage() {
@@ -782,7 +781,6 @@
       alert("¡Evento agregado con éxito al día seleccionado!");
     }
 
-    // ABRIR POST-IT / HOJA FLOTANTE PARA EDITAR EVENTO ESPECÍFICO
     function abrirPostit(fechaStr, evtId) {
       fechaSeleccionadaStr = fechaStr;
       eventoActivoId = evtId;
