@@ -292,17 +292,25 @@
           </div>
         </div>
 
-        <!-- Columna Derecha: Panel de Notas del Día Seleccionado -->
-        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 flex flex-col justify-between">
+        <!-- Columna Derecha: Panel de Notas del Día Seleccionado y Lista de Registrados -->
+        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-5 flex flex-col justify-between space-y-4">
           <div class="space-y-4">
             <div class="border-b border-emerald-500/20 pb-3">
               <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">FECHA SELECCIONADA</span>
               <h4 id="fechaSeleccionadaTitulo" class="text-sm font-extrabold text-white mt-0.5">SELECCIONA UN DÍA</h4>
             </div>
 
+            <!-- LISTA DE EVENTOS REGISTRADOS EN EL DÍA (CON PALOMITA ✅) -->
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 block mb-2">Eventos Registrados del Día:</span>
+              <div id="listaEventosDelDia" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                <!-- Se inyecta dinámicamente -->
+              </div>
+            </div>
+
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Nuevo Evento / Anotación:</label>
-              <textarea id="notaTexto" rows="3" class="input-pro w-full resize-none py-2 text-xs" placeholder="ESCRIBE TU CITA, DILIGENCIA O RECORDATORIO..."></textarea>
+              <textarea id="notaTexto" rows="2" class="input-pro w-full resize-none py-2 text-xs" placeholder="ESCRIBE TU CITA O RECORDATORIO..."></textarea>
             </div>
 
             <div>
@@ -313,7 +321,7 @@
             </div>
           </div>
 
-          <div class="flex items-center space-x-3 pt-4 border-t border-emerald-500/20 mt-4">
+          <div class="pt-2 border-t border-emerald-500/20">
             <button type="button" onclick="agregarEventoDia()" class="w-full rounded-xl bg-emerald-600 py-2.5 text-xs font-extrabold text-white hover:bg-emerald-500 shadow-lg shadow-emerald-600/30 transition">
               <i class="fa-solid fa-plus mr-1.5"></i>AGREGAR EVENTO AL DÍA
             </button>
@@ -584,7 +592,7 @@
       localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
     }
 
-    // GESTIÓN DE CALENDARIO / PLANNING (VINCULACIÓN POR ID ENLACE)
+    // GESTIÓN DE CALENDARIO / PLANNING
     function cargarAgenda() {
       const guardado = localStorage.getItem('enlace_business_agenda');
       if (!guardado) return {};
@@ -749,6 +757,45 @@
       document.getElementById('fechaSeleccionadaTitulo').innerText = fechaFormateada;
       document.getElementById('notaTexto').value = '';
       document.getElementById('notaInmuebleId').value = '';
+
+      renderizarListaEventosDiaDerecha(fechaStr);
+    }
+
+    function renderizarListaEventosDiaDerecha(fechaStr) {
+      const contenedor = document.getElementById('listaEventosDelDia');
+      contenedor.innerHTML = '';
+
+      const eventos = agendaData[fechaStr] || [];
+
+      if (eventos.length === 0) {
+        contenedor.innerHTML = '<p class="text-[11px] text-slate-500 italic py-1">No hay eventos registrados para este día.</p>';
+        return;
+      }
+
+      eventos.forEach(ev => {
+        let textoCorto = ev.texto ? ev.texto : 'NOTA GENERAL / VINCULADA';
+        let badgeInmuebleHtml = '';
+
+        if (ev.inmuebleId) {
+          const inmueble = baseDatos.find(i => String(i.id) === String(ev.inmuebleId));
+          if (inmueble) {
+            let idEnlaceText = inmueble.idEnlace ? inmueble.idEnlace : `ID: ${inmueble.id}`;
+            badgeInmuebleHtml = `<span class="text-[9px] text-blue-400 font-bold block mt-0.5">📌 ${idEnlaceText} - ${inmueble.direccion || 'S/D'}</span>`;
+          }
+        }
+
+        contenedor.innerHTML += `
+          <div onclick="abrirPostit('${fechaStr}', '${ev.id}')" class="rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-2.5 cursor-pointer hover:bg-emerald-900/40 transition shadow">
+            <div class="flex items-start justify-between gap-2">
+              <div class="text-xs font-bold text-slate-200 leading-snug">
+                ✅ ${textoCorto}
+                ${badgeInmuebleHtml}
+              </div>
+              <span class="text-[10px] text-emerald-400 font-semibold whitespace-nowrap"><i class="fa-solid fa-pen-to-square"></i></span>
+            </div>
+          </div>
+        `;
+      });
     }
 
     function agregarEventoDia() {
@@ -777,6 +824,8 @@
 
       guardarAgendaStorage();
       renderizarCalendario();
+      renderizarListaEventosDiaDerecha(fechaSeleccionadaStr);
+
       document.getElementById('notaTexto').value = '';
       document.getElementById('notaInmuebleId').value = '';
       alert("¡Evento agregado con éxito al día seleccionado!");
@@ -848,6 +897,7 @@
 
       guardarAgendaStorage();
       renderizarCalendario();
+      renderizarListaEventosDiaDerecha(fechaSeleccionadaStr);
       cerrarPostit();
       alert("¡Cambios guardados con éxito!");
     }
@@ -867,6 +917,7 @@
 
         guardarAgendaStorage();
         renderizarCalendario();
+        renderizarListaEventosDiaDerecha(fechaSeleccionadaStr);
         cerrarPostit();
         alert("¡Evento eliminado correctamente!");
       }
