@@ -124,22 +124,22 @@
 
       <!-- Barra de Filtros Estructurada -->
       <div class="flex flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-        <!-- Fila 1: Filtros de Selección -->
+        <!-- Fila 1: Filtros de Selección Dinámicos -->
         <div class="flex flex-wrap items-center gap-2.5 w-full">
           <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">FILTRAR POR:</span>
-          <select id="filtroEstado" onchange="alCambiarEstado()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroEstado" onchange="alCambiarFiltro()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS ESTADOS</option>
           </select>
-          <select id="filtroMunicipio" onchange="alCambiarMunicipio()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroMunicipio" onchange="alCambiarFiltro()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS MUNICIPIOS</option>
           </select>
-          <select id="filtroColonia" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroColonia" onchange="alCambiarFiltro()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODAS LAS COLONIAS</option>
           </select>
-          <select id="filtroResponsable" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroResponsable" onchange="alCambiarFiltro()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODOS LOS RESPONSABLES</option>
           </select>
-          <select id="filtroEtapa" onchange="aplicarFiltros()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
+          <select id="filtroEtapa" onchange="alCambiarFiltro()" class="rounded-xl border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-[10px] font-medium text-slate-200 focus:border-blue-500 focus:outline-none">
             <option value="">TODAS LAS ETAPAS LEGALES</option>
           </select>
         </div>
@@ -380,7 +380,7 @@
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
         document.getElementById('mainApp').classList.add('flex');
-        cargarSelectoresIniciales();
+        inicializarFiltros();
         aplicarFiltros();
       } else {
         errorDiv.classList.remove('hidden');
@@ -570,7 +570,7 @@
         alert("¡Registro guardado con éxito!");
       }
 
-      cargarSelectoresIniciales();
+      actualizarSelectoresFiltros();
       aplicarFiltros();
       cerrarModalNuevoRegistro();
     }
@@ -578,7 +578,7 @@
     function eliminarRegistro(idItem) {
       if (confirm(`¿Está seguro de eliminar el registro ID: ${idItem}?`)) {
         baseDatos = baseDatos.filter(i => i.id !== idItem);
-        cargarSelectoresIniciales();
+        actualizarSelectoresFiltros();
         aplicarFiltros();
         alert("¡Registro eliminado correctamente!");
       }
@@ -588,7 +588,7 @@
       if (idItemEnEdicion) {
         if (confirm(`¿Está seguro de eliminar el registro ID: ${idItemEnEdicion}?`)) {
           baseDatos = baseDatos.filter(i => i.id !== idItemEnEdicion);
-          cargarSelectoresIniciales();
+          actualizarSelectoresFiltros();
           aplicarFiltros();
           cerrarModalNuevoRegistro();
           alert("¡Registro eliminado correctamente!");
@@ -596,62 +596,67 @@
       }
     }
 
-    function cargarSelectoresIniciales() {
-      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
-      const etapas = [...new Set(baseDatos.map(item => item.etapa))].sort();
-      const responsables = [...new Set(baseDatos.map(item => item.responsable))].sort();
+    function inicializarFiltros() {
+      actualizarSelectoresFiltros();
+    }
 
+    function alCambiarFiltro() {
+      actualizarSelectoresFiltros();
+      aplicarFiltros();
+    }
+
+    function actualizarSelectoresFiltros() {
+      const estadoF = document.getElementById('filtroEstado').value;
+      const municipioF = document.getElementById('filtroMunicipio').value;
+      const coloniaF = document.getElementById('filtroColonia').value;
+      const responsableF = document.getElementById('filtroResponsable').value;
+      const etapaF = document.getElementById('filtroEtapa').value;
+
+      // 1. Estados (todos los disponibles en base de datos)
+      const estados = [...new Set(baseDatos.map(item => item.estado))].sort();
       const selEstado = document.getElementById('filtroEstado');
       selEstado.innerHTML = '<option value="">TODOS LOS ESTADOS</option>';
       estados.forEach(est => selEstado.innerHTML += `<option value="${est}">${est}</option>`);
+      if (estados.includes(estadoF)) selEstado.value = estadoF;
 
-      const selEtapa = document.getElementById('filtroEtapa');
-      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
-      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
+      // 2. Municipios filtrados por Estado
+      let baseMun = baseDatos;
+      if (selEstado.value) baseMun = baseMun.filter(i => i.estado === selEstado.value);
+      const municipios = [...new Set(baseMun.map(i => i.municipio))].sort();
+      const selMunicipio = document.getElementById('filtroMunicipio');
+      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
+      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
+      if (municipios.includes(municipioF)) selMunicipio.value = municipioF;
 
+      // 3. Colonias filtradas por Estado y Municipio
+      let baseCol = baseDatos;
+      if (selEstado.value) baseCol = baseCol.filter(i => i.estado === selEstado.value);
+      if (selMunicipio.value) baseCol = baseCol.filter(i => i.municipio === selMunicipio.value);
+      const colonias = [...new Set(baseCol.map(i => i.colonia))].sort();
+      const selColonia = document.getElementById('filtroColonia');
+      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
+      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
+      if (colonias.includes(coloniaF)) selColonia.value = colActualColonia = colActual = coloniaF;
+
+      // 4. Responsables filtrados por ubicación actual (Estado, Municipio, Colonia)
+      let baseResp = baseDatos;
+      if (selEstado.value) baseResp = baseResp.filter(i => i.estado === selEstado.value);
+      if (selMunicipio.value) baseResp = baseResp.filter(i => i.municipio === selMunicipio.value);
+      if (selColonia.value) baseResp = baseResp.filter(i => i.colonia === selColonia.value);
+      const responsables = [...new Set(baseResp.map(i => i.responsable))].sort();
       const selResp = document.getElementById('filtroResponsable');
       selResp.innerHTML = '<option value="">TODOS LOS RESPONSABLES</option>';
       responsables.forEach(resp => selResp.innerHTML += `<option value="${resp}">${resp}</option>`);
+      if (responsables.includes(responsableF)) selResp.value = responsableF;
 
-      poblarMunicipios();
-      poblarColonias();
-    }
-
-    function alCambiarEstado() {
-      poblarMunicipios();
-      poblarColonias();
-      aplicarFiltros();
-    }
-
-    function alCambiarMunicipio() {
-      poblarColonias();
-      aplicarFiltros();
-    }
-
-    function poblarMunicipios() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const selMunicipio = document.getElementById('filtroMunicipio');
-      const munActual = selMunicipio.value;
-      let filtrados = baseDatos;
-      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
-      const municipios = [...new Set(filtrados.map(i => i.municipio))].sort();
-      selMunicipio.innerHTML = '<option value="">TODOS LOS MUNICIPIOS</option>';
-      municipios.forEach(m => selMunicipio.innerHTML += `<option value="${m}">${m}</option>`);
-      if (municipios.includes(munActual)) selMunicipio.value = munActual;
-    }
-
-    function poblarColonias() {
-      const estadoF = document.getElementById('filtroEstado').value;
-      const municipioF = document.getElementById('filtroMunicipio').value;
-      const selColonia = document.getElementById('filtroColonia');
-      const colActual = selColonia.value;
-      let filtrados = baseDatos;
-      if (estadoF) filtrados = filtrados.filter(i => i.estado === estadoF);
-      if (municipioF) filtrados = filtrados.filter(i => i.municipio === municipioF);
-      const colonias = [...new Set(filtrados.map(i => i.colonia))].sort();
-      selColonia.innerHTML = '<option value="">TODAS LAS COLONIAS</option>';
-      colonias.forEach(c => selColonia.innerHTML += `<option value="${c}">${c}</option>`);
-      if (colonias.includes(colActual)) selColonia.value = colActual;
+      // 5. Etapas legales filtradas por ubicación y responsable actual
+      let baseEtp = baseResp;
+      if (selResp.value) baseEtp = baseEtp.filter(i => i.responsable === selResp.value);
+      const etapas = [...new Set(baseEtp.map(i => i.etapa))].sort();
+      const selEtapa = document.getElementById('filtroEtapa');
+      selEtapa.innerHTML = '<option value="">TODAS LAS ETAPAS LEGALES</option>';
+      etapas.forEach(etp => selEtapa.innerHTML += `<option value="${etp}">${etp}</option>`);
+      if (etapas.includes(etapaF)) selEtapa.value = etapaF;
     }
 
     function borrarFiltros() {
@@ -661,8 +666,7 @@
       document.getElementById('filtroResponsable').value = "";
       document.getElementById('filtroEtapa').value = "";
       document.getElementById('inputBuscador').value = "";
-      poblarMunicipios();
-      poblarColonias();
+      actualizarSelectoresFiltros();
       aplicarFiltros();
     }
 
@@ -849,7 +853,7 @@
             }
           });
 
-          cargarSelectoresIniciales();
+          actualizarSelectoresFiltros();
           aplicarFiltros();
           alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
         }
