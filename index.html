@@ -73,6 +73,8 @@
       border: 1px solid #eab308;
       transform: rotate(-0.5deg);
     }
+
+    /* REGLAS ABSOLUTAS DE IMPRESIÓN (1 SOLA HOJA CARTA) */
     @media print {
       body * {
         visibility: hidden !important;
@@ -87,7 +89,7 @@
         width: 215mm !important;
         height: 279mm !important;
         margin: 0 !important;
-        padding: 8mm 10mm !important;
+        padding: 6mm 8mm !important;
         background: #ffffff !important;
         color: #0f172a !important;
         box-sizing: border-box !important;
@@ -264,7 +266,6 @@
     </main>
   </div>
 
-  <!-- ==================== MODALES ==================== -->
   <!-- MODAL SEGUIMIENTO -->
   <div id="modalSeguimiento" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-7xl rounded-2xl modal-box p-6 sm:p-10 relative">
@@ -662,7 +663,7 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN ==================== -->
+  <!-- ÁREA DE IMPRESIÓN -->
   <div id="printableArea" style="display: none;"></div>
 
   <script>
@@ -1327,6 +1328,7 @@
       document.getElementById('infoTotalPie').innerText = `Total: ${resultados.length}`;
     }
 
+    // FUNCIÓN DE IMPRESIÓN CON DISEÑO EJECUTIVO EN 1 SOLA HOJA CARTA
     function imprimirDesdeModal() {
       const idVal = document.getElementById('regId').value.trim();
       const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
@@ -1356,173 +1358,95 @@
       const printableArea = document.getElementById('printableArea');
       printableArea.style.display = 'block';
       printableArea.innerHTML = `
-        <div style="font-family: Arial, sans-serif; color: #0f172a; width: 100%; max-width: 195mm; margin: 0 auto; background: #ffffff; box-sizing: border-box;">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 6px; margin-bottom: 8px;">
+        <div style="font-family: Arial, sans-serif; color: #0f172a; width: 100%; max-width: 190mm; margin: 0 auto; background: #ffffff; box-sizing: border-box;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 5px; margin-bottom: 6px;">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 42px; height: 42px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 900;">EB</div>
+              <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #f97316 0%, #2563eb 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 900;">EB</div>
               <div>
-                <h1 style="margin: 0; font-size: 16px; font-weight: 900; color: #0f172a;">ENLACE BUSINESS</h1>
-                <p style="margin: 1px 0 0 0; font-size: 8px; font-weight: 700; color: #2563eb; letter-spacing: 0.5px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA & LEGAL</p>
+                <h1 style="margin: 0; font-size: 15px; font-weight: 900; color: #0f172a;">ENLACE BUSINESS</h1>
+                <p style="margin: 1px 0 0 0; font-size: 7.5px; font-weight: 700; color: #2563eb; letter-spacing: 0.5px;">SISTEMA INTEGRAL DE RECUPERACIÓN INMOBILIARIA & LEGAL</p>
               </div>
             </div>
-            <div style="text-align: right; font-size: 10px; line-height: 1.3;">
+            <div style="text-align: right; font-size: 9.5px; line-height: 1.25;">
               <div><strong>ID:</strong> <span style="font-weight: 900; color: #0f172a;">${idVal || 'N/A'}</span></div>
               <div><strong>ID Enlace Business:</strong> <span style="font-weight: 900; color: #2563eb;">${idEnlaceVal || 'N/A'}</span></div>
               <div><strong>Número de Crédito:</strong> <span style="font-weight: 800;">${creditoVal || 'N/A'}</span></div>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px;">
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #3b82f6; padding: 5px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 7.5px; font-weight: 800; color: #475569; margin-bottom: 1px;">VALOR PRE AUTORIZADO</div>
-              <div style="font-size: 10.5px; font-weight: 900; color: #0f172a;">${precioPreVal}</div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px;">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #3b82f6; padding: 4px; border-radius: 4px; text-align: center;">
+              <div style="font-size: 7px; font-weight: 800; color: #475569; margin-bottom: 1px;">VALOR PRE AUTORIZADO</div>
+              <div style="font-size: 10px; font-weight: 900; color: #0f172a;">${precioPreVal}</div>
             </div>
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #f59e0b; padding: 5px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 7.5px; font-weight: 800; color: #475569; margin-bottom: 1px;">VALOR VENTA</div>
-              <div style="font-size: 10.5px; font-weight: 900; color: #d97706;">${precioVentaVal}</div>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 3px solid #f59e0b; padding: 4px; border-radius: 4px; text-align: center;">
+              <div style="font-size: 7px; font-weight: 800; color: #475569; margin-bottom: 1px;">VALOR VENTA</div>
+              <div style="font-size: 10px; font-weight: 900; color: #d97706;">${precioVentaVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 5px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 7.5px; font-weight: 800; color: #166534; margin-bottom: 1px;">UTILIDAD ($)</div>
-              <div style="font-size: 10.5px; font-weight: 900; color: #15803d;">${utilidadPesosVal}</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 4px; border-radius: 4px; text-align: center;">
+              <div style="font-size: 7px; font-weight: 800; color: #166534; margin-bottom: 1px;">UTILIDAD ($)</div>
+              <div style="font-size: 10px; font-weight: 900; color: #15803d;">${utilidadPesosVal}</div>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 5px; border-radius: 4px; text-align: center;">
-              <div style="font-size: 7.5px; font-weight: 800; color: #166534; margin-bottom: 1px;">UTILIDAD (%)</div>
-              <div style="font-size: 10.5px; font-weight: 900; color: #15803d;">${utilidadPorcVal}</div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid #16a34a; padding: 4px; border-radius: 4px; text-align: center;">
+              <div style="font-size: 7px; font-weight: 800; color: #166534; margin-bottom: 1px;">UTILIDAD (%)</div>
+              <div style="font-size: 10px; font-weight: 900; color: #15803d;">${utilidadPorcVal}</div>
             </div>
           </div>
 
-          <div style="margin-bottom: 7px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
-            <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase;">
+          <div style="margin-bottom: 6px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
+            <div style="background: #1e293b; color: white; padding: 3px 6px; font-size: 8.5px; font-weight: 800; text-transform: uppercase;">
               📍 UBICACIÓN E INFORMACIÓN GENERAL DEL INMUEBLE
             </div>
-            <table style="width: 100%; font-size: 10px; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 9.5px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Tipo de Propiedad:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase; width: 28%;">${tipoPropiedadVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Estado:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase; width: 28%;">${estadoVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Tipo de Propiedad:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase; width: 28%;">${tipoPropiedadVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Estado:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase; width: 28%;">${estadoVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Municipio o Alcaldía:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Codigo Postal:</td>
-                <td style="padding: 4px 8px; font-weight: 900;">${cpVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Municipio o Alcaldía:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase;">${municipioVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Codigo Postal:</td>
+                <td style="padding: 3px 6px; font-weight: 900;">${cpVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Colonia:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase;" colspan="3">${coloniaVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Colonia:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase;" colspan="3">${coloniaVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Dirección:</td>
-                <td style="padding: 4px 8px; font-weight: 900; color: #1e3a8a; text-transform: uppercase;" colspan="3">${direccionVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Dirección:</td>
+                <td style="padding: 3px 6px; font-weight: 900; color: #1e3a8a; text-transform: uppercase;" colspan="3">${direccionVal || 'N/A'}</td>
               </tr>
               <tr>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Superficie:</td>
-                <td style="padding: 4px 8px; font-weight: 900;">${superficieVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Construcción:</td>
-                <td style="padding: 4px 8px; font-weight: 900;">${construccionVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Superficie:</td>
+                <td style="padding: 3px 6px; font-weight: 900;">${superficieVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Construcción:</td>
+                <td style="padding: 3px 6px; font-weight: 900;">${construccionVal || 'N/A'}</td>
               </tr>
             </table>
           </div>
 
-          <div style="margin-bottom: 7px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
-            <div style="background: #1e293b; color: white; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase;">
+          <div style="margin-bottom: 6px; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden;">
+            <div style="background: #1e293b; color: white; padding: 3px 6px; font-size: 8.5px; font-weight: 800; text-transform: uppercase;">
               ⚖️ ESTATUS LEGAL Y SEGUIMIENTO OPERATIVO
             </div>
-            <table style="width: 100%; font-size: 10px; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 9.5px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Cartera:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Status:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Atapa Actual:</td>
-                <td style="padding: 4px 8px; font-weight: 900; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Cartera:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase; width: 28%;">${carteraVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; width: 22%; background: #f8fafc;">Status:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase; width: 28%;">${statusVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Etapa Legal:</td>
-                <td style="padding: 4px 8px; font-weight: 900; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Atapa Actual:</td>
+                <td style="padding: 3px 6px; font-weight: 900; color: #2563eb; text-transform: uppercase;" colspan="3">${etapaActualVal || 'N/A'}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Observaciones:</td>
-                <td style="padding: 4px 8px; font-weight: 800; text-transform: uppercase;" colspan="3">${observacionesVal || 'N/A'}</td>
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Etapa Legal:</td>
+                <td style="padding: 3px 6px; font-weight: 900; text-transform: uppercase;" colspan="3">${etapaVal || 'N/A'}</td>
               </tr>
-              <tr>
-                <td style="padding: 4px 8px; font-weight: 800; color: #334155; background: #f8fafc;">Avances:</td>
-                <td style="padding: 4px 8px; font-weight: 800; text-transform: uppercase;" colspan="3">${avancesVal || 'N/A'}</td>
-              </tr>
-            </table>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #0f172a; padding-top: 5px; margin-top: 6px; font-size: 9px;">
-            <div>
-              <div><strong>Responsable:</strong> <span style="font-weight: 900;">${responsableVal || 'N/A'}</span> &nbsp;|&nbsp; <strong>Recepción:</strong> <span style="font-weight: 800;">${recepcionVal || 'N/A'}</span></div>
-              <div style="margin-top: 1px; color: #475569;"><strong>Fecha Actualización:</strong> ${actualizacionVal || 'N/A'}</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-weight: 900; color: #2563eb; font-size: 10px;">www.enlacebusiness.mx</div>
-            </div>
-          </div>
-        </div>
-      `;
-      window.print();
-      printableArea.style.display = 'none';
-    }
-
-    function exportarExcel() {
-      const datosExportar = baseDatos.map(i => ({
-        "ID": i.id, "ID Enlace Business": i.idEnlace, "Número de Crédito": i.credito, "Cartera": i.cartera, "Responsable": i.responsable, "Tipo de Propiedad": i.tipoPropiedad, "Codigo Postal": i.cp, "Estado": i.estado, "Municipio o Alcaldía": i.municipio, "Colonia": i.colonia, "Dirección": i.direccion, "Superficie": i.superficie, "Construcción": i.construccion, "Valor Pre Autorizado": i.precioPre, "Valor Venta": i.precioVenta, "Atapa Actual": i.etapaActual, "Etapa Legal": i.etapa, "Observaciones": i.observaciones, "Avances": i.avances, "Status": i.status, "Recepción": i.recepcion, "Fecha Actualización": i.actualizacion
-      }));
-      const worksheet = XLSX.utils.json_to_sheet(datosExportar);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Portafolio");
-      XLSX.writeFile(workbook, "Enlace_Business_Pro_Reporte.xlsx");
-    }
-
-    function importarExcel(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        if (jsonData.length > 0) {
-          baseDatos = jsonData.map((row, index) => ({
-            id: String(row["ID"] || `EN${1000 + index}`),
-            idEnlace: String(row["ID Enlace Business"] || row["ID ENLACE"] || ""),
-            credito: String(row["Número de Crédito"] || row["CRÉDITO"] || ""),
-            cartera: String(row["Cartera"] || ""),
-            responsable: String(row["Responsable"] || ""),
-            tipoPropiedad: String(row["Tipo de Propiedad"] || "PROPIEDAD"),
-            cp: String(row["Codigo Postal"] || row["C.P."] || ""),
-            estado: String(row["Estado"] || ""),
-            municipio: String(row["Municipio o Alcaldía"] || row["MUNICIPIO"] || ""),
-            colonia: String(row["Colonia"] || ""),
-            direccion: String(row["Dirección"] || row["DIRECCION"] || ""),
-            superficie: String(row["Superficie"] || ""),
-            construccion: String(row["Construcción"] || ""),
-            precioPre: Number(row["Valor Pre Autorizado"] || row["PRECIO PRE-AUTO"] || 0),
-            precioVenta: Number(row["Valor Venta"] || row["PRECIO VENTA"] || 0),
-            etapaActual: String(row["Atapa Actual"] || row["ETAPA ACTUAL"] || ""),
-            etapa: String(row["Etapa Legal"] || row["ETAPA"] || ""),
-            observaciones: String(row["Observaciones"] || ""),
-            avances: String(row["Avances"] || ""),
-            status: String(row["Status"] || ""),
-            recepcion: String(row["Recepción"] || ""),
-            actualizacion: String(row["Fecha Actualización"] || ""),
-            archivosPdf: []
-          }));
-          guardarBaseDatos();
-          actualizarSelectoresFiltros();
-          aplicarFiltros();
-          alert("¡Excel importado correctamente!");
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
-</body>
-</html>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 3px 6px; font-weight: 800; color: #334155; background: #f8fafc;">Observaciones:</td>
+                <td style="padding: 3px 6px; font-weight: 800; text-transform: uppercase;" colspan
