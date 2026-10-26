@@ -265,7 +265,7 @@
     </main>
   </div>
 
-  <!-- ==================== MODAL DE TAREAS EJECUTIVO (LIGERAMENTE MÁS GRANDE Y VACÍO) ==================== -->
+  <!-- ==================== MODAL DE TAREAS EJECUTIVO ==================== -->
   <div id="modalTareas" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
     <div class="w-full max-w-6xl rounded-2xl modal-box p-8 sm:p-10 relative">
       
@@ -520,9 +520,16 @@
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">
             <i class="fa-solid fa-file-invoice-dollar text-base"></i>
           </div>
-          <div>
-            <h2 id="modalTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
-            <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura y Edición de Inmuebles</p>
+          <div class="flex items-center gap-3">
+            <div>
+              <h2 id="modalTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO</h2>
+              <p class="text-[11px] text-blue-400 font-semibold">Módulo Ejecutivo de Captura y Edición de Inmuebles</p>
+            </div>
+            <!-- INDICADOR DE SEGUIMIENTO ACTIVO (CALENDARIO / TAREAS) -->
+            <div id="indicadorSeguimientoActivo" class="hidden items-center gap-1.5 bg-amber-500/15 border border-amber-500/40 px-3 py-1.5 rounded-xl text-amber-400 text-xs font-extrabold shadow-md animate-pulse" title="Esta propiedad cuenta con seguimiento activo en Tareas o Calendario">
+              <span>⚠️</span>
+              <span>SEGUIMIENTO ACTIVO</span>
+            </div>
           </div>
         </div>
         <button onclick="cerrarModalNuevoRegistro()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
@@ -913,7 +920,6 @@
         else if (t.estado === 'EN PROCESO') badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">EN PROCESO</span>';
         else badgeEstado = '<span class="px-2 py-0.5 rounded text-[9px] font-extrabold bg-slate-700/50 text-slate-300 border border-slate-600">PENDIENTE</span>';
 
-        // ICONO DINÁMICO ANTES DEL TÍTULO SEGÚN EL ESTADO
         let iconoEstadoTitulo = '';
         if (t.estado === 'COMPLETADA') {
           iconoEstadoTitulo = '<span class="text-emerald-400 font-bold mr-1.5"><i class="fa-solid fa-check"></i></span>';
@@ -1279,8 +1285,40 @@
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
       document.getElementById('modalTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO REGISTRO";
       document.getElementById('btnEliminarModal').classList.add('hidden');
+      
+      // Ocultar indicador de seguimiento en nuevo registro
+      document.getElementById('indicadorSeguimientoActivo').classList.add('hidden');
+      document.getElementById('indicadorSeguimientoActivo').classList.remove('flex');
+
       document.getElementById('modalNuevoRegistro').classList.remove('hidden');
       document.getElementById('regId').focus();
+    }
+
+    function verificarSeguimientoInmueble(idInmueble) {
+      let tieneSeguimiento = false;
+
+      // 1. Verificar si está en Tareas
+      const enTareas = tareasData.some(t => String(t.inmuebleId) === String(idInmueble));
+      if (enTareas) tieneSeguimiento = true;
+
+      // 2. Verificar si está en el Calendario (Agenda)
+      if (!tieneSeguimiento) {
+        Object.keys(agendaData).forEach(fecha => {
+          let eventos = agendaData[fecha] || [];
+          if (eventos.some(ev => String(ev.inmuebleId) === String(idInmueble))) {
+            tieneSeguimiento = true;
+          }
+        });
+      }
+
+      const indicador = document.getElementById('indicadorSeguimientoActivo');
+      if (tieneSeguimiento) {
+        indicador.classList.remove('hidden');
+        indicador.classList.add('flex');
+      } else {
+        indicador.classList.add('hidden');
+        indicador.classList.remove('flex');
+      }
     }
 
     function abrirModalEditarRegistro(idItem) {
@@ -1319,6 +1357,9 @@
       document.getElementById('regStatus').value = item.status || "";
       document.getElementById('regRecepcion').value = item.recepcion || "";
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+
+      // VERIFICAR SI TIENE TAREAS O EVENTOS DE CALENDARIO VINCULADOS
+      verificarSeguimientoInmueble(item.id);
 
       document.getElementById('modalTituloTexto').innerText = `EDITAR REGISTRO ID: ${item.id}`;
       document.getElementById('btnEliminarModal').classList.remove('hidden');
