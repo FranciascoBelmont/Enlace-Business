@@ -92,11 +92,11 @@
       body * {
         display: none !important;
       }
-      #printableArea, #printableArea * {
+      #printableArea, #printableArea *, #printableAreaAvaluo, #printableAreaAvaluo * {
         display: block !important;
         visibility: visible !important;
       }
-      #printableArea {
+      #printableArea, #printableAreaAvaluo {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
@@ -223,7 +223,7 @@
 
         <!-- Fila 2: Botonera de Acción Izquierda y Derecha Alineada -->
         <div class="flex flex-wrap items-center justify-between w-full pt-1 gap-2">
-          <!-- Botonera de Módulos (Incluyendo Seguimiento Activo) -->
+          <!-- Botonera de Módulos -->
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="abrirModalPlanning()" class="flex items-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-calendar-days mr-1.5"></i>Planning
@@ -234,7 +234,7 @@
             <button onclick="abrirModalSeguimiento()" class="flex items-center rounded-xl border border-indigo-500/60 bg-indigo-500/20 px-3 py-1.5 text-[10px] font-bold text-indigo-300 hover:bg-indigo-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-chart-line mr-1.5"></i>Seguimiento
             </button>
-            <button onclick="alert('Módulo Avalúos en desarrollo')" class="flex items-center rounded-xl border border-pink-500/40 bg-pink-500/10 px-3 py-1.5 text-[10px] font-semibold text-pink-400 hover:bg-pink-500 hover:text-white transition">
+            <button onclick="abrirModalAvaluos()" class="flex items-center rounded-xl border border-pink-500/40 bg-pink-500/10 px-3 py-1.5 text-[10px] font-semibold text-pink-400 hover:bg-pink-500 hover:text-white transition shadow-md">
               <i class="fa-solid fa-house-chimney-user mr-1.5"></i>Avalúos
             </button>
           </div>
@@ -255,11 +255,11 @@
         </div>
       </div>
 
-      <!-- Tabla -->
+      <!-- Tabla / Tarjetas Responsivas -->
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800">
+            <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider border-b border-slate-800 hidden md:table-header-group">
               <tr>
                 <th class="px-6 py-3.5">ID / ENLACE</th>
                 <th class="px-6 py-3.5">Crédito & Cartera</th>
@@ -282,6 +282,177 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- ==================== MODAL DE AVALÚOS (LISTADO PRINCIPAL) ==================== -->
+  <div id="modalAvaluos" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-7xl rounded-2xl modal-box p-6 sm:p-8 relative">
+      <div class="flex items-center justify-between border-b border-pink-500/20 pb-4 mb-5">
+        <div class="flex items-center space-x-3.5">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-house-chimney-user text-base"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO - MÓDULO DE AVALÚOS</h2>
+            <p class="text-[11px] text-pink-400 font-semibold">Control y Emisión de Fichas Técnicas de Avalúo</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="abrirFormularioNuevoAvaluo()" class="flex items-center rounded-xl bg-pink-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-pink-500 shadow-md">
+            <i class="fa-solid fa-plus mr-1.5"></i>Nuevo Avalúo
+          </button>
+          <button onclick="cerrarModalAvaluos()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden shadow-xl mb-4">
+        <div class="overflow-x-auto max-h-[450px]">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-800 sticky top-0">
+              <tr>
+                <th class="px-4 py-3">Núm. / Folio</th>
+                <th class="px-4 py-3">Solicitante</th>
+                <th class="px-4 py-3">Dirección Inmueble</th>
+                <th class="px-4 py-3">Catastro / Agua</th>
+                <th class="px-4 py-3">Fecha</th>
+                <th class="px-4 py-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaAvaluosCuerpo" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-xs text-slate-400 px-2">
+        <span id="contadorAvaluosTotal">0 avalúos registrados</span>
+        <span class="text-pink-400 font-semibold">Haz clic en cualquier registro para editar o imprimir</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DE CAPTURA / EDICIÓN DE AVALÚO ==================== -->
+  <div id="modalFormAvaluo" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4 overflow-y-auto">
+    <div class="w-full max-w-5xl rounded-2xl modal-box p-6 sm:p-8 relative">
+      <div class="flex items-center justify-between border-b border-pink-500/20 pb-4 mb-5">
+        <div class="flex items-center space-x-3.5">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-600 text-white font-bold shadow-lg">
+            <i class="fa-solid fa-file-pen text-base"></i>
+          </div>
+          <div>
+            <h2 id="modalAvaluoTituloTexto" class="text-sm font-extrabold text-white tracking-widest uppercase">ENLACE BUSINESS PRO - NUEVO AVALÚO</h2>
+            <p class="text-[11px] text-pink-400 font-semibold">Captura de Datos Técnicos y Periciales</p>
+          </div>
+        </div>
+        <button onclick="cerrarFormularioNuevoAvaluo()" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="formAvaluoData" onsubmit="guardarAvaluo(event)" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">NÚM. AVALÚO:</label>
+              <input type="text" id="avNum" required class="input-pro flex-1 font-bold">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">FOLIO:</label>
+              <input type="text" id="avFolio" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">SOLICITANTE:</label>
+              <input type="text" id="avSolicitante" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">DOM. SOLICITANTE:</label>
+              <input type="text" id="avDomSolicitante" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">COL. SOLICITANTE:</label>
+              <input type="text" id="avColSolicitante" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">VENDEDOR:</label>
+              <input type="text" id="avVendedor" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">RÉGIMEN:</label>
+              <input type="text" id="avRegimen" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">PROPÓSITO:</label>
+              <input type="text" id="avProposito" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">CTA. CATASTRAL:</label>
+              <input type="text" id="avCatastral" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">CUENTA AGUA:</label>
+              <input type="text" id="avAgua" class="input-pro flex-1">
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">INMUEBLE VALÚA:</label>
+              <input type="text" id="avInmuebleValua" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">FECHA:</label>
+              <input type="text" id="avFecha" class="input-pro flex-1" placeholder="EJ. 27 DE OCTUBRE DE 2026">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">C.P.:</label>
+              <input type="text" id="avCp" class="input-pro w-28 text-center">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">ENTIDAD:</label>
+              <input type="text" id="avEntidad" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">MUNICIPIO:</label>
+              <input type="text" id="avMunicipio" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">COLONIA:</label>
+              <input type="text" id="avColonia" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">DIRECCIÓN:</label>
+              <input type="text" id="avDireccion" class="input-pro flex-1 border-pink-500/50">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">CALIFICACIÓN:</label>
+              <input type="text" id="avCalificacion" class="input-pro flex-1">
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="label-inline w-36">CONSTRUCCIÓN:</label>
+              <input type="text" id="avConstruccion" class="input-pro flex-1">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <input type="text" id="avSaturacion" class="input-pro text-center" placeholder="SATURACIÓN">
+              <input type="text" id="avPoblacion" class="input-pro text-center" placeholder="POBLACIÓN">
+              <input type="text" id="avContaminacion" class="input-pro text-center" placeholder="CONTAMINACIÓN">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="avUsoSuelo" class="input-pro text-center" placeholder="USO DE SUELO">
+              <input type="text" id="avVias" class="input-pro text-center" placeholder="VÍAS DE ACCESO">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-pink-500/20">
+          <button type="button" onclick="imprimirAvaluoDesdeModal()" class="rounded-xl border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition">IMPRIMIR AVALÚO</button>
+          <div class="flex items-center gap-3">
+            <button type="button" id="btnEliminarAvaluoModal" onclick="eliminarAvaluoDesdeModal()" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 transition">ELIMINAR</button>
+            <button type="button" onclick="cerrarFormularioNuevoAvaluo()" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">SALIR</button>
+            <button type="submit" class="rounded-xl bg-pink-600 px-7 py-2 text-xs font-extrabold text-white hover:bg-pink-500 shadow-xl transition">GUARDAR AVALÚO</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ==================== MODAL DE SEGUIMIENTO / DASHBOARD MAESTRO ==================== -->
@@ -808,8 +979,9 @@
     </div>
   </div>
 
-  <!-- ==================== ÁREA DE IMPRESIÓN (DISEÑO VISUAL DE 1 SOLA HOJA) ==================== -->
+  <!-- ÁREAS DE IMPRESIÓN -->
   <div id="printableArea" style="display: none;"></div>
+  <div id="printableAreaAvaluo" style="display: none;"></div>
 
   <script>
     const datosIniciales = [
@@ -924,11 +1096,55 @@
       localStorage.setItem('enlace_business_tareas', JSON.stringify(tareasData));
     }
 
+    // ==================== MÓDULO DE AVALÚOS STORAGE ====================
+    function cargarAvaluosStorage() {
+      const guardado = localStorage.getItem('enlace_business_avaluos');
+      if (!guardado) {
+        return [
+          {
+            id: 'av_1',
+            num: '00523574',
+            folio: '00632014',
+            solicitante: 'C. ADRIANA MÉNDEZ ALANÍS',
+            vendedor: 'C. ADRIANA MÉNDEZ ALANÍS',
+            domSolicitante: 'PRIVADA VICENTE GUERRERO 19',
+            colSolicitante: 'SAN SIMÓN CULHUACÁN',
+            fecha: '5 DE OCTUBRE DE 2026',
+            direccion: 'PRIVADA VICENTE GUERRERO 19',
+            colonia: 'SAN SIMÓN CULHUACÁN',
+            cp: '09800',
+            entidad: 'CIUDAD DE MÉXICO',
+            municipio: 'IZTAPALAPA',
+            inmuebleValua: 'PROPIEDAD PRIVADA',
+            regimen: 'CASA HABITACIONAL',
+            proposito: 'ESTIMADO DE VALOR',
+            catastral: '800672292700EF0296F',
+            agua: '26-33-321-432-01-000-8',
+            calificacion: 'HABITACIONAL INTERÉS MEDIO',
+            construccion: 'HABITACIONAL BAJO A MEDIO',
+            saturacion: '100%',
+            poblacion: 'NORMAL',
+            contaminacion: '32 A 47 IMECA',
+            usoSuelo: 'HB / CM',
+            vias: 'AV. TLAHUAC'
+          }
+        ];
+      }
+      try { return JSON.parse(guardado); } catch(e) { return []; }
+    }
+
+    function guardarAvaluosStorage() {
+      localStorage.setItem('enlace_business_avaluos', JSON.stringify(listaAvaluos));
+    }
+
     let baseDatos = cargarBaseDatos();
     let agendaData = cargarAgenda();
     let tareasData = cargarTareas();
+    let listaAvaluos = cargarAvaluosStorage();
+
     let idItemEnEdicion = null;
     let tareaIdEnEdicion = null;
+    let avaluoIdEnEdicion = null;
     let modoDuplicadosActivo = false;
     let temporalesArchivosPdf = [];
 
@@ -965,6 +1181,208 @@
       document.getElementById('mainApp').classList.remove('flex');
       document.getElementById('loginOverlay').classList.remove('hidden');
       limpiar();
+    }
+
+    // ==================== LÓGICA DE AVALÚOS ====================
+    function abrirModalAvaluos() {
+      document.getElementById('modalAvaluos').classList.remove('hidden');
+      renderizarTablaAvaluos();
+    }
+
+    function cerrarModalAvaluos() {
+      document.getElementById('modalAvaluos').classList.add('hidden');
+    }
+
+    function abrirFormularioNuevoAvaluo() {
+      document.getElementById('formAvaluoData').reset();
+      avaluoIdEnEdicion = null;
+      document.getElementById('modalAvaluoTituloTexto').innerText = "ENLACE BUSINESS PRO - NUEVO AVALÚO";
+      document.getElementById('btnEliminarAvaluoModal').classList.add('hidden');
+      document.getElementById('modalFormAvaluo').classList.remove('hidden');
+    }
+
+    function cerrarFormularioNuevoAvaluo() {
+      document.getElementById('modalFormAvaluo').classList.add('hidden');
+    }
+
+    function guardarAvaluo(e) {
+      e.preventDefault();
+      const num = document.getElementById('avNum').value.trim();
+      if (!num) { alert("Ingrese el número de avalúo."); return; }
+
+      const objetoAvaluo = {
+        id: avaluoIdEnEdicion ? avaluoIdEnEdicion : 'av_' + Date.now(),
+        num,
+        folio: document.getElementById('avFolio').value.trim(),
+        solicitante: document.getElementById('avSolicitante').value.trim(),
+        vendedor: document.getElementById('avVendedor').value.trim(),
+        domSolicitante: document.getElementById('avDomSolicitante').value.trim(),
+        colSolicitante: document.getElementById('avColSolicitante').value.trim(),
+        fecha: document.getElementById('avFecha').value.trim(),
+        direccion: document.getElementById('avDireccion').value.trim(),
+        colonia: document.getElementById('avColonia').value.trim(),
+        cp: document.getElementById('avCp').value.trim(),
+        entidad: document.getElementById('avEntidad').value.trim(),
+        municipio: document.getElementById('avMunicipio').value.trim(),
+        inmuebleValua: document.getElementById('avInmuebleValua').value.trim(),
+        regimen: document.getElementById('avRegimen').value.trim(),
+        proposito: document.getElementById('avProposito').value.trim(),
+        catastral: document.getElementById('avCatastral').value.trim(),
+        agua: document.getElementById('avAgua').value.trim(),
+        calificacion: document.getElementById('avCalificacion').value.trim(),
+        construccion: document.getElementById('avConstruccion').value.trim(),
+        saturacion: document.getElementById('avSaturacion').value.trim(),
+        poblacion: document.getElementById('avPoblacion').value.trim(),
+        contaminacion: document.getElementById('avContaminacion').value.trim(),
+        usoSuelo: document.getElementById('avUsoSuelo').value.trim(),
+        vias: document.getElementById('avVias').value.trim()
+      };
+
+      if (avaluoIdEnEdicion) {
+        let idx = listaAvaluos.findIndex(a => a.id === avaluoIdEnEdicion);
+        if (idx > -1) listaAvaluos[idx] = objetoAvaluo;
+      } else {
+        listaAvaluos.unshift(objetoAvaluo);
+      }
+
+      guardarAvaluosStorage();
+      renderizarTablaAvaluos();
+      cerrarFormularioNuevoAvaluo();
+      alert("¡Avalúo guardado correctamente!");
+    }
+
+    function renderizarTablaAvaluos() {
+      const tbody = document.getElementById('tablaAvaluosCuerpo');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      document.getElementById('contadorAvaluosTotal').innerText = `${listaAvaluos.length} avalúos registrados`;
+
+      if (listaAvaluos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-500 italic">No hay avalúos registrados.</td></tr>`;
+        return;
+      }
+
+      listaAvaluos.forEach(a => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-900/60 transition cursor-pointer" onclick="editarAvaluo('${a.id}')">
+            <td class="px-4 py-3"><div class="font-bold text-white">${a.num}</div><div class="text-[10px] text-pink-400">Folio: ${a.folio || 'S/N'}</div></td>
+            <td class="px-4 py-3"><div class="font-bold text-slate-200">${a.solicitante || 'S/N'}</div></td>
+            <td class="px-4 py-3"><div class="font-bold text-white uppercase">${a.direccion || 'S/D'}</div><div class="text-[10px] text-slate-400 uppercase">${a.colonia || ''}, ${a.municipio || ''}</div></td>
+            <td class="px-4 py-3"><div class="text-[10px] text-slate-300">Cat: ${a.catastral || 'S/N'}</div><div class="text-[10px] text-slate-400">Agua: ${a.agua || 'S/N'}</div></td>
+            <td class="px-4 py-3 text-slate-400 text-[10px]">${a.fecha || 'S/F'}</td>
+            <td class="px-4 py-3 text-center" onclick="event.stopPropagation()">
+              <button onclick="eliminarAvaluo('${a.id}')" class="h-7 w-7 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition inline-flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function editarAvaluo(id) {
+      const a = listaAvaluos.find(item => item.id === id);
+      if (!a) return;
+      avaluoIdEnEdicion = id;
+      document.getElementById('modalAvaluoTituloTexto').innerText = "ENLACE BUSINESS PRO - EDITAR AVALÚO";
+      document.getElementById('btnEliminarAvaluoModal').classList.remove('hidden');
+
+      document.getElementById('avNum').value = a.num || '';
+      document.getElementById('avFolio').value = a.folio || '';
+      document.getElementById('avSolicitante').value = a.solicitante || '';
+      document.getElementById('avDomSolicitante').value = a.domSolicitante || '';
+      document.getElementById('avColSolicitante').value = a.colSolicitante || '';
+      document.getElementById('avVendedor').value = a.vendedor || '';
+      document.getElementById('avRegimen').value = a.regimen || '';
+      document.getElementById('avProposito').value = a.proposito || '';
+      document.getElementById('avCatastral').value = a.catastral || '';
+      document.getElementById('avAgua').value = a.agua || '';
+      document.getElementById('avInmuebleValua').value = a.inmuebleValua || '';
+      document.getElementById('avFecha').value = a.fecha || '';
+      document.getElementById('avCp').value = a.cp || '';
+      document.getElementById('avEntidad').value = a.entidad || '';
+      document.getElementById('avMunicipio').value = a.municipio || '';
+      document.getElementById('avColonia').value = a.colonia || '';
+      document.getElementById('avDireccion').value = a.direccion || '';
+      document.getElementById('avCalificacion').value = a.calificacion || '';
+      document.getElementById('avConstruccion').value = a.construccion || '';
+      document.getElementById('avSaturacion').value = a.saturacion || '';
+      document.getElementById('avPoblacion').value = a.poblacion || '';
+      document.getElementById('avContaminacion').value = a.contaminacion || '';
+      document.getElementById('avUsoSuelo').value = a.usoSuelo || '';
+      document.getElementById('avVias').value = a.vias || '';
+
+      document.getElementById('modalFormAvaluo').classList.remove('hidden');
+    }
+
+    function eliminarAvaluo(id) {
+      if (confirm("¿Está seguro de eliminar este registro de avalúo?")) {
+        listaAvaluos = listaAvaluos.filter(a => a.id !== id);
+        guardarAvaluosStorage();
+        renderizarTablaAvaluos();
+      }
+    }
+
+    function eliminarAvaluoDesdeModal() {
+      if (avaluoIdEnEdicion) {
+        eliminarAvaluo(avaluoIdEnEdicion);
+        cerrarFormularioNuevoAvaluo();
+      }
+    }
+
+    function imprimirAvaluoDesdeModal() {
+      const num = document.getElementById('avNum').value.trim();
+      const folio = document.getElementById('avFolio').value.trim();
+      const solicitante = document.getElementById('avSolicitante').value.trim();
+      const vendedor = document.getElementById('avVendedor').value.trim();
+      const direccion = document.getElementById('avDireccion').value.trim();
+      const colonia = document.getElementById('avColonia').value.trim();
+      const cp = document.getElementById('avCp').value.trim();
+      const municipio = document.getElementById('avMunicipio').value.trim();
+      const entidad = document.getElementById('avEntidad').value.trim();
+      const fecha = document.getElementById('avFecha').value.trim();
+      const catastral = document.getElementById('avCatastral').value.trim();
+      const agua = document.getElementById('avAgua').value.trim();
+      const inmuebleValua = document.getElementById('avInmuebleValua').value.trim();
+      const regimen = document.getElementById('avRegimen').value.trim();
+      const proposito = document.getElementById('avProposito').value.trim();
+      const calificacion = document.getElementById('avCalificacion').value.trim();
+      const construccion = document.getElementById('avConstruccion').value.trim();
+
+      const area = document.getElementById('printableAreaAvaluo');
+      area.style.display = 'block';
+      area.innerHTML = `
+        <div style="font-family: Arial, sans-serif; color: #000; width: 100%; max-width: 200mm; margin: 0 auto; background: #fff; padding: 5mm; box-sizing: border-box; font-size: 10px;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px;">
+            <div>
+              <h2 style="margin: 0; font-size: 14px; font-weight: bold;">ENLACE BUSINESS PRO - DICTAMEN DE AVALÚO</h2>
+              <p style="margin: 2px 0 0 0; font-size: 9px; color: #555;">SISTEMA INTEGRAL DE VALUACIÓN INMOBILIARIA</p>
+            </div>
+            <div style="text-align: right; font-size: 10px;">
+              <div><strong>NÚMERO:</strong> ${num || 'N/A'}</div>
+              <div><strong>FOLIO:</strong> ${folio || 'N/A'}</div>
+              <div><strong>FECHA:</strong> ${fecha || 'N/A'}</div>
+            </div>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+            <tr style="background: #eee;"><td colspan="4" style="padding: 4px; font-weight: bold;">1. DATOS GENERALES DEL SOLICITANTE Y PROPIEDAD</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold; width: 20%;">SOLICITANTE:</td><td style="padding: 3px; width: 30%;">${solicitante || 'N/A'}</td><td style="padding: 3px; font-weight: bold; width: 20%;">VENDEDOR:</td><td style="padding: 3px; width: 30%;">${vendedor || 'N/A'}</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold;">DIRECCIÓN:</td><td style="padding: 3px;" colspan="3">${direccion || 'N/A'}, COL. ${colonia || ''}, C.P. ${cp || ''}</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold;">MUNICIPIO:</td><td style="padding: 3px;">${municipio || 'N/A'}</td><td style="padding: 3px; font-weight: bold;">ENTIDAD:</td><td style="padding: 3px;">${entidad || 'N/A'}</td></tr>
+          </table>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+            <tr style="background: #eee;"><td colspan="4" style="padding: 4px; font-weight: bold;">2. CARACTERÍSTICAS TÉCNICAS Y LEGALES</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold; width: 20%;">INMUEBLE:</td><td style="padding: 3px; width: 30%;">${inmuebleValua || 'N/A'}</td><td style="padding: 3px; font-weight: bold; width: 20%;">RÉGIMEN:</td><td style="padding: 3px; width: 30%;">${regimen || 'N/A'}</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold;">PROPÓSITO:</td><td style="padding: 3px;">${proposito || 'N/A'}</td><td style="padding: 3px; font-weight: bold;">CALIFICACIÓN:</td><td style="padding: 3px;">${calificacion || 'N/A'}</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold;">CTA. CATASTRAL:</td><td style="padding: 3px;">${catastral || 'N/A'}</td><td style="padding: 3px; font-weight: bold;">CTA. AGUA:</td><td style="padding: 3px;">${agua || 'N/A'}</td></tr>
+            <tr><td style="padding: 3px; font-weight: bold;">CONSTRUCCIÓN:</td><td style="padding: 3px;" colspan="3">${construccion || 'N/A'}</td></tr>
+          </table>
+          <div style="margin-top: 30px; display: flex; justify-content: space-between; text-align: center; font-size: 10px;">
+            <div style="border-top: 1px solid #000; width: 40%; padding-top: 5px;">PERITO VALUADOR / RESPONSABLE</div>
+            <div style="border-top: 1px solid #000; width: 40%; padding-top: 5px;">AUTORIZACIÓN ENLACE BUSINESS</div>
+          </div>
+        </div>
+      `;
+      window.print();
+      area.style.display = 'none';
     }
 
     function abrirModalSeguimiento() {
@@ -2001,6 +2419,7 @@
 
       const tbody = document.getElementById('tablaRegistros');
       tbody.innerHTML = '';
+      
       resultados.forEach(item => {
         const precioPre = Number(item.precioPre) || 0;
         const precioVenta = Number(item.precioVenta) || 0;
@@ -2009,11 +2428,12 @@
         
         let totalPdfs = (item.archivosPdf && item.archivosPdf.length > 0) ? item.archivosPdf.length : 0;
         let badgePdf = totalPdfs > 0 
-          ? `<span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-rose-500/20 text-rose-400 font-bold text-xs border border-rose-500/30">${totalPdfs}</span>`
-          : '<span class="text-slate-500">Sin PDF</span>';
+          ? `<span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-rose-500/20 text-rose-400 font-bold text-[10px] border border-rose-500/30">${totalPdfs}</span>`
+          : '<span class="text-slate-500 text-[10px]">Sin PDF</span>';
 
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
+        // 1. FILA DE TABLA CLÁSICA PARA LAPTOPS Y TABLETS (Oculta en celulares con 'hidden md:table-row')
+        let filaEscritorio = `
+          <tr class="hidden md:table-row hover:bg-slate-800/40 transition border-b border-slate-800/60">
             <td class="px-6 py-4">
               <div class="font-bold text-xs text-white">${item.id}</div>
               <div class="text-[11px] text-blue-400 font-semibold mt-0.5">${item.idEnlace || 'S/N'}</div>
@@ -2029,22 +2449,74 @@
             <td class="px-6 py-4 text-slate-300">$${precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-amber-400">$${precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
             <td class="px-6 py-4 font-bold text-emerald-400">$${margenPesos.toLocaleString('es-MX', {minimumFractionDigits: 2})} <span class="text-[10px]">(${margenPorc}%)</span></td>
-            <td class="px-6 py-4 text-slate-300">${item.etapaActual || item.etapa || 'S/D'}</td>
+            <td class="px-6 py-4 text-slate-300 text-[11px]">${item.etapaActual || item.etapa || 'S/D'}</td>
             <td class="px-6 py-4 text-center">${badgePdf}</td>
-            <td class="px-6 py-4 text-slate-200">${item.responsable || 'S/N'}</td>
+            <td class="px-6 py-4 text-slate-200 text-[11px]">${item.responsable || 'S/N'}</td>
             <td class="px-6 py-4 text-center">
               <div class="flex items-center justify-center space-x-2">
                 <button onclick="abrirModalEditarRegistro('${item.id}')" title="Editar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition">
                   <i class="fa-solid fa-pen-to-square text-xs"></i>
                 </button>
-                <button onclick="eliminarRegistro('${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition">
+                <button onclick="eliminarRegistro('${item.id}')" title="Eliminar" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-400 transition">
                   <i class="fa-solid fa-trash-can text-xs"></i>
                 </button>
               </div>
             </td>
           </tr>
         `;
+
+        // 2. TARJETA VERTICAL PARA CELULARES (Visible solo en móviles con 'table-row md:hidden')
+        let tarjetaMovil = `
+          <tr class="table-row md:hidden border-b border-slate-800">
+            <td colspan="10" class="p-3">
+              <div class="rounded-xl border border-slate-800 bg-slate-900/90 p-4 space-y-3 shadow-lg">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-sm text-white">${item.id}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">${item.idEnlace || 'S/N'}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    ${badgePdf}
+                    <button onclick="abrirModalEditarRegistro('${item.id}')" class="h-8 w-8 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition inline-flex items-center justify-center">
+                      <i class="fa-solid fa-pen-to-square text-xs"></i>
+                    </button>
+                    <button onclick="eliminarRegistro('${item.id}')" class="h-8 w-8 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-400 transition inline-flex items-center justify-center">
+                      <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-white uppercase leading-snug">${item.direccion || 'S/D'}</p>
+                  <p class="text-[11px] text-blue-400 font-semibold uppercase mt-0.5">${item.colonia || 'S/D'}, ${item.municipio || ''}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 text-xs">
+                  <div>
+                    <span class="text-[9px] font-bold text-slate-400 block uppercase">Precio Pre-Auto</span>
+                    <span class="font-semibold text-slate-200">$${precioPre.toLocaleString('es-MX', {minimumFractionDigits: 2})}</span>
+                  </div>
+                  <div>
+                    <span class="text-[9px] font-bold text-amber-400 block uppercase">Precio Venta</span>
+                    <span class="font-extrabold text-amber-400">$${precioVenta.toLocaleString('es-MX', {minimumFractionDigits: 2})}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] pt-1">
+                  <div>
+                    <span class="text-[9px] text-slate-400 block uppercase">Etapa Actual</span>
+                    <span class="font-semibold text-slate-300">${item.etapaActual || item.etapa || 'S/D'}</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-[9px] text-slate-400 block uppercase">Responsable</span>
+                    <span class="font-semibold text-slate-300">${item.responsable || 'N/A'}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+
+        tbody.innerHTML += filaEscritorio + tarjetaMovil;
       });
+
       document.getElementById('contadorPaginacion').innerText = `Mostrando 1 - ${resultados.length} de ${resultados.length} registros`;
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
