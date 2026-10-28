@@ -1250,30 +1250,30 @@
 
       const objetoAvaluo = {
         id: avaluoIdEnEdicion ? avaluoIdEnEdicion : 'av_' + Date.now(),
-        num,
-        folio: document.getElementById('avFolio').value.trim(),
-        solicitante: document.getElementById('avSolicitante').value.trim(),
-        vendedor: document.getElementById('avVendedor').value.trim(),
-        domSolicitante: document.getElementById('avDomSolicitante').value.trim(),
-        colSolicitante: document.getElementById('avColSolicitante').value.trim(),
-        fecha: document.getElementById('avFecha').value.trim(),
-        direccion: document.getElementById('avDireccion').value.trim(),
-        colonia: document.getElementById('avColonia').value.trim(),
-        cp: document.getElementById('avCp').value.trim(),
-        entidad: document.getElementById('avEntidad').value.trim(),
-        municipio: document.getElementById('avMunicipio').value.trim(),
-        inmuebleValua: document.getElementById('avInmuebleValua').value.trim(),
-        regimen: document.getElementById('avRegimen').value.trim(),
-        proposito: document.getElementById('avProposito').value.trim(),
-        catastral: document.getElementById('avCatastral').value.trim(),
-        agua: document.getElementById('avAgua').value.trim(),
-        calificacion: document.getElementById('avCalificacion').value.trim(),
-        construccion: document.getElementById('avConstruccion').value.trim(),
-        saturacion: document.getElementById('avSaturacion').value.trim(),
-        poblacion: document.getElementById('avPoblacion').value.trim(),
-        contaminacion: document.getElementById('avContaminacion').value.trim(),
-        usoSuelo: document.getElementById('avUsoSuelo').value.trim(),
-        vias: document.getElementById('avVias').value.trim()
+        num: num.toUpperCase(),
+        folio: document.getElementById('avFolio').value.trim().toUpperCase(),
+        solicitante: document.getElementById('avSolicitante').value.trim().toUpperCase(),
+        vendedor: document.getElementById('avVendedor').value.trim().toUpperCase(),
+        domSolicitante: document.getElementById('avDomSolicitante').value.trim().toUpperCase(),
+        colSolicitante: document.getElementById('avColSolicitante').value.trim().toUpperCase(),
+        fecha: document.getElementById('avFecha').value.trim().toUpperCase(),
+        direccion: document.getElementById('avDireccion').value.trim().toUpperCase(),
+        colonia: document.getElementById('avColonia').value.trim().toUpperCase(),
+        cp: document.getElementById('avCp').value.trim().toUpperCase(),
+        entidad: document.getElementById('avEntidad').value.trim().toUpperCase(),
+        municipio: document.getElementById('avMunicipio').value.trim().toUpperCase(),
+        inmuebleValua: document.getElementById('avInmuebleValua').value.trim().toUpperCase(),
+        regimen: document.getElementById('avRegimen').value.trim().toUpperCase(),
+        proposito: document.getElementById('avProposito').value.trim().toUpperCase(),
+        catastral: document.getElementById('avCatastral').value.trim().toUpperCase(),
+        agua: document.getElementById('avAgua').value.trim().toUpperCase(),
+        calificacion: document.getElementById('avCalificacion').value.trim().toUpperCase(),
+        construccion: document.getElementById('avConstruccion').value.trim().toUpperCase(),
+        saturacion: document.getElementById('avSaturacion').value.trim().toUpperCase(),
+        poblacion: document.getElementById('avPoblacion').value.trim().toUpperCase(),
+        contaminacion: document.getElementById('avContaminacion').value.trim().toUpperCase(),
+        usoSuelo: document.getElementById('avUsoSuelo').value.trim().toUpperCase(),
+        vias: document.getElementById('avVias').value.trim().toUpperCase()
       };
 
       if (avaluoIdEnEdicion) {
@@ -1323,30 +1323,30 @@
       document.getElementById('modalAvaluoTituloTexto').innerText = "ENLACE BUSINESS PRO - EDITAR AVALÚO";
       document.getElementById('btnEliminarAvaluoModal').classList.remove('hidden');
 
-      document.getElementById('avNum').value = a.num || '';
-      document.getElementById('avFolio').value = a.folio || '';
-      document.getElementById('avSolicitante').value = a.solicitante || '';
-      document.getElementById('avDomSolicitante').value = a.domSolicitante || '';
-      document.getElementById('avColSolicitante').value = a.colSolicitante || '';
-      document.getElementById('avVendedor').value = a.vendedor || '';
-      document.getElementById('avRegimen').value = a.regimen || '';
-      document.getElementById('avProposito').value = a.proposito || '';
-      document.getElementById('avCatastral').value = a.catastral || '';
-      document.getElementById('avAgua').value = a.agua || '';
-      document.getElementById('avInmuebleValua').value = a.inmuebleValua || '';
-      document.getElementById('avFecha').value = a.fecha || '';
-      document.getElementById('avCp').value = a.cp || '';
-      document.getElementById('avEntidad').value = a.entidad || '';
-      document.getElementById('avMunicipio').value = a.municipio || '';
-      document.getElementById('avColonia').value = a.colonia || '';
-      document.getElementById('avDireccion').value = a.direccion || '';
-      document.getElementById('avCalificacion').value = a.calificacion || '';
-      document.getElementById('avConstruccion').value = a.construccion || '';
-      document.getElementById('avSaturacion').value = a.saturacion || '';
-      document.getElementById('avPoblacion').value = a.poblacion || '';
-      document.getElementById('avContaminacion').value = a.contaminacion || '';
-      document.getElementById('avUsoSuelo').value = a.usoSuelo || '';
-      document.getElementById('avVias').value = a.vias || '';
+      document.getElementById('avNum').value = (a.num || '').toUpperCase();
+      document.getElementById('avFolio').value = (a.folio || '').toUpperCase();
+      document.getElementById('avSolicitante').value = (a.solicitante || '').toUpperCase();
+      document.getElementById('avDomSolicitante').value = (a.domSolicitante || '').toUpperCase();
+      document.getElementById('avColSolicitante').value = (a.colSolicitante || '').toUpperCase();
+      document.getElementById('avVendedor').value = (a.vendedor || '').toUpperCase();
+      document.getElementById('avRegimen').value = (a.regimen || '').toUpperCase();
+      document.getElementById('avProposito').value = (a.proposito || '').toUpperCase();
+      document.getElementById('avCatastral').value = (a.catastral || '').toUpperCase();
+      document.getElementById('avAgua').value = (a.agua || '').toUpperCase();
+      document.getElementById('avInmuebleValua').value = (a.inmuebleValua || '').toUpperCase();
+      document.getElementById('avFecha').value = (a.fecha || '').toUpperCase();
+      document.getElementById('avCp').value = (a.cp || '').toUpperCase();
+      document.getElementById('avEntidad').value = (a.entidad || '').toUpperCase();
+      document.getElementById('avMunicipio').value = (a.municipio || '').toUpperCase();
+      document.getElementById('avColonia').value = (a.colonia || '').toUpperCase();
+      document.getElementById('avDireccion').value = (a.direccion || '').toUpperCase();
+      document.getElementById('avCalificacion').value = (a.calificacion || '').toUpperCase();
+      document.getElementById('avConstruccion').value = (a.construccion || '').toUpperCase();
+      document.getElementById('avSaturacion').value = (a.saturacion || '').toUpperCase();
+      document.getElementById('avPoblacion').value = (a.poblacion || '').toUpperCase();
+      document.getElementById('avContaminacion').value = (a.contaminacion || '').toUpperCase();
+      document.getElementById('avUsoSuelo').value = (a.usoSuelo || '').toUpperCase();
+      document.getElementById('avVias').value = (a.vias || '').toUpperCase();
 
       document.getElementById('modalFormAvaluo').classList.remove('hidden');
     }
@@ -2029,33 +2029,33 @@
       temporalesArchivosPdf = item.archivosPdf ? [...item.archivosPdf] : [];
       actualizarVistaPdfsModal();
 
-      document.getElementById('regId').value = item.id;
+      document.getElementById('regId').value = (item.id || '').toUpperCase();
       document.getElementById('regId').readOnly = true;
-      document.getElementById('regIdEnlace').value = item.idEnlace || "";
-      document.getElementById('regCredito').value = item.credito || "";
-      document.getElementById('regCartera').value = item.cartera || "";
-      document.getElementById('regResponsable').value = item.responsable || "";
-      document.getElementById('regTipoPropiedad').value = item.tipoPropiedad || "";
-      document.getElementById('regCp').value = item.cp || "";
-      document.getElementById('regEstado').value = item.estado || "";
-      document.getElementById('regMunicipio').value = item.municipio || "";
-      document.getElementById('regColonia').value = item.colonia || "";
-      document.getElementById('regDireccion').value = item.direccion || "";
-      document.getElementById('regSuperficie').value = item.superficie || "";
-      document.getElementById('regConstruccion').value = item.construccion || "";
-      document.getElementById('regEnvio').value = (item.envio === "S/D") ? "" : (item.envio || "");
+      document.getElementById('regIdEnlace').value = (item.idEnlace || '').toUpperCase();
+      document.getElementById('regCredito').value = (item.credito || '').toUpperCase();
+      document.getElementById('regCartera').value = (item.cartera || '').toUpperCase();
+      document.getElementById('regResponsable').value = (item.responsable || '').toUpperCase();
+      document.getElementById('regTipoPropiedad').value = (item.tipoPropiedad || '').toUpperCase();
+      document.getElementById('regCp').value = (item.cp || '').toUpperCase();
+      document.getElementById('regEstado').value = (item.estado || '').toUpperCase();
+      document.getElementById('regMunicipio').value = (item.municipio || '').toUpperCase();
+      document.getElementById('regColonia').value = (item.colonia || '').toUpperCase();
+      document.getElementById('regDireccion').value = (item.direccion || '').toUpperCase();
+      document.getElementById('regSuperficie').value = (item.superficie || '').toUpperCase();
+      document.getElementById('regConstruccion').value = (item.construccion || '').toUpperCase();
+      document.getElementById('regEnvio').value = (item.envio === "S/D") ? "" : (item.envio || "").toUpperCase();
       
       document.getElementById('regPrecioPre').value = item.precioPre ? "$" + Number(item.precioPre).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
       document.getElementById('regPrecioVenta').value = item.precioVenta ? "$" + Number(item.precioVenta).toLocaleString('es-MX', {minimumFractionDigits: 2}) : "$0.00";
       
       calcularUtilidadModal();
 
-      document.getElementById('regEtapaActual').value = item.etapaActual || "";
-      document.getElementById('regEtapa').value = item.etapa || "";
-      document.getElementById('regObservaciones').value = item.observaciones || "";
-      document.getElementById('regAvances').value = item.avances || "";
-      document.getElementById('regStatus').value = item.status || "";
-      document.getElementById('regRecepcion').value = item.recepcion || "";
+      document.getElementById('regEtapaActual').value = (item.etapaActual || '').toUpperCase();
+      document.getElementById('regEtapa').value = (item.etapa || '').toUpperCase();
+      document.getElementById('regObservaciones').value = (item.observaciones || '').toUpperCase();
+      document.getElementById('regAvances').value = (item.avances || '').toUpperCase();
+      document.getElementById('regStatus').value = (item.status || '').toUpperCase();
+      document.getElementById('regRecepcion').value = (item.recepcion || '').toUpperCase();
       document.getElementById('regActualizacion').value = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
 
       verificarSeguimientoInmueble(item.id);
@@ -2171,6 +2171,7 @@
       return valStr.toUpperCase();
     }
 
+    // Mayúsculas automáticas en tiempo real para inputs y textareas
     document.addEventListener('input', function (e) {
       if (e.target.tagName === 'INPUT' && e.target.type === 'text' && !e.target.readOnly && e.target.id !== 'username' && e.target.id !== 'password' && e.target.id !== 'inputBuscador') {
         e.target.value = e.target.value.toUpperCase();
@@ -2180,12 +2181,15 @@
       }
     });
 
+    // Navegación con ENTER en formularios de captura (Formularios de Inmuebles y Avalúos)
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         const target = e.target;
         if (target.tagName === 'INPUT' && !target.readOnly) {
           e.preventDefault();
-          const focusables = Array.from(document.querySelectorAll('#formNuevo input, #formNuevo select')).filter(el => !el.readOnly);
+          // Busca los inputs y selects enfocables tanto en el formulario de Inmuebles como en el de Avalúos
+          const selectorInputs = '#formNuevo input, #formNuevo select, #formAvaluoData input, #formAvaluoData select';
+          const focusables = Array.from(document.querySelectorAll(selectorInputs)).filter(el => !el.readOnly && el.offsetParent !== null);
           const index = focusables.indexOf(target);
           if (index > -1 && index + 1 < focusables.length) {
             focusables[index + 1].focus();
@@ -2232,31 +2236,31 @@
       }
 
       const datosObjeto = {
-        id: idCapturado,
-        idEnlace: document.getElementById('regIdEnlace').value.trim() || "",
-        cartera: document.getElementById('regCartera').value.trim() || "",
-        credito: document.getElementById('regCredito').value.trim() || "",
-        estado: document.getElementById('regEstado').value.trim() || "",
-        municipio: document.getElementById('regMunicipio').value.trim() || "",
-        colonia: document.getElementById('regColonia').value.trim() || "",
-        cp: document.getElementById('regCp').value.trim() || "",
-        direccion: document.getElementById('regDireccion').value.trim() || "",
-        observaciones: document.getElementById('regObservaciones').value.trim() || "",
-        avances: document.getElementById('regAvances').value.trim() || "",
-        status: document.getElementById('regStatus').value.trim() || "",
+        id: idCapturado.toUpperCase(),
+        idEnlace: document.getElementById('regIdEnlace').value.trim().toUpperCase() || "",
+        cartera: document.getElementById('regCartera').value.trim().toUpperCase() || "",
+        credito: document.getElementById('regCredito').value.trim().toUpperCase() || "",
+        estado: document.getElementById('regEstado').value.trim().toUpperCase() || "",
+        municipio: document.getElementById('regMunicipio').value.trim().toUpperCase() || "",
+        colonia: document.getElementById('regColonia').value.trim().toUpperCase() || "",
+        cp: document.getElementById('regCp').value.trim().toUpperCase() || "",
+        direccion: document.getElementById('regDireccion').value.trim().toUpperCase() || "",
+        observaciones: document.getElementById('regObservaciones').value.trim().toUpperCase() || "",
+        avances: document.getElementById('regAvances').value.trim().toUpperCase() || "",
+        status: document.getElementById('regStatus').value.trim().toUpperCase() || "",
         precioPre: obtenerValorNumerico('regPrecioPre'),
         precioVenta: obtenerValorNumerico('regPrecioVenta'),
-        etapa: document.getElementById('regEtapa').value.trim() || "",
-        etapaActual: document.getElementById('regEtapaActual').value.trim() || "",
-        envio: document.getElementById('regEnvio').value.trim() || "",
-        superficie: document.getElementById('regSuperficie').value.trim() || "",
-        construccion: document.getElementById('regConstruccion').value.trim() || "",
-        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim() || "",
-        recepcion: document.getElementById('regRecepcion').value.trim() || "",
-        actualizacion: document.getElementById('regActualizacion').value.trim() || "",
+        etapa: document.getElementById('regEtapa').value.trim().toUpperCase() || "",
+        etapaActual: document.getElementById('regEtapaActual').value.trim().toUpperCase() || "",
+        envio: document.getElementById('regEnvio').value.trim().toUpperCase() || "",
+        superficie: document.getElementById('regSuperficie').value.trim().toUpperCase() || "",
+        construccion: document.getElementById('regConstruccion').value.trim().toUpperCase() || "",
+        tipoPropiedad: document.getElementById('regTipoPropiedad').value.trim().toUpperCase() || "",
+        recepcion: document.getElementById('regRecepcion').value.trim().toUpperCase() || "",
+        actualizacion: document.getElementById('regActualizacion').value.trim().toUpperCase() || "",
         archivosPdf: temporalesArchivosPdf,
         pdf: temporalesArchivosPdf.length > 0,
-        responsable: document.getElementById('regResponsable').value.trim() || ""
+        responsable: document.getElementById('regResponsable').value.trim().toUpperCase() || ""
       };
 
       const indexExistente = baseDatos.findIndex(i => String(i.id) === String(idCapturado));
@@ -2811,29 +2815,29 @@
             const actualizacionVal = buscarCampo(["ACTUALIZACIÓN", "ACTUALIZACION", "actualizacion"]) || "";
 
             return {
-              id: String(idVal),
-              idEnlace: String(idEnlaceVal),
-              credito: String(creditoVal),
-              cartera: String(carteraVal),
-              responsable: String(responsableVal),
-              tipoPropiedad: String(tipoPropiedadVal),
-              cp: String(cpVal),
-              estado: String(estadoVal),
-              municipio: String(municipioVal),
-              colonia: String(coloniaVal),
-              direccion: String(direccionVal),
-              superficie: String(superficieVal),
-              construccion: String(construccionVal),
-              envio: String(envioVal),
+              id: String(idVal).toUpperCase(),
+              idEnlace: String(idEnlaceVal).toUpperCase(),
+              credito: String(creditoVal).toUpperCase(),
+              cartera: String(carteraVal).toUpperCase(),
+              responsable: String(responsableVal).toUpperCase(),
+              tipoPropiedad: String(tipoPropiedadVal).toUpperCase(),
+              cp: String(cpVal).toUpperCase(),
+              estado: String(estadoVal).toUpperCase(),
+              municipio: String(municipioVal).toUpperCase(),
+              colonia: String(coloniaVal).toUpperCase(),
+              direccion: String(direccionVal).toUpperCase(),
+              superficie: String(superficieVal).toUpperCase(),
+              construccion: String(construccionVal).toUpperCase(),
+              envio: String(envioVal).toUpperCase(),
               precioPre: precioPreVal,
               precioVenta: precioVentaVal,
-              etapaActual: String(etapaActualVal),
-              etapa: String(etapaVal),
-              observaciones: String(observacionesVal),
-              avances: String(avancesVal),
-              status: String(statusVal),
-              recepcion: String(recepcionVal),
-              actualizacion: String(actualizacionVal),
+              etapaActual: String(etapaActualVal).toUpperCase(),
+              etapa: String(etapaVal).toUpperCase(),
+              observaciones: String(observacionesVal).toUpperCase(),
+              avances: String(avancesVal).toUpperCase(),
+              status: String(statusVal).toUpperCase(),
+              recepcion: String(recepcionVal).toUpperCase(),
+              actualizacion: String(actualizacionVal).toUpperCase(),
               archivosPdf: [],
               pdf: false
             };
