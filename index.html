@@ -1089,25 +1089,42 @@
     }
     const db = firebase.database();
 
-    // Variables globales sincronizadas
+    // Variables globales sincronizadas con respaldo de emergencia LocalStorage
     let baseDatos = [];
     let agendaData = {};
     let tareasData = [];
     let listaAvaluos = [];
 
-    // Inicialización y carga automática desde Firebase en tiempo real
-    db.ref('enlace_business_db').once('value', (snapshot) => {
-      if (!snapshot.exists()) {
-        db.ref('enlace_business_db').set(datosIniciales);
-      }
-    });
+    // Inicialización con recuperación local automática para evitar pantallas en blanco
+    const datosLocalesGuardados = localStorage.getItem('enlace_business_db_local');
+    if (datosLocalesGuardados) {
+      try { baseDatos = JSON.parse(datosLocalesGuardados); } catch(e) { baseDatos = datosIniciales; }
+    } else {
+      baseDatos = datosIniciales;
+    }
+
+    const avaluosLocalesGuardados = localStorage.getItem('enlace_business_avaluos_local');
+    if (avaluosLocalesGuardados) {
+      try { listaAvaluos = JSON.parse(avaluosLocalesGuardados); } catch(e) { listaAvaluos = avaluosIniciales; }
+    } else {
+      listaAvaluos = avaluosIniciales;
+    }
+
+    // Sincronización en tiempo real con Firebase
     db.ref('enlace_business_db').on('value', (snapshot) => {
       const data = snapshot.val();
-      baseDatos = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-      baseDatos = baseDatos.map(item => {
-        if (item.envio === "S/D") item.envio = "";
-        return item;
-      });
+      if (data) {
+        let remoteData = Array.isArray(data) ? data : Object.values(data);
+        if (remoteData.length > 0) {
+          baseDatos = remoteData.map(item => {
+            if (item.envio === "S/D") item.envio = "";
+            return item;
+          });
+          localStorage.setItem('enlace_business_db_local', JSON.stringify(baseDatos));
+        }
+      } else {
+        db.ref('enlace_business_db').set(baseDatos);
+      }
       if (document.getElementById('mainApp') && document.getElementById('mainApp').classList.contains('flex')) {
         if (typeof actualizarSelectoresFiltros === "function") actualizarSelectoresFiltros();
         if (typeof aplicarFiltros === "function") aplicarFiltros();
@@ -1139,24 +1156,30 @@
       }
     });
 
-    db.ref('enlace_business_avaluos').once('value', (snapshot) => {
-      if (!snapshot.exists()) {
-        db.ref('enlace_business_avaluos').set(avaluosIniciales);
-      }
-    });
     db.ref('enlace_business_avaluos').on('value', (snapshot) => {
       const data = snapshot.val();
-      listaAvaluos = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+      if (data) {
+        listaAvaluos = Array.isArray(data) ? data : Object.values(data);
+        localStorage.setItem('enlace_business_avaluos_local', JSON.stringify(listaAvaluos));
+      } else {
+        db.ref('enlace_business_avaluos').set(listaAvaluos);
+      }
       if (document.getElementById('modalAvaluos') && !document.getElementById('modalAvaluos').classList.contains('hidden')) {
         if (typeof renderizarTablaAvaluos === "function") renderizarTablaAvaluos();
       }
     });
 
-    // Funciones de guardado hacia Firebase
-    function guardarBaseDatos() { db.ref('enlace_business_db').set(baseDatos); }
+    // Funciones de guardado hacia Firebase y LocalStorage simultáneo
+    function guardarBaseDatos() {
+      localStorage.setItem('enlace_business_db_local', JSON.stringify(baseDatos));
+      db.ref('enlace_business_db').set(baseDatos).catch(err => console.error("Error al sincronizar con Firebase:", err));
+    }
     function guardarAgendaStorage() { db.ref('enlace_business_agenda').set(agendaData); }
     function guardarTareasStorage() { db.ref('enlace_business_tareas').set(tareasData); }
-    function guardarAvaluosStorage() { db.ref('enlace_business_avaluos').set(listaAvaluos); }
+    function guardarAvaluosStorage() {
+      localStorage.setItem('enlace_business_avaluos_local', JSON.stringify(listaAvaluos));
+      db.ref('enlace_business_avaluos').set(listaAvaluos).catch(err => console.error("Error al sincronizar avalúos:", err));
+    }
 
     let idItemEnEdicion = null;
     let tareaIdEnEdicion = null;
@@ -2828,7 +2851,7 @@
           guardarBaseDatos();
           actualizarSelectoresFiltros();
           aplicarFiltros();
-          alert(`¡Se importaron y actualizaron los registros del Excel correctamente sin perder la base anterior!`);
+          alert(`¡Se importaron y actualizaron ${nuevosImportados.length} registros del Excel correctamente y se guardaron con respaldo local seguro!`);
         }
       };
       reader.readAsArrayBuffer(file);
