@@ -7,6 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SDK DE FIREBASE (Para sincronización en la nube) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -1038,105 +1043,120 @@
       }
     ];
 
-    function cargarBaseDatos() {
-      const guardado = localStorage.getItem('enlace_business_db');
-      let datos = datosIniciales;
-      if (guardado) {
-        try {
-          datos = JSON.parse(guardado);
-        } catch(e) {
-          datos = datosIniciales;
-        }
+    const avaluosIniciales = [
+      {
+        id: 'av_1',
+        num: '00523574',
+        folio: '00632014',
+        solicitante: 'C. ADRIANA MÉNDEZ ALANÍS',
+        vendedor: 'C. ADRIANA MÉNDEZ ALANÍS',
+        domSolicitante: 'PRIVADA VICENTE GUERRERO 19',
+        colSolicitante: 'SAN SIMÓN CULHUACÁN',
+        fecha: '5 DE OCTUBRE DE 2026',
+        direccion: 'PRIVADA VICENTE GUERRERO 19',
+        colonia: 'SAN SIMÓN CULHUACÁN',
+        cp: '09800',
+        entidad: 'CIUDAD DE MÉXICO',
+        municipio: 'IZTAPALAPA',
+        inmuebleValua: 'PROPIEDAD PRIVADA',
+        regimen: 'CASA HABITACIONAL',
+        proposito: 'ESTIMADO DE VALOR',
+        catastral: '800672292700EF0296F',
+        agua: '26-33-321-432-01-000-8',
+        calificacion: 'HABITACIONAL INTERÉS MEDIO',
+        construccion: 'HABITACIONAL BAJO A MEDIO',
+        saturacion: '100%',
+        poblacion: 'NORMAL',
+        contaminacion: '32 A 47 IMECA',
+        usoSuelo: 'HB / CM',
+        vias: 'AV. TLAHUAC'
       }
-      datos = datos.map(item => {
-        if (item.envio === "S/D") {
-          item.envio = "";
-        }
+    ];
+
+    // ==================== CONFIGURACIÓN DE FIREBASE ====================
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_PROYECTO.firebaseapp.com",
+      databaseURL: "https://TU_PROYECTO.firebaseio.com",
+      projectId: "TU_PROYECTO",
+      storageBucket: "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // Variables globales sincronizadas
+    let baseDatos = [];
+    let agendaData = {};
+    let tareasData = [];
+    let listaAvaluos = [];
+
+    // Inicialización y carga automática desde Firebase en tiempo real
+    db.ref('enlace_business_db').once('value', (snapshot) => {
+      if (!snapshot.exists()) {
+        db.ref('enlace_business_db').set(datosIniciales);
+      }
+    });
+    db.ref('enlace_business_db').on('value', (snapshot) => {
+      const data = snapshot.val();
+      baseDatos = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+      baseDatos = baseDatos.map(item => {
+        if (item.envio === "S/D") item.envio = "";
         return item;
       });
-      return datos;
-    }
+      if (document.getElementById('mainApp') && document.getElementById('mainApp').classList.contains('flex')) {
+        if (typeof actualizarSelectoresFiltros === "function") actualizarSelectoresFiltros();
+        if (typeof aplicarFiltros === "function") aplicarFiltros();
+      }
+    });
 
-    function guardarBaseDatos() {
-      localStorage.setItem('enlace_business_db', JSON.stringify(baseDatos));
-    }
-
-    function cargarAgenda() {
-      const guardado = localStorage.getItem('enlace_business_agenda');
-      if (!guardado) return {};
-      let parsed = JSON.parse(guardado);
-      Object.keys(parsed).forEach(k => {
-        if (typeof parsed[k] === 'string') {
-          parsed[k] = [{ id: 'evt_' + Date.now(), texto: parsed[k], inmuebleId: '' }];
-        } else if (parsed[k] && parsed[k].texto !== undefined && !Array.isArray(parsed[k])) {
-          parsed[k] = [{ id: 'evt_' + Date.now(), texto: parsed[k].texto, inmuebleId: parsed[k].inmuebleId || '' }];
+    db.ref('enlace_business_agenda').on('value', (snapshot) => {
+      agendaData = snapshot.val() || {};
+      Object.keys(agendaData).forEach(k => {
+        if (typeof agendaData[k] === 'string') {
+          agendaData[k] = [{ id: 'evt_' + Date.now(), texto: agendaData[k], inmuebleId: '' }];
+        } else if (agendaData[k] && agendaData[k].texto !== undefined && !Array.isArray(agendaData[k])) {
+          agendaData[k] = [{ id: 'evt_' + Date.now(), texto: agendaData[k].texto, inmuebleId: agendaData[k].inmuebleId || '' }];
         }
       });
-      return parsed;
-    }
-
-    function guardarAgendaStorage() {
-      localStorage.setItem('enlace_business_agenda', JSON.stringify(agendaData));
-    }
-
-    function cargarTareas() {
-      const guardado = localStorage.getItem('enlace_business_tareas');
-      if (!guardado) return [];
-      try {
-        return JSON.parse(guardado);
-      } catch(e) {
-        return [];
+      if (document.getElementById('modalPlanning') && !document.getElementById('modalPlanning').classList.contains('hidden')) {
+        if (typeof renderizarCalendario === "function") renderizarCalendario();
+        if (typeof fechaSeleccionadaStr !== 'undefined' && fechaSeleccionadaStr && typeof renderizarListaEventosDiaDerecha === "function") {
+          renderizarListaEventosDiaDerecha(fechaSeleccionadaStr);
+        }
       }
-    }
+    });
 
-    function guardarTareasStorage() {
-      localStorage.setItem('enlace_business_tareas', JSON.stringify(tareasData));
-    }
-
-    function cargarAvaluosStorage() {
-      const guardado = localStorage.getItem('enlace_business_avaluos');
-      if (!guardado) {
-        return [
-          {
-            id: 'av_1',
-            num: '00523574',
-            folio: '00632014',
-            solicitante: 'C. ADRIANA MÉNDEZ ALANÍS',
-            vendedor: 'C. ADRIANA MÉNDEZ ALANÍS',
-            domSolicitante: 'PRIVADA VICENTE GUERRERO 19',
-            colSolicitante: 'SAN SIMÓN CULHUACÁN',
-            fecha: '5 DE OCTUBRE DE 2026',
-            direccion: 'PRIVADA VICENTE GUERRERO 19',
-            colonia: 'SAN SIMÓN CULHUACÁN',
-            cp: '09800',
-            entidad: 'CIUDAD DE MÉXICO',
-            municipio: 'IZTAPALAPA',
-            inmuebleValua: 'PROPIEDAD PRIVADA',
-            regimen: 'CASA HABITACIONAL',
-            proposito: 'ESTIMADO DE VALOR',
-            catastral: '800672292700EF0296F',
-            agua: '26-33-321-432-01-000-8',
-            calificacion: 'HABITACIONAL INTERÉS MEDIO',
-            construccion: 'HABITACIONAL BAJO A MEDIO',
-            saturacion: '100%',
-            poblacion: 'NORMAL',
-            contaminacion: '32 A 47 IMECA',
-            usoSuelo: 'HB / CM',
-            vias: 'AV. TLAHUAC'
-          }
-        ];
+    db.ref('enlace_business_tareas').on('value', (snapshot) => {
+      const data = snapshot.val();
+      tareasData = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+      if (document.getElementById('modalTareas') && !document.getElementById('modalTareas').classList.contains('hidden')) {
+        if (typeof renderizarListaTareas === "function") renderizarListaTareas();
       }
-      try { return JSON.parse(guardado); } catch(e) { return []; }
-    }
+    });
 
-    function guardarAvaluosStorage() {
-      localStorage.setItem('enlace_business_avaluos', JSON.stringify(listaAvaluos));
-    }
+    db.ref('enlace_business_avaluos').once('value', (snapshot) => {
+      if (!snapshot.exists()) {
+        db.ref('enlace_business_avaluos').set(avaluosIniciales);
+      }
+    });
+    db.ref('enlace_business_avaluos').on('value', (snapshot) => {
+      const data = snapshot.val();
+      listaAvaluos = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+      if (document.getElementById('modalAvaluos') && !document.getElementById('modalAvaluos').classList.contains('hidden')) {
+        if (typeof renderizarTablaAvaluos === "function") renderizarTablaAvaluos();
+      }
+    });
 
-    let baseDatos = cargarBaseDatos();
-    let agendaData = cargarAgenda();
-    let tareasData = cargarTareas();
-    let listaAvaluos = cargarAvaluosStorage();
+    // Funciones de guardado hacia Firebase
+    function guardarBaseDatos() { db.ref('enlace_business_db').set(baseDatos); }
+    function guardarAgendaStorage() { db.ref('enlace_business_agenda').set(agendaData); }
+    function guardarTareasStorage() { db.ref('enlace_business_tareas').set(tareasData); }
+    function guardarAvaluosStorage() { db.ref('enlace_business_avaluos').set(listaAvaluos); }
 
     let idItemEnEdicion = null;
     let tareaIdEnEdicion = null;
@@ -2516,7 +2536,7 @@
       document.getElementById('infoTotalPie').innerText = `1 - ${resultados.length} de ${resultados.length} registros`;
     }
 
-    // ==================== NUEVO MOTOR DE IMPRESIÓN FORMAL Y MODULAR (1 HOJA A4) ====================
+    // ==================== MOTOR DE IMPRESIÓN FORMAL Y MODULAR (1 HOJA A4) ==================== -->
     function imprimirDesdeModal() {
       const idVal = document.getElementById('regId').value.trim();
       const idEnlaceVal = document.getElementById('regIdEnlace').value.trim();
